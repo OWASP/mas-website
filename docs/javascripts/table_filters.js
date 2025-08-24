@@ -276,6 +276,25 @@
     history.replaceState(null, null, value ? ('#' + value) : '#');
   }
 
+  // Helper function to check if a path represents an index page
+  function isIndexPage(path, configPath) {
+    // Exact match
+    if (path === configPath) return true;
+    
+    // Index page variations
+    if (path === configPath + 'index' || path === configPath + 'index.html') return true;
+    
+    // Check if path is exactly the config path with no additional segments
+    // For /MASTG/demos/, we want to match /MASTG/demos/ but not /MASTG/demos/android/
+    if (path.startsWith(configPath)) {
+      const remainder = path.substring(configPath.length);
+      // Allow only empty string, 'index', or 'index.html' after the config path
+      return remainder === '' || remainder === 'index' || remainder === 'index.html';
+    }
+    
+    return false;
+  }
+
   // Main initializer: find all candidate tables and enhance
   function configureDynamicTables() {
     // Clean previously registered custom filters (from prior SPA navigations)
@@ -288,7 +307,7 @@
     // Activate only on specific index pages defined in PAGE_CONFIG
     let pageGroups = null;
     for (const [key, groups] of Object.entries(PAGE_CONFIG)) {
-      if (path.indexOf(key) !== -1) { pageGroups = groups; break; }
+      if (isIndexPage(path, key)) { pageGroups = groups; break; }
     }
     if (!pageGroups) return;
 
