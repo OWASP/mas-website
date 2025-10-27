@@ -59,12 +59,13 @@ def structure_masvs(docs_dir):
     for md_path in Path(masvs_local_dir).rglob("controls/*.md"):
         control_id = md_path.stem
         control_regex = r"## Control\n\n([^#]*)\n\n"
-        description_regex = r"## Description\n\n(.*)"
+        # ↓↓↓ only change is here ↓↓↓
+        description_regex = r"## Description\n\n(.*?)(?=\n## |\Z)"
 
         content = md_path.read_text(encoding="utf-8")
         # Extract the control content
-        control_content = re.search(control_regex, content).group(1).strip()
-        description_content = re.search(description_regex, content).group(1).strip()
+        control_content = re.search(control_regex, content, re.DOTALL).group(1).strip()
+        description_content = re.search(description_regex, content, re.DOTALL).group(1).strip()
 
         content = f'# {control_id}\n\n'
         content += f'<p style="font-size: 2em">{control_content}</p>\n\n'
