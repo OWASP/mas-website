@@ -59,7 +59,6 @@ def structure_masvs(docs_dir):
     for md_path in Path(masvs_local_dir).rglob("controls/*.md"):
         control_id = md_path.stem
         control_regex = r"## Control\n\n([^#]*)\n\n"
-        # ↓↓↓ only change is here ↓↓↓
         description_regex = r"## Description\n\n(.*?)(?=\n## |\Z)"
 
         content = md_path.read_text(encoding="utf-8")
