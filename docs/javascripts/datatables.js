@@ -10,7 +10,8 @@ document$.subscribe(function() {
         'knowledge',
         'techniques',
         'tests',
-        'tools'
+        'tools',
+        'MASWE'
     ];
 
     var isIndexPage = false;
