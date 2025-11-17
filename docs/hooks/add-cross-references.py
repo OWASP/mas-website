@@ -3,8 +3,21 @@ import yaml
 import mkdocs.plugins
 import os
 import glob
+import re
 
 log = logging.getLogger('mkdocs')
+
+
+def is_v2_test(test_identifier):
+    """Check if a test is v2 (MASTG-TEST-0200 and above)"""
+    match = re.search(r'MASTG-TEST-(\d+)', test_identifier)
+    if match:
+        try:
+            test_number = int(match.group(1))
+            return test_number >= 200
+        except ValueError:
+            return False
+    return False
 
 
 def gather_metadata(directory, id_key, component_type):
@@ -20,7 +33,7 @@ def gather_metadata(directory, id_key, component_type):
 
                 # Required because MASTG v1 tests don't have the id_key and MASTG v2 tests MUST have it
                 if not id_key in frontmatter:
-                    if "MASTG-TEST-02" in file:
+                    if is_v2_test(file):
                         log.error(f"Missing frontmatter ID in {file}")
                     continue
 
