@@ -1,4 +1,5 @@
 import logging
+import re
 
 log = logging.getLogger('mkdocs')
 
@@ -13,8 +14,16 @@ def get_edit_url(src_path, edit_url_mastg, edit_url_masvs, edit_url_maswe):
         edit_url = edit_url.replace("master/MASTG/", "master/")
 
         # TODO Remove after porting v1 is completed
-        if 'MASTG-TEST-02' in src_path:
-            edit_url = edit_url.replace('/tests/', '/tests-beta/')
+        # v2 tests are MASTG-TEST-0200 and above
+        match = re.search(r'MASTG-TEST-(\d+)', src_path)
+        if match:
+            try:
+                test_number = int(match.group(1))
+                if test_number >= 200:
+                    edit_url = edit_url.replace('/tests/', '/tests-beta/')
+            except ValueError:
+                # If conversion fails, skip the replacement
+                pass
     elif src_path.startswith("MASWE"):
         edit_url = f"{edit_url_maswe}{src_path}"
         edit_url = edit_url.replace("main/MASWE/", "main/weaknesses/")
