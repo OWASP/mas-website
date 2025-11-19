@@ -352,7 +352,8 @@ img.dark-img {
 }
 
 .mas-test-button,
-.mas-demo-button {
+.mas-demo-button,
+.mas-best-button {
   background-color: var(--mas-blue); /* Adjust this value for .mas-demo-button if needed */
   color: white !important;
   line-height: 1em !important;
@@ -370,12 +371,20 @@ img.dark-img {
   background-color: #9900ff; /* Adjusted to match the hex value format */
 }
 
+.mas-best-button {
+  background-color: var(--tag-color-best);
+}
+
 .mas-test-button:hover {
   background-color: #2e7fd5; 
 }
 
 .mas-demo-button:hover {
   background-color: #aa33ff;
+}
+
+.mas-best-button:hover {
+  background-color: #0a9428;
 }
 
 /* Default DataTables styling for light mode */
