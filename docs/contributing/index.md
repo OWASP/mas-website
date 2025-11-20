@@ -6,7 +6,7 @@ _First of all,_ [⭐ Give us a Star in GitHub](https://github.com/OWASP/mastg)!
 
 <br>
 
-The MAS project is an open source effort and we welcome all kinds of contributions and feedback.
+The MAS project is an open-source effort, and we welcome all kinds of contributions and feedback.
 
 **Help us improve & join our community:**
 
@@ -16,19 +16,21 @@ The MAS project is an open source effort and we welcome all kinds of contributio
 
 **Contribute with content:**
 
-- 💡 Propose ideas or suggest improvements ([MASTG](https://github.com/OWASP/mastg/discussions/categories/ideas)/[MASVS](https://github.com/OWASP/masvs/discussions/categories/ideas)). If it qualifies we'll promote it to an Issue.
+- 💡 Propose ideas or suggest improvements ([MASTG](https://github.com/OWASP/mastg/discussions/categories/ideas)/[MASVS](https://github.com/OWASP/masvs/discussions/categories/ideas)). If it qualifies, we'll promote it to an Issue.
 - 📄 [Create a Pull Request](3_PRs_and_Reviews.md#how-to-open-a-pr) for concrete fixes (e.g. grammar/typos) or content already approved by the core team.
 
-Before you start contributing, please check our pages ["How Can You Contribute?"](1_How_Can_You_Contribute.md) and ["Getting Started"](2_Getting_Started.md). If you have any doubts [please contact us](../contact.md).
+Before you start contributing, please check our pages ["How Can You Contribute?"](1_How_Can_You_Contribute.md) and ["Getting Started"](2_Getting_Started.md). If you have any doubts, [please contact us](../contact.md).
 
 ## 🚫 What not to do
 
 Although we greatly appreciate any and all contributions to the project, there are a few things that you should take into consideration:
 
-- **No advertisement**: The OWASP mobile Security Project cannot be used as a platform for advertisement of commercial tools, companies or individuals. Technical content such as the implementation of certain techniques or tests should be written with free and open-source tools in mind. Commercial tools are typically not accepted, but might be referenced in some specific cases.
+- **No advertisement**: The OWASP Mobile Security Project cannot be used as a platform for advertisement of commercial tools, companies, or individuals. Technical content, such as the implementation of certain techniques or tests, should be written with free and open-source tools in mind. Commercial tools are typically not accepted, but might be referenced in some specific cases.
 - **No unnecessary self-promotion of tools or blog posts**: If you have a relation with one of the URLs or tools you are referencing, please state so in the PR so that we can verify that the reference is in line with the rest of the guide.
 
 Please be sure to take a careful look at our [Code of Conduct](https://github.com/OWASP/mastg/blob/master/.github/CODE_OF_CONDUCT.md "Code of Conduct") for all the details and [ask us](../contact.md) in case of doubt.
+
+## C
 
 ## Tool Inclusion Disclaimer for Contributors
 
@@ -40,11 +42,11 @@ To be considered for inclusion, tools should be:
 - Clearly documented and usable by the community
 - Actively maintained, with updates tracking Android and iOS platform changes whenever applicable
 
-Even after inclusion, tools are subject to removal if they become outdated, broken, unmaintained, or otherwise no longer align with the goals of the MASTG. Inclusion is not permanent and does not imply endorsement by OWASP.
+Even after inclusion, tools may be removed if they become outdated, broken, unmaintained, or no longer align with the goals of the MASTG. Inclusion is not permanent and does not imply endorsement by OWASP.
 
-In instances where no suitable open-source alternative exists, we may include closed-source tools. However, any closed-source tools included must be free to use, as we aim to avoid featuring paid tools whenever possible. This also extends to freeware or community editions of commercial tools.
+When no suitable open-source alternative exists, we may include closed-source tools. However, any closed-source tools included must be free to use, as we aim to avoid featuring paid tools whenever possible. This also extends to freeware or community editions of commercial tools.
 
-Our goal is to be vendor-neutral and to serve as a trusted learning resource, which is why we've **avoid the inclusion of "automated mobile application security scanners"** due to the competitive challenges they pose. Instead, we focus on tools that provide full code access and comprehensive testing, as they are better suited for educational purposes. Tools that lack this transparency, even if they offer a free version, typically do not meet the OWASP MAS project's inclusion criteria.
+Our goal is to be vendor-neutral and serve as a trusted learning resource, which is why we've **avoided the inclusion of "automated mobile application security scanners"** due to the competitive challenges they pose. Instead, we focus on tools that provide full code access and comprehensive testing, as they are better suited for educational purposes. Tools that lack this transparency, even if they offer a free version, typically do not meet the OWASP MAS project's inclusion criteria.
 
 <br>
 
@@ -71,7 +73,7 @@ _Coming soon..._
 
 ### OWASP MASVS V1
 
-The latest version of the MASVS v1 including all translations is available here: <https://github.com/OWASP/masvs/releases/tag/v1.5.0>
+The latest version of the MASVS v1, including all translations, is available here: <https://github.com/OWASP/masvs/releases/tag/v1.5.0>
 
 | Project Lead | Lead Author | Contributors and Reviewers |
 | ------- | --- | ----------------- |
@@ -105,7 +107,7 @@ The latest version of the MASTG v1 is available here: <https://github.com/OWASP/
 - **Reviewers**: Reviewers have consistently provided useful feedback through GitHub issues and pull request comments.
 - **Top Contributors**: Top contributors have consistently contributed quality content and have at least 500 additions logged in the GitHub repository.
 - **Contributors**: Contributors have contributed quality content and have at least 50 additions logged in the GitHub repository.
-- **Mini Contributors**: Many other contributors have committed small amounts of content, such as a single word or sentence (less than 50 additions).
+- **Mini Contributors**: Many other contributors have committed small amounts of content, such as a single word or sentence (fewer than 50 additions).
 
 | Authors | Reviewers | Top Contributors | Contributors | Mini Contributors | Editors |
 | ---- | ---- | ----- | --- | --- | --- |
