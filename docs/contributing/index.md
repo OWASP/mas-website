@@ -30,7 +30,11 @@ Although we greatly appreciate any and all contributions to the project, there a
 
 Please be sure to take a careful look at our [Code of Conduct](https://github.com/OWASP/mastg/blob/master/.github/CODE_OF_CONDUCT.md "Code of Conduct") for all the details and [ask us](../contact.md) in case of doubt.
 
-## C
+## CPEs (Continuing Professional Education) and CEUs (Continuing Education Units) accreditation
+
+Information security professionals holding certifications from major organizations, such as (ISC)², ISACA, and GIAC, may be eligible to claim Continuing Professional Education (CPE) credits or CompTIA Continuing Education Units (CEUs) for their active contributions to the OWASP Mobile Security Project.
+
+Please refer to the respective certification body's guidelines for claiming CPEs or CEUs, as they may have specific requirements regarding the type and extent of contributions that qualify for credit. Generally, contributions such as technical writing for the MASVS, MASWE, and MASTG may be eligible for professional credits in a ratio of 1 hour of contribution to the Profession = 1 CPE/CEU.
 
 ## Tool Inclusion Disclaimer for Contributors
 
