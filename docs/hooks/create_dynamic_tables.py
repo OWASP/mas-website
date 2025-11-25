@@ -12,6 +12,28 @@ import requests
 log = logging.getLogger('mkdocs')
 MASVS = None
 
+def is_v1_test(test_identifier):
+    """Check if a test is v1 (MASTG-TEST-0000 to MASTG-TEST-0199)"""
+    match = re.search(r'MASTG-TEST-(\d+)', test_identifier)
+    if match:
+        try:
+            test_number = int(match.group(1))
+            return test_number < 200
+        except ValueError:
+            return False
+    return False
+
+def is_v2_test(test_identifier):
+    """Check if a test is v2 (MASTG-TEST-0200 and above)"""
+    match = re.search(r'MASTG-TEST-(\d+)', test_identifier)
+    if match:
+        try:
+            test_number = int(match.group(1))
+            return test_number >= 200
+        except ValueError:
+            return False
+    return False
+
 def get_level_icon(level, value):
     if level == "L1" and value == True:
         return '<span class="mas-dot-blue"></span><span style="display: none;">profile:L1</span>'
@@ -89,7 +111,7 @@ def get_mastg_tests_dict():
                 frontmatter = next(yaml.load_all(content, Loader=yaml.FullLoader))
                 frontmatter['path'] = os.path.relpath(file, "docs/MASTG")
                 
-                if MASTG_TEST_ID.startswith("MASTG-TEST-00") or MASTG_TEST_ID.startswith("MASTG-TEST-01"):
+                if is_v1_test(MASTG_TEST_ID):
                     # it's a v1 test
                     frontmatter['id'] = MASTG_TEST_ID
                     if not frontmatter.get('masvs_v2_id'):
@@ -174,9 +196,9 @@ def add_test_rows(checklist, platform, control):
             checklist_row['L2'] = "L2" in levels
             checklist_row['R'] = "R" in levels
             checklist_row['P'] = "P" in levels
-            if "MASTG-TEST-00" in test['id']:
+            if is_v1_test(test['id']):
                 checklist_row['Status'] = test.get('status', 'update-pending')
-            elif "MASTG-TEST-02" in test['id']:
+            elif is_v2_test(test['id']):
                 checklist_row['Status'] = test.get('status', 'new')
             checklist.append(checklist_row)
 
@@ -271,14 +293,14 @@ def get_mastg_components_dict(name):
                     frontmatter['R'] = get_level_icon('R', "R" in profiles)
                     frontmatter['P'] = get_level_icon('P', "P" in profiles)
 
-                    if "MASTG-TEST-00" in component_id:
+                    if is_v1_test(component_id):
                         frontmatter['status'] = frontmatter.get('status', 'update-pending')
                         if frontmatter['status'] == 'update-pending':
                             # add github link to the issue tracker
                             frontmatter['status'] = f'<a href="https://github.com/OWASP/mastg/issues?q=is%3Aopen+in%3Atitle+%22{component_id}%22" target="_blank"><span class="md-tag md-tag-icon md-tag--update-pending" style="min-width: 4em">update-pending</span></a><span style="display: none;">status:update-pending</span>'
                         elif frontmatter['status'] == 'deprecated':
                             frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--deprecated">deprecated</span><span style="display: none;">status:deprecated</span>'
-                    elif "MASTG-TEST-02" in component_id:
+                    elif is_v2_test(component_id):
                         frontmatter['status'] = frontmatter.get('status', 'new')
                         if frontmatter['status'] == 'new':
                             frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--new">new</span><span style="display: none;">status:new</span>'

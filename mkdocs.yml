@@ -17,6 +17,26 @@ watch:
 nav:
   - Home:
     - index.md
+  - MASVS:
+      - MASVS/index.md
+      - Intro:
+        - ... | flat | MASVS/0[1-4]*.md
+      - MASVS-STORAGE: MASVS/05-MASVS-STORAGE.md
+      - ... | flat | MASVS/controls/MASVS-STORAGE*.md
+      - MASVS-CRYPTO: MASVS/06-MASVS-CRYPTO.md
+      - ... | flat | MASVS/controls/MASVS-CRYPTO*.md
+      - MASVS-AUTH: MASVS/07-MASVS-AUTH.md
+      - ... | flat | MASVS/controls/MASVS-AUTH*.md
+      - MASVS-NETWORK: MASVS/08-MASVS-NETWORK.md
+      - ... | flat | MASVS/controls/MASVS-NETWORK*.md
+      - MASVS-PLATFORM: MASVS/09-MASVS-PLATFORM.md
+      - ... | flat | MASVS/controls/MASVS-PLATFORM*.md
+      - MASVS-CODE: MASVS/10-MASVS-CODE.md
+      - ... | flat | MASVS/controls/MASVS-CODE*.md
+      - MASVS-RESILIENCE: MASVS/11-MASVS-RESILIENCE.md
+      - ... | flat | MASVS/controls/MASVS-RESILIENCE*.md
+      - MASVS-PRIVACY: MASVS/12-MASVS-PRIVACY.md
+      - ... | flat | MASVS/controls/MASVS-PRIVACY*.md
   - "MASWE (Beta)":
     - MASWE/index.md
     - MASVS-STORAGE:
@@ -43,6 +63,7 @@ nav:
         - ... | flat | MASTG/0x09*.md
       - General Concepts:
         - ... | flat | MASTG/0x04*.md
+        - MASTG/0x03b-Testing-Profiles.md
       - Android Security Testing:
         - ... | flat | MASTG/0x05*.md
       - iOS Security Testing:
@@ -182,27 +203,6 @@ nav:
           - ... | flat | MASTG/apps/android/*.md
         - iOS:
           - ... | flat | MASTG/apps/ios/*.md
-
-  - MASVS:
-      - MASVS/index.md
-      - Intro:
-        - ... | flat | MASVS/0[1-4]*.md
-      - MASVS-STORAGE: MASVS/05-MASVS-STORAGE.md
-      - ... | flat | MASVS/controls/MASVS-STORAGE*.md
-      - MASVS-CRYPTO: MASVS/06-MASVS-CRYPTO.md
-      - ... | flat | MASVS/controls/MASVS-CRYPTO*.md
-      - MASVS-AUTH: MASVS/07-MASVS-AUTH.md
-      - ... | flat | MASVS/controls/MASVS-AUTH*.md
-      - MASVS-NETWORK: MASVS/08-MASVS-NETWORK.md
-      - ... | flat | MASVS/controls/MASVS-NETWORK*.md
-      - MASVS-PLATFORM: MASVS/09-MASVS-PLATFORM.md
-      - ... | flat | MASVS/controls/MASVS-PLATFORM*.md
-      - MASVS-CODE: MASVS/10-MASVS-CODE.md
-      - ... | flat | MASVS/controls/MASVS-CODE*.md
-      - MASVS-RESILIENCE: MASVS/11-MASVS-RESILIENCE.md
-      - ... | flat | MASVS/controls/MASVS-RESILIENCE*.md
-      - MASVS-PRIVACY: MASVS/12-MASVS-PRIVACY.md
-      - ... | flat | MASVS/controls/MASVS-PRIVACY*.md
   - "MAS Checklist":
      - checklists/index.md
      - MASVS-STORAGE: checklists/MASVS-STORAGE.md
