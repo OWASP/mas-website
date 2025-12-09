@@ -62,7 +62,18 @@ def on_page_markdown(markdown, page, **kwargs):
     
     for i, method_file in enumerate(method_files, start=1):
         try:
-            content = method_file.read_text(encoding="utf-8")
+            # Read file with specific error handling for common issues
+            try:
+                content = method_file.read_text(encoding="utf-8")
+            except UnicodeDecodeError:
+                log.error(f"Encoding error reading {method_file.name}. File must be UTF-8 encoded.")
+                continue
+            except PermissionError:
+                log.error(f"Permission denied reading {method_file.name}")
+                continue
+            except FileNotFoundError:
+                log.error(f"File not found: {method_file.name}")
+                continue
             
             # Extract frontmatter and content
             frontmatter, method_body = extract_frontmatter(content)
@@ -83,13 +94,14 @@ def on_page_markdown(markdown, page, **kwargs):
             method_contents.append(method_section)
             
         except Exception as e:
-            log.error(f"Error processing {method_file.name}: {e}")
+            log.error(f"Unexpected error processing {method_file.name}: {e}")
             continue
     
     if not method_contents:
         return markdown
     
-    # Update the page metadata with the types
+    # Update the page metadata with the types from methods
+    # Note: This replaces any existing 'type' metadata as method types should be authoritative
     if all_types:
         page.meta['type'] = sorted(list(all_types))
     
@@ -116,14 +128,15 @@ def on_page_markdown(markdown, page, **kwargs):
 
 def extract_frontmatter(content):
     """Extract YAML frontmatter and body from markdown content."""
-    # Match YAML frontmatter pattern
-    frontmatter_pattern = r'^---\s*\n(.*?)\n---\s*\n(.*)$'
+    # Match YAML frontmatter pattern with support for Windows line endings
+    frontmatter_pattern = r'^---\r?\n(.*?)\r?\n---\s*\r?\n(.*)$'
     match = re.match(frontmatter_pattern, content, re.DOTALL)
     
     if match:
         try:
             frontmatter_text = match.group(1)
             body = match.group(2)
+            # Use safe_load which is consistent with other hooks in the project
             frontmatter = yaml.safe_load(frontmatter_text)
             return frontmatter or {}, body
         except yaml.YAMLError as e:
