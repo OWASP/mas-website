@@ -63,39 +63,34 @@ def on_page_markdown(markdown, page, **kwargs):
     for i, method_file in enumerate(method_files, start=1):
         try:
             # Read file with specific error handling for common issues
-            try:
-                content = method_file.read_text(encoding="utf-8")
-            except UnicodeDecodeError:
-                log.error(f"Encoding error reading {method_file.name}. File must be UTF-8 encoded.")
-                continue
-            except PermissionError:
-                log.error(f"Permission denied reading {method_file.name}")
-                continue
-            except FileNotFoundError:
-                log.error(f"File not found: {method_file.name}")
-                continue
-            
-            # Extract frontmatter and content
-            frontmatter, method_body = extract_frontmatter(content)
-            
-            if not frontmatter:
-                log.warning(f"No frontmatter found in {method_file.name}")
-                continue
-            
-            # Get the type from frontmatter
-            method_type = frontmatter.get('type', 'static')
-            all_types.add(method_type)
-            
-            # Get the display name for the type
-            type_display = TYPE_DISPLAY_NAMES.get(method_type, method_type.title())
-            
-            # Create the method section with proper heading
-            method_section = f"\n## Method {i} - {type_display}\n\n{method_body.strip()}\n"
-            method_contents.append(method_section)
-            
-        except Exception as e:
-            log.error(f"Unexpected error processing {method_file.name}: {e}")
+            content = method_file.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            log.error(f"Encoding error reading {method_file.name}. File must be UTF-8 encoded.")
             continue
+        except PermissionError:
+            log.error(f"Permission denied reading {method_file.name}")
+            continue
+        except OSError as e:
+            log.error(f"OS error reading {method_file.name}: {e}")
+            continue
+        
+        # Extract frontmatter and content
+        frontmatter, method_body = extract_frontmatter(content)
+        
+        if not frontmatter:
+            log.warning(f"No frontmatter found in {method_file.name}")
+            continue
+        
+        # Get the type from frontmatter
+        method_type = frontmatter.get('type', 'static')
+        all_types.add(method_type)
+        
+        # Get the display name for the type
+        type_display = TYPE_DISPLAY_NAMES.get(method_type, method_type.title())
+        
+        # Create the method section with proper heading
+        method_section = f"\n## Method {i} - {type_display}\n\n{method_body.strip()}\n"
+        method_contents.append(method_section)
     
     if not method_contents:
         return markdown
@@ -128,8 +123,8 @@ def on_page_markdown(markdown, page, **kwargs):
 
 def extract_frontmatter(content):
     """Extract YAML frontmatter and body from markdown content."""
-    # Match YAML frontmatter pattern with support for Windows line endings
-    frontmatter_pattern = r'^---\r?\n(.*?)\r?\n---\s*\r?\n(.*)$'
+    # Match YAML frontmatter pattern with support for Windows line endings and optional whitespace
+    frontmatter_pattern = r'^---\s*(?:\r?\n)(.*?)(?:\r?\n)---\s*(?:\r?\n)(.*)$'
     match = re.match(frontmatter_pattern, content, re.DOTALL)
     
     if match:
