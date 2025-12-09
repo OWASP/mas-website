@@ -1,3 +1,24 @@
+"""
+MkDocs hook to inject test methods into MASTG test files.
+
+This hook supports folder-based test structure where a test can have multiple
+testing methods defined in separate method-*.md files.
+
+Structure examples:
+  - Flat (backward compatible): tests-beta/android/MASVS-STORAGE/MASTG-TEST-0202.md
+  - Folder-based (new): tests-beta/android/MASVS-STORAGE/MASTG-TEST-0202/
+                           ├── MASTG-TEST-0202.md
+                           ├── method-1.md
+                           ├── method-2.md
+                           └── method-3.md
+
+Each method-*.md file should have frontmatter with 'type' (static, dynamic, network, etc.)
+and markdown content with ## Steps and ## Observation sections.
+
+The hook injects all methods before the "## Evaluation" section in the main test file
+and updates the page metadata with the unique types from all methods.
+"""
+
 import logging
 import re
 import os
