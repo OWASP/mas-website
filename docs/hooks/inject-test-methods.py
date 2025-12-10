@@ -25,6 +25,7 @@ import os
 from pathlib import Path
 import mkdocs.plugins
 import yaml
+import textwrap
 
 log = logging.getLogger('mkdocs')
 
@@ -58,6 +59,7 @@ def on_page_markdown(markdown, page, **kwargs):
     
     # Parse and inject methods
     method_contents = []
+    obs_lines = []
     all_types = set()
     
     for i, method_file in enumerate(method_files, start=1):
@@ -87,10 +89,17 @@ def on_page_markdown(markdown, page, **kwargs):
         
         # Get the display name for the type
         type_display = TYPE_DISPLAY_NAMES.get(method_type, method_type.title())
-        
-        # Create the method section with proper heading
-        method_section = f"\n## Method {i} - {type_display}\n\n{method_body.strip()}\n"
+
+        # Compute the method title (matches the title used in the tab)
+        method_title = f"Method {i} - {type_display}"
+
+        method_section = get_method_section(method_title, method_body)
+
         method_contents.append(method_section)
+
+        # Collect observations from the method frontmatter, if any
+        for o in frontmatter.get('observations', []) or []:
+            obs_lines.append(f"- [{method_title}: {o}](#steps-{method_title.lower().replace(' ', '-')})")
     
     if not method_contents:
         return markdown
@@ -106,19 +115,25 @@ def on_page_markdown(markdown, page, **kwargs):
     if re.search(evaluation_pattern, markdown, re.MULTILINE):
         # Inject methods before the Evaluation section
         injected_methods = '\n'.join(method_contents)
+        steps_heading = '## Steps\n\n'
+
+        # Build Observations block if we collected any
+        observations_block = ''
+        if obs_lines:
+            observations_block = '\n## Observations\n\n' + '\n'.join(obs_lines) + '\n\n'
+
         updated_markdown = re.sub(
             evaluation_pattern,
-            f"{injected_methods}\n## Evaluation",
+            f"{steps_heading}{injected_methods}{observations_block}## Evaluation",
             markdown,
             flags=re.MULTILINE
         )
         log.info(f"Injected {len(method_contents)} methods into {filename}")
         return updated_markdown
     else:
-        # If no Evaluation section found, append methods at the end
-        log.warning(f"No '## Evaluation' section found in {filename}, appending methods at the end")
-        injected_methods = '\n'.join(method_contents)
-        return markdown + '\n' + injected_methods
+        # If no Evaluation section found, raise an exception
+        raise ValueError(f"No '## Evaluation' section found in {filename}")
+
 
 
 def extract_frontmatter(content):
