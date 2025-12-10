@@ -1,22 +1,52 @@
 """
 MkDocs hook to inject test methods into MASTG test files.
 
-This hook supports folder-based test structure where a test can have multiple
-testing methods defined in separate method-*.md files.
+This hook supports a folder-based test structure where a test can have
+multiple testing methods defined in separate `method-*.md` files.
 
 Structure examples:
-  - Flat (backward compatible): tests-beta/android/MASVS-STORAGE/MASTG-TEST-0202.md
-  - Folder-based (new): tests-beta/android/MASVS-STORAGE/MASTG-TEST-0202/
-                           ├── MASTG-TEST-0202.md
-                           ├── method-1.md
-                           ├── method-2.md
-                           └── method-3.md
+    - Flat (backward compatible): tests-beta/android/MASVS-STORAGE/MASTG-TEST-0202.md
+    - Folder-based (new): tests-beta/android/MASVS-STORAGE/MASTG-TEST-0202/
+                                                     ├── MASTG-TEST-0202.md
+                                                     ├── method-1.md
+                                                     ├── method-2.md
+                                                     └── method-3.md
 
-Each method-*.md file should have frontmatter with 'type' (static, dynamic, network, etc.)
-and markdown content with ## Steps and ## Observation sections.
+Method frontmatter
+    - `type`: the method category (e.g. `static`, `dynamic`, `network`).
+    - `title` (optional): explicit title used for the method tab. If omitted,
+        a title like ``Method N - <Type Display>`` is generated.
+    - `steps`: either a custom value (any string or markdown) or the literal
+        string `default` which tells the hook to resolve platform-specific
+        default steps (see below).
+    - `observations`: an optional list of observation strings.
 
-The hook injects all methods before the "## Evaluation" section in the main test file
-and updates the page metadata with the unique types from all methods.
+Behavior
+    - The hook collects all `method-*.md` files next to the main MASTG test
+        file and renders each method as a MkDocs Material content tab (the
+        `=== "Title"` syntax) under a consolidated `## Steps` section.
+    - If the page already contains a `## Steps` heading, the hook will not
+        duplicate it; otherwise it inserts one before the injected tabs.
+    - Observations from each method's `observations` frontmatter are collected
+        and rendered as an `## Observations` list after the injected methods.
+    - The hook updates `page.meta['type']` with the unique set of method
+        types found.
+
+Default steps
+    - If a method sets `steps: default`, the hook resolves the platform from
+        the main test page metadata (`page.meta['platform']`) and selects the
+        appropriate default steps mapping (`ANDROID_DEFAULT_STEPS` or
+        `IOS_DEFAULT_STEPS`). If no platform is present or unrecognised, Android
+        defaults are used.
+    - Resolved default steps are appended to the end of the method body as a
+        `## Steps` block (the hook does not remove any existing method content).
+
+Rendering details
+    - Each method becomes a tab using the MkDocs Material content-tabs syntax
+        and the method content is indented to satisfy the tab block requirements.
+    - Observations are rendered as bullet items of the form
+        ``- Method N - <Type Display>: <observation>``.
+
 """
 
 import logging
@@ -35,6 +65,62 @@ TYPE_DISPLAY_NAMES = {
     "dynamic": "Dynamic Analysis",
     "network": "Network Analysis",
 }
+
+ANDROID_DEFAULT_STATIC_STEPS = """
+1. Reverse engineer the app (@MASTG-TECH-0017).
+2. Run a static analysis (@MASTG-TECH-0014) tool on the reverse engineered app targeting calls to the relevant APIs.
+"""
+
+IOS_DEFAULT_STATIC_STEPS = """
+1. Use @MASTG-TECH-0065 to reverse engineer the app.
+2. Use @MASTG-TECH-0072 to look for references to the relevant APIs in the reverse engineered app.
+3. Use @MASTG-TECH-0076 to analyze the relevant code paths and obtain relevant values.
+"""
+
+ANDROID_DEFAULT_DYNAMIC_STEPS = """
+1. Use @MASTG-TECH-0005 to install the app.
+2. Use @MASTG-TECH-0033 to trace runtime calls to the relevant APIs.
+3. Exercise the app thoroughly.
+"""
+
+IOS_DEFAULT_DYNAMIC_STEPS = """
+1. Use @MASTG-TECH-0056 to install the app.
+2. Use @MASTG-TECH-0067 to trace runtime calls to the relevant APIs.
+3. Exercise the app thoroughly.
+"""
+
+DEFAULT_NETWORK_STEPS = """
+1. Set up a proxy tool as per @MASTG-TECH-0043 to capture network traffic from the app.
+2. Install the app on a test device or emulator as per @MASTG-TECH-0056.
+3. Use the app normally, ensuring to perform actions that would trigger network communications (e.g., logging in, data synchronization).
+"""
+
+ANDROID_DEFAULT_STEPS = {
+    "static": ANDROID_DEFAULT_STATIC_STEPS,
+    "dynamic": ANDROID_DEFAULT_DYNAMIC_STEPS,
+    "network": DEFAULT_NETWORK_STEPS,
+}
+
+IOS_DEFAULT_STEPS = {
+    "static": IOS_DEFAULT_STATIC_STEPS,
+    "dynamic": IOS_DEFAULT_DYNAMIC_STEPS,
+    "network": DEFAULT_NETWORK_STEPS,
+}
+
+def get_method_section(method_title, method_body):
+        
+        # Create the method section with proper heading
+        # method_section = f"\n## Method {i} - {type_display}\n\n{method_body.strip()}\n"
+
+        # MkDocs Material content tabs require the tab content to be indented.
+        # Indent all lines of the method body by four spaces.
+        body_text = method_body.strip()
+        indented_body = textwrap.indent(body_text, '    ')
+
+        # Create a tab for this method using the content-tabs syntax
+        method_section = f"\n=== \"{method_title}\"\n\n{indented_body}\n"
+
+        return method_section
 
 @mkdocs.plugins.event_priority(-35)
 def on_page_markdown(markdown, page, **kwargs):
@@ -86,6 +172,30 @@ def on_page_markdown(markdown, page, **kwargs):
         # Get the type from frontmatter
         method_type = frontmatter.get('type', 'static')
         all_types.add(method_type)
+
+        # Handle default steps: if frontmatter sets steps: default, resolve
+        # the platform from the main test page metadata and inject the
+        # appropriate default steps for the method type.
+        method_steps_value = frontmatter.get('steps')
+        if isinstance(method_steps_value, str) and method_steps_value.lower() == 'default':
+            # Resolve platform from the parent MASTG test file metadata
+            platform = ''
+            try:
+                platform = (page.meta.get('platform') or '') if isinstance(page.meta, dict) else ''
+            except Exception:
+                platform = ''
+            platform = str(platform).lower()
+
+            if platform == 'ios':
+                default_map = IOS_DEFAULT_STEPS
+            else:
+                # default to Android steps if unspecified or unknown
+                default_map = ANDROID_DEFAULT_STEPS
+
+            default_steps = default_map.get(method_type, '') or ''
+
+            # Append the resolved default steps at the end of the method body.
+            method_body = method_body.rstrip() + "\n\n**Steps:**\n\n" + default_steps.strip() + "\n"
         
         # Get the display name for the type
         type_display = TYPE_DISPLAY_NAMES.get(method_type, method_type.title())
@@ -99,7 +209,7 @@ def on_page_markdown(markdown, page, **kwargs):
 
         # Collect observations from the method frontmatter, if any
         for o in frontmatter.get('observations', []) or []:
-            obs_lines.append(f"- [{method_title}: {o}](#steps-{method_title.lower().replace(' ', '-')})")
+            obs_lines.append(f"- [{method_title}: {o}](#methods-{method_title.lower().replace(' ', '-')})")
     
     if not method_contents:
         return markdown
@@ -115,7 +225,7 @@ def on_page_markdown(markdown, page, **kwargs):
     if re.search(evaluation_pattern, markdown, re.MULTILINE):
         # Inject methods before the Evaluation section
         injected_methods = '\n'.join(method_contents)
-        steps_heading = '## Steps\n\n'
+        methods_heading = '## Methods\n\n'
 
         # Build Observations block if we collected any
         observations_block = ''
@@ -124,7 +234,7 @@ def on_page_markdown(markdown, page, **kwargs):
 
         updated_markdown = re.sub(
             evaluation_pattern,
-            f"{steps_heading}{injected_methods}{observations_block}## Evaluation",
+            f"{methods_heading}{injected_methods}{observations_block}## Evaluation",
             markdown,
             flags=re.MULTILINE
         )
