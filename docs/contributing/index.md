@@ -25,10 +25,14 @@ Before you start contributing, please check our pages ["How Can You Contribute?"
 
 Although we greatly appreciate any and all contributions to the project, there are a few things that you should take into consideration:
 
+- **Spam PRs (accidental or intentional)** - If you open a low-effort or irrelevant PR that provides no meaningful improvement to the project it is classified as spam and will not be merged and closed.
+- **Not disclosing usage of AI Tooling** - If you used AI tools to assist you in writing code or text, but fail to provide the required disclosure, your PR will not be merged.
 - **No advertisement**: The OWASP Mobile Security Project cannot be used as a platform for advertisement of commercial tools, companies, or individuals. Technical content, such as the implementation of certain techniques or tests, should be written with free and open-source tools in mind. Commercial tools are typically not accepted, but might be referenced in some specific cases.
 - **No unnecessary self-promotion of tools or blog posts**: If you have a relation with one of the URLs or tools you are referencing, please state so in the PR so that we can verify that the reference is in line with the rest of the guide.
 
 Please be sure to take a careful look at our [Code of Conduct](https://github.com/OWASP/mastg/blob/master/.github/CODE_OF_CONDUCT.md "Code of Conduct") for all the details and [ask us](../contact.md) in case of doubt.
+
+Any violations of the above or our code of conduct can result in a temporary or permanent ban from interacting with the project depending on reoccurrence and severity.
 
 ## CPEs (Continuing Professional Education) and CEUs (Continuing Education Units) accreditation
 
