@@ -25,6 +25,7 @@ Before you start contributing, please check our pages ["How Can You Contribute?"
 
 Although we greatly appreciate any and all contributions to the project, there are a few things that you should take into consideration:
 
+- **Missing familiarity with git/GitHub fundamentals**: Contributors are expected to understand basic git and GitHub workflows (forks, branches, commits, and pull requests). This project doesn't provide git/GitHub training; PRs demonstrating a lack of this understanding may be closed without review.
 - **Spam PRs (accidental or intentional)**: Opening a low-effort or irrelevant PR that provides no meaningful improvement to the project is classified as spam and will result in the PR being closed without being merged.
 - **Not disclosing usage of AI tooling**: If you use AI tools to assist you in writing code or text but fail to provide the required disclosure, your PR will be closed without being merged.
 - **No advertisement**: The OWASP Mobile Security Project cannot be used as a platform for advertisement of commercial tools, companies, or individuals. Technical content, such as the implementation of certain techniques or tests, should be written with free and open-source tools in mind. Commercial tools are typically not accepted, but might be referenced in some specific cases.
