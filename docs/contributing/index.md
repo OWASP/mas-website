@@ -6,34 +6,73 @@ _First of all,_ [⭐ Give us a Star in GitHub](https://github.com/OWASP/mastg)!
 
 <br>
 
-The MAS project is an open-source effort, and we welcome all kinds of contributions and feedback.
+The MAS project is an open-source effort, and we welcome contributions and feedback that improve the quality, accuracy, and usefulness of the project.
 
-**Help us improve & join our community:**
+## Ways to contribute
 
-- 🐞 [Report an error (typos, grammar)](3_PRs_and_Reviews.md#how-to-create-issues) or [fix it on a Pull Request](3_PRs_and_Reviews.md#how-to-open-a-pr).
+**Help improve the project:**
+
+- 🐞 [Report an error (typos, grammar)](3_PRs_and_Reviews.md#how-to-create-issues).  
 - 💬 Give feedback ([MASTG](https://github.com/OWASP/mastg/discussions/categories/general)/[MASVS](https://github.com/OWASP/masvs/discussions/categories/general)).
 - 🙏 Ask questions ([MASTG](https://github.com/OWASP/mastg/discussions/categories/q-a)/[MASVS](https://github.com/OWASP/masvs/discussions/categories/q-a)).
 
-**Contribute with content:**
+**Contribute content:**
 
-- 💡 Propose ideas or suggest improvements ([MASTG](https://github.com/OWASP/mastg/discussions/categories/ideas)/[MASVS](https://github.com/OWASP/masvs/discussions/categories/ideas)). If it qualifies, we'll promote it to an Issue.
-- 📄 [Create a Pull Request](3_PRs_and_Reviews.md#how-to-open-a-pr) for concrete fixes (e.g. grammar/typos) or content already approved by the core team.
+- 💡 Propose ideas or suggest improvements ([MASTG](https://github.com/OWASP/mastg/discussions/categories/ideas) / [MASVS](https://github.com/OWASP/masvs/discussions/categories/ideas)). Approved ideas may be promoted to issues.  
+- 📄 [Create a Pull Request](3_PRs_and_Reviews.md#how-to-open-a-pr) for concrete fixes addressing an existing GitHub issue, or for content that has been explicitly approved by the core team.
 
-Before you start contributing, please check our pages ["How Can You Contribute?"](1_How_Can_You_Contribute.md) and ["Getting Started"](2_Getting_Started.md). If you have any doubts, [please contact us](../contact.md).
+Before contributing, review the pages ["How Can You Contribute?"](1_How_Can_You_Contribute.md) and ["Getting Started"](2_Getting_Started.md), as well as the following sections in this page.
 
-## 🚫 What not to do
+**IMPORTANT: Pull requests that don't comply with the following guidelines will be closed.**
 
-Although we greatly appreciate any and all contributions to the project, there are a few things that you should take into consideration:
+If anything is unclear, [contact the project maintainers](../contact.md).
 
-- **Missing familiarity with git/GitHub fundamentals**: Contributors are expected to understand basic git and GitHub workflows (forks, branches, commits, and pull requests). This project doesn't provide git/GitHub training; PRs demonstrating a lack of this understanding may be closed without review.
-- **Spam PRs (accidental or intentional)**: Opening a low-effort or irrelevant PR that provides no meaningful improvement to the project is classified as spam and will result in the PR being closed without being merged.
-- **Not disclosing usage of AI tooling**: If you use AI tools to assist you in writing code or text but fail to provide the required disclosure, your PR will be closed without being merged.
-- **No advertisement**: The OWASP Mobile Security Project cannot be used as a platform for advertisement of commercial tools, companies, or individuals. Technical content, such as the implementation of certain techniques or tests, should be written with free and open-source tools in mind. Commercial tools are typically not accepted, but might be referenced in some specific cases.
-- **No unnecessary self-promotion of tools or blog posts**: If you have a relation with one of the URLs or tools you are referencing, please state so in the PR so that we can verify that the reference is in line with the rest of the guide.
+## Use of AI tools in contributions
 
-Please be sure to take a careful look at our [Code of Conduct](https://github.com/OWASP/mastg/blob/master/.github/CODE_OF_CONDUCT.md "Code of Conduct") for all the details and [ask us](../contact.md) in case of doubt.
+AI tools may be used to assist with contributions, but their use must be transparent, limited, and reviewed by the contributor.
 
-Violations of the above or of our code of conduct may result in a temporary or permanent ban from interacting with the project, depending on the severity and frequency of the violation.
+### Disclosure requirements
+
+If you used AI tools to generate or substantially modify code or text, you must disclose this in the pull request template. The disclosure must include:
+
+- The AI tools used (e.g. ChatGPT, GitHub Copilot, Claude, etc.).  
+- The models and versions (e.g. GPT-\<version\>, Claude \<version\>, etc.).
+- A brief summary of the prompts or instructions.
+- Your level of mobile security expertise: low, medium, high.
+- **IMPORTANT for first time contributors** using AI tools:
+  - an export of the AI Chat or session (e.g. a link from ChatGPT "Share" feature or PDF as attachment) is required.
+  - an initial commit including the AI generated content as-is must be followed by consecutive commits where the contributor demonstrates having reviewed and edited the AI output for accuracy and quality.
+
+### Unacceptable AI usage
+
+AI generated output must never be applied blindly. The following is not acceptable:
+
+- Submitting AI generated content without understanding it.  
+- Large rewrites that replace existing material without justification or explicit prior approval from the maintainers.
+- Using AI to compensate for lack of subject matter knowledge.
+
+## Technical and content expectations
+
+The OWASP MAS project maintains high standards for technical quality and content accuracy.
+
+Contributors are expected to:
+
+- Have familiarity with git and GitHub fundamentals. Contributors must understand forks, branches, commits, and pull requests. The project does not provide training.
+- Understand the topic they are contributing to. If new to mobile security, start by thoroughly studying the [existing MAS content](https://mas.owasp.org/) (learn about the mobile platforms, testing techniques, try to reproduce the demos yourself, etc.).
+- Review [existing content](https://mas.owasp.org/MASTG/) and relevant MASTG components [writing instructions](https://github.com/OWASP/mastg/tree/master/.github/instructions) before proposing changes. For example, if contributing a new test, [check if a similar test already exists](https://mas.owasp.org/MASTG/tests), read the [test writing instructions](https://github.com/OWASP/mastg/blob/master/.github/instructions/mastg-test.instructions.md) and follow the established format.
+- Validate claims, techniques, and recommendations independently.
+- Ensure contributions align with the project's goals, style, and quality standards. No spam or low-effort content is permitted, including blindly AI-generated content or content that does not add clear value.
+
+In addition, all contributions must adhere to the following principles:
+
+- **Advertisement:** The OWASP Mobile Security Project must not be used to promote commercial tools, companies, or individuals. Content should focus on free and open-source tooling. Commercial tools may only be referenced in exceptional cases.
+- **Unnecessary self promotion:** If you have a relationship with a tool, link, or resource you reference, you must disclose it in the pull request.
+
+## Code of conduct and enforcement
+
+All contributors must follow the [Code of Conduct](https://github.com/OWASP/mastg/blob/master/.github/CODE_OF_CONDUCT.md).
+
+Violations of these guidelines or of the Code of Conduct may result in pull request closure, temporary restrictions, or permanent bans, depending on severity and repetition.
 
 ## CPEs (Continuing Professional Education) and CEUs (Continuing Education Units) accreditation
 
@@ -47,7 +86,7 @@ OWASP MASTG encourages community contributions, including security testing tools
 
 To be considered for inclusion, tools should be:
 
-- Open source or freely accessible
+- open-source or freely accessible
 - Clearly documented and usable by the community
 - Actively maintained, with updates tracking Android and iOS platform changes whenever applicable
 
