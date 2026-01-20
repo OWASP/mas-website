@@ -36,7 +36,7 @@ AI tools may be used to assist with contributions, but their use must be transpa
 If you used AI tools to generate or substantially modify code or text, you must disclose this in the pull request template. The disclosure must include:
 
 - The AI tools used (e.g. ChatGPT, GitHub Copilot, Claude, etc.).  
-- The models and versions (e.g. GPT-\<version\>, Claude \<version\>, etc.).
+- The models and versions (e.g. GPT-<version>, Claude <version>, etc.).
 - A brief summary of the prompts or instructions.
 - Your level of mobile security expertise: low, medium, high.
 - **IMPORTANT for first time contributors** using AI tools:
@@ -66,7 +66,7 @@ Contributors are expected to:
 In addition, all contributions must adhere to the following principles:
 
 - **Advertisement:** The OWASP Mobile Security Project must not be used to promote commercial tools, companies, or individuals. Content should focus on free and open-source tooling. Commercial tools may only be referenced in exceptional cases.
-- **Unnecessary self promotion:** If you have a relationship with a tool, link, or resource you reference, you must disclose it in the pull request.
+- **Unnecessary self-promotion:** If you have a relationship with a tool, link, or resource you reference, you must disclose it in the pull request.
 
 ## Code of conduct and enforcement
 
@@ -86,7 +86,7 @@ OWASP MASTG encourages community contributions, including security testing tools
 
 To be considered for inclusion, tools should be:
 
-- open-source or freely accessible
+- Open-source or freely accessible
 - Clearly documented and usable by the community
 - Actively maintained, with updates tracking Android and iOS platform changes whenever applicable
 
