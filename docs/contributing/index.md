@@ -40,8 +40,8 @@ If you used AI tools to generate or substantially modify code or text, you must 
 - A brief summary of the prompts or instructions.
 - Your level of mobile security expertise: low, medium, high.
 - **IMPORTANT for first time contributors** using AI tools:
-  - an export of the AI Chat or session (e.g. a link from ChatGPT "Share" feature or PDF as attachment) is required.
-  - an initial commit including the AI generated content as-is must be followed by consecutive commits where the contributor demonstrates having reviewed and edited the AI output for accuracy and quality.
+    - an export of the AI Chat or session (e.g. a link from ChatGPT "Share" feature or PDF as attachment) is required.
+    - an initial commit including the AI generated content as-is must be followed by consecutive commits where the contributor demonstrates having reviewed and edited the AI output for accuracy and quality.
 
 ### Unacceptable AI usage
 
@@ -59,7 +59,8 @@ Contributors are expected to:
 
 - Have familiarity with git and GitHub fundamentals. Contributors must understand forks, branches, commits, and pull requests. The project does not provide training.
 - Understand the topic they are contributing to. If new to mobile security, start by thoroughly studying the [existing MAS content](https://mas.owasp.org/) (learn about the mobile platforms, testing techniques, try to reproduce the demos yourself, etc.).
-- Review [existing content](https://mas.owasp.org/MASTG/) and relevant MASTG components [writing instructions](https://github.com/OWASP/mastg/tree/master/.github/instructions) before proposing changes. For example, if contributing a new test, [check if a similar test already exists](https://mas.owasp.org/MASTG/tests), read the [test writing instructions](https://github.com/OWASP/mastg/blob/master/.github/instructions/mastg-test.instructions.md) and follow the established format.
+- Review [existing content](https://mas.owasp.org/MASTG/) and relevant MAS component [writing instructions](https://github.com/OWASP/mastg/tree/master/.github/instructions) before proposing changes. For example, if contributing a new test, [check if a similar test already exists](https://mas.owasp.org/MASTG/tests), read the [test writing instructions](https://github.com/OWASP/mastg/blob/master/.github/instructions/mastg-test.instructions.md) and follow the established format.
+- Only open a pull request after an issue has been assigned to you or after receiving explicit prior approval from the maintainers.
 - Validate claims, techniques, and recommendations independently.
 - Ensure contributions align with the project's goals, style, and quality standards. No spam or low-effort content is permitted, including blindly AI-generated content or content that does not add clear value.
 
