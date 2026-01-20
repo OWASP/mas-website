@@ -47,7 +47,7 @@ If you used AI tools to generate or substantially modify code or text, you must 
 
 AI generated output must never be applied blindly. The following is not acceptable:
 
-- Submitting AI generated content without understanding it.  
+- Submitting AI generated content without verification of correctness.
 - Large rewrites that replace existing material without justification or explicit prior approval from the maintainers.
 - Using AI to compensate for lack of subject matter knowledge.
 
@@ -66,13 +66,13 @@ Contributors are expected to:
 In addition, all contributions must adhere to the following principles:
 
 - **Advertisement:** The OWASP Mobile Security Project must not be used to promote commercial tools, companies, or individuals. Content should focus on free and open-source tooling. Commercial tools may only be referenced in exceptional cases.
-- **Unnecessary self-promotion:** If you have a relationship with a tool, link, or resource you reference, you must disclose it in the pull request.
+- **Unnecessary self-promotion:** If you are related to a tool, link, or resource you reference, you must disclose this in the pull request.
 
 ## Code of conduct and enforcement
 
 All contributors must follow the [Code of Conduct](https://github.com/OWASP/mastg/blob/master/.github/CODE_OF_CONDUCT.md).
 
-Violations of these guidelines or of the Code of Conduct may result in pull request closure, temporary restrictions, or permanent bans, depending on severity and repetition.
+Violations of these guidelines, or of the Code of Conduct, may result in pull request closure, temporary restrictions, or permanent bans, depending on severity and repetition.
 
 ## CPEs (Continuing Professional Education) and CEUs (Continuing Education Units) accreditation
 
