@@ -87,7 +87,7 @@ def structure_mastg(docs_dir):
 
     log.info(f"Using MASTG directory: {mastg_repo_dir}")
     
-    directories = ["knowledge", "tests", "techniques", "tools", "apps", "demos", "rules", "utils", "best-practices"]
+    directories = ["knowledge", "terms", "tests", "techniques", "tools", "apps", "demos", "rules", "utils", "best-practices"]
     
     for d in directories:
         src = mastg_repo_dir / d

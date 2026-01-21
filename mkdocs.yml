@@ -203,6 +203,9 @@ nav:
           - ... | flat | MASTG/apps/android/*.md
         - iOS:
           - ... | flat | MASTG/apps/ios/*.md
+      - Glossary (Beta):
+        - MASTG/terms/index.md
+        - ... | flat | MASTG/terms/MASTG-TERM-*.md
   - "MAS Checklist":
      - checklists/index.md
      - MASVS-STORAGE: checklists/MASVS-STORAGE.md
@@ -263,6 +266,7 @@ theme:
       update-pending: material/information-outline
       deprecated: octicons/circle-slash-16
       new: material/alert-decagram
+      term: material/book
       tool: octicons/tools-24
       know: material/book-open-blank-variant-outline
       test: octicons/codescan-checkmark-24
@@ -390,6 +394,7 @@ hooks:
   - docs/hooks/replace_snippets.py
   - docs/hooks/maswe-beta-banner.py
   - docs/hooks/create_dynamic_tables.py
+  - docs/hooks/resolve_terms.py
 
   # Priority -49 for last-minute tag modification
   - docs/hooks/add-tags.py
