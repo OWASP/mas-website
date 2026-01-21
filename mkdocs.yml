@@ -232,6 +232,7 @@ copyright: |
     <div style="min-width: 120px; padding-right: 1em;">
       <a href="https://www.owasp.org"><img src="https://github.com/OWASP/mastg/blob/master/Document/Images/OWASP_logo_white.png?raw=true" width="100px" /></a>
     </div>
+    <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=8ebff783-233d-4cac-95d8-960a4a460df3" />
     <div style="flex: 1; min-width: 250px;">
       <span style="font-size: smaller">
         &#169; OWASP Foundation 2025. This work is licensed under
