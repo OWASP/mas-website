@@ -2,7 +2,7 @@
 
 The MAS project is a powerful learning resource, and the MAS Crackmes are no exception. They allow the MAS community not only to practice the MAS skills they've learned from the MASTG but also to confirm their approaches to the used techniques, especially when performing reverse engineering.
 
-## Who Can Contribute to a Crackme?
+## Who Can Contribute with a Crackme?
 
 Anyone, from individuals to companies. You only have to read and accept the Terms and Conditions listed below.
 
