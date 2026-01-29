@@ -24,6 +24,7 @@ Typical spawn usage in `run.sh`:
 
 ```bash
 frooky -U -f org.owasp.mastestapp --platform android hooks.json
+```
 
 ### Hook configuration format
 

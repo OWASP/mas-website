@@ -269,7 +269,7 @@ Example: semgrep
 
 #### Dynamic
 
-Example: frooky (preferred, see [mastg-frooky-hooks.instructions](mastg-frooky-hooks.instructions.md))
+Example: Frooky (preferred, see [mastg-frooky-hooks.instructions](mastg-frooky-hooks.instructions.md))
 
 `frooky -U -f org.owasp.mastestapp --platform android hooks.json`
 
@@ -277,7 +277,7 @@ Example: frida-trace
 
 `frida-trace -U -f org.owasp.mastestapp --runtime=v8 -j '*!*certificate*/isu' > output.txt`
 
-Example: frida (use only when frooky is not enough, see [mastg-frida-scripts.instructions](mastg-frida-scripts.instructions.md))
+Example: Frida (use only when Frooky is not enough, see [mastg-frida-scripts.instructions](mastg-frida-scripts.instructions.md))
 
 `frida -U org.owasp.mastestapp -l hook_edittext.js > output.txt`
 

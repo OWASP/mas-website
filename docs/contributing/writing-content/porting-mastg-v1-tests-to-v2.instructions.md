@@ -26,13 +26,13 @@ Also, review these. We'll be using them and creating new ones as well:
 1. Create a rough draft.
     1. In most cases, you'll have something in the v1 test
     2. Sometimes you can take the whole test or just a sentence or bullet point.
-    3. You may use [chatGPT](https://chat.openai.com/) to create an initial draft and massage the content.
+    3. You may use [ChatGPT](https://chat.openai.com/) to create an initial draft and massage the content.
 2. Edit it yourself using **your knowledge**
 3. **Always include inline references** e.g. to
     - MASTG chapters
     - APIs
     - statements in the dev docs
-4. Before pushing, use [deepl write](https://www.deepl.com/en/write) to correct any mistakes and tweak phrasing (especially if you used chatGPT, use deepl to humanize the text)
+4. Before pushing, use [DeepL Write](https://www.deepl.com/en/write) to correct any mistakes and tweak phrasing (especially if you used ChatGPT, use DeepL to humanize the text)
 
 **About the IDs:**
 

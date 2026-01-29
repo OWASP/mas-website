@@ -31,7 +31,7 @@ Each file begins with a YAML front matter block.
 - `platform:` One of: `android`, `ios`, `generic`, `network`
 - `source:` Canonical homepage or repository URL
 - `host:` List of operating systems the tool runs on. Allowed values (case-sensitive): `windows`, `linux`, `macOS`, `ios`, `android`
-    - Use `host:` with a YAML list (preferred). If you find `hosts:` in legacy pages, migrate to `host:` when touching the file
+    - Use `host:` with a YAML list. If you find `hosts:` in legacy pages, migrate to `host:` when touching the file
     - Use `ios` or `android` for on-device tools (for example, Filza)
 
 **Optional:**
