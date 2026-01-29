@@ -15,8 +15,10 @@ docs/MASTG
 docs/MASWE
 docs/assets/Images
 docs/assets/MASVS/Images
+docs/contributing/writing-content
 OWASP_MASVS.yaml
 cross_references.yaml
 .vscode/settings.json
 site/
 .cache/
+repos/
