@@ -12,6 +12,12 @@ mapping = {"KNOW":{}, "TECH":{}, "TOOL":{}, "TEST": {}, "APP": {}, "MASWE": {}, 
 
 @mkdocs.plugins.event_priority(-50)
 def on_page_markdown(markdown, page, config, **kwargs):
+    src_path = getattr(page.file, "src_path", page.file.src_uri)
+    normalized_src_path = src_path.replace("\\", "/")
+
+    if normalized_src_path.startswith("contributing/writing-content/"):
+        return markdown
+
     path = page.file.src_uri
 
     icons = config.get('resolve_ref_icons')
