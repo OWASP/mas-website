@@ -2,13 +2,13 @@
 
 The following rules are meant to ensure consistency of the MASTG:
 
-1. Keep the content factual, brief and focused. Avoid duplicating other sections of the guide;
+1. Keep the content factual, brief, and focused. Avoid duplicating other sections of the guide.
 2. Refrain from advertising commercial tools or services;
 3. When giving technical instructions, address the reader in the second person.
 
-!!! tip "Technical Writing"
+!!! Tip "Technical Writing"
     
-    We recommend you to take these free Google courses when writing or reviewing content for the MAS project:
+    We recommend that you take these free Google courses when writing or reviewing content for the MAS project:
 
     - [Google Technical Writing One](https://developers.google.com/tech-writing/one)
     - [Google Technical Writing Two](https://developers.google.com/tech-writing/two)
@@ -30,11 +30,11 @@ Ensure content has [cohesion and coherence](https://writing.chalmers.se/chalmers
 
 ### Amount of Content
 
-The primary measure for amount of content on a page should be based on the purpose it serves.
+The primary measure for the amount of content on a page should be based on the purpose it serves.
 
 #### Use short pages
 
-Those containing one or two screens of text at most. Users are scanning for link choices. Use longer pages (those that require more scrolling or reading) deeper within the chapter where content can be printed and read later.
+Those containing one or two screens of text at most. Users are scanning for link choices. Use longer pages (those that require more scrolling or reading) deeper within the chapter, where content can be printed and read later.
 
 #### For very large sections of information
 
@@ -42,12 +42,12 @@ Consider creating a supporting document and linking to it from the page rather t
 
 ### Gender Neutrality
 
-The MASTG reaches all kind of people all over the world. To ensure inclusiveness and diversity, please refrain from using the following throughout the book:
+The MASTG reaches a diverse range of people worldwide. To ensure inclusiveness and diversity, please refrain from using the following throughout the book:
 
 - she / her / hers / herself
 - he / him / his / himself
 
-Or any other constructions like "he/she", "s/he", "his or her". Instead, use the following gender-neutral alternatives:
+Or any other constructions, such as "he/she", "s/he", or "his or her". Instead, use the following gender-neutral alternatives:
 
 - Omit the pronoun if possible: "The user authenticates himself using ..." -> "The user authenticates using ..."
 - Replace pronouns with "the or "a": "When the user enters his password ..." -> "When the user enters the password ..."
@@ -64,7 +64,7 @@ When using statistical data on your page, ensure that the information is current
 ### Content for the Digital Platform Versus for Print
 
 Write concise content that the user can read quickly and efficiently.
-For digital content - create shorter pages that are cross-linked. If your content is likely to be printed, create one long page.
+For digital content, create shorter pages that are cross-linked. If your content is likely to be printed, create a single, long page.
 
 ### Audience
 
@@ -88,7 +88,7 @@ Use the following methods to increase scannability:
 - Use dashes `-` rather than asterisks `*` for lists
 - Include only one main idea in each paragraph
 - Put the most important information at the top
-- Start the page with the conclusion as well as a short summary of the remaining content
+- Start the page with the conclusion, as well as a summary of the remaining content
 - Use headings where applicable
 - Use short, simple words that are to the point
 - Be concise and focused
@@ -105,14 +105,14 @@ For longer pages, use the following tools to make the page easily scannable:
 
 When presenting your content in a list format:
 
-- Use numbered lists when the order of entries is important.
-- Use bulleted lists whenever the order of the entries is not important.
+- Use numbered lists when the order of entries is essential.
+- Use bulleted lists whenever the order of the entries is not essential.
 - Generally, limit the number of items in a single list to no more than nine.
 - Generally, limit lists to no more than two levels: primary and secondary.
 - Punctuate and capitalize list items consistently (CMOS 6.124-6.126).
   - Don't add end punctuation to list items that are not complete sentences unless they complete the sentence that introduces the list.
   - Use appropriate capitalization and end punctuation for list items that individually form complete sentences.
-  - If the list items complete an introductory sentence, end each (except the last item) with a comma and do not add "and" after the second-to-last item. End the last item with appropriate end punctuation (usu. a period).
+  - If the list items complete an introductory sentence, end each (except the last item) with a comma and do not add "and" after the second-to-last item. End the previous item with appropriate end punctuation (usu. a period).
 
 ### Numbering Conventions
 
@@ -130,7 +130,7 @@ Change all British spelling and terminology to the American equivalents where ap
 
 ### Plurals
 
-Adhere to standard grammar and punctuation rules when it comes to pluralization of typical words.
+Adhere to standard grammar and punctuation rules when it comes to the pluralization of typical words.
 
 The plural of calendar years does not take the apostrophe before the "s". For example, the plural form of 1990 is 1990s.
 
@@ -147,32 +147,32 @@ When in doubt, you can verify proper capitalization on [https://titlecaseconvert
 
 ### Standardization
 
-The MAS project (MASVS, MASTG, MASWE) strives for consistent wording that is clear and unambiguous in context. However, due to the size of the project, there may be words or abbreviations that are used inconsistently and need to be standardised. If this is the case, please submit a pull request so that we can discuss them and suggest what should be used instead.
+The MAS project (MASVS, MASTG, MASWE) strives for consistent wording that is clear and unambiguous in context. However, due to the size of the project, there may be words or abbreviations that are used inconsistently and need to be standardised. If this is the case, please submit a pull request so we can discuss it and suggest an alternative.
 
 ### Contractions
 
 Use the following common contractions:
 
-- are not -> aren't  
-- cannot -> can't  
-- could not -> couldn't  
-- did not -> didn't  
-- do not -> don't  
-- does not -> doesn't  
-- has not -> hasn't  
-- had not -> hadn't  
+- are not -> aren't
+- cannot -> can't
+- could not -> couldn't
+- did not -> didn't
+- do not -> don't
+- does not -> doesn't
+- has not -> hasn't
+- had not -> hadn't
 - have not -> haven't
 - is not -> isn't
 - it is -> it's
-- that is -> that's  
-- there is -> there's  
-- was not -> wasn't  
-- were not -> weren't  
-- will not -> won't  
-- would not -> wouldn't  
-- you are -> you're  
+- that is -> that's
+- there is -> there's
+- was not -> wasn't
+- were not -> weren't
+- will not -> won't
+- would not -> wouldn't
+- you are -> you're
 - you have + *verb* -> you've + *verb*
-- you will -> you'll  
+- you will -> you'll
 
 ### Abbreviations
 
@@ -180,10 +180,10 @@ Abbreviations include acronyms, initialisms, shortened words, and contractions.
 
 - Spell out the term the first time it's used, followed by the abbreviation in parentheses. Example: OWASP Mobile Application Security Testing Guide (MASTG). Subsequent usages in the same chapter may include the abbreviation only.
 - If it only appears once in the content, spell out the term instead of using the abbreviation.
-- In titles and headings, use the abbreviation but be sure to properly introduce it (see above) in the text that follows.
+- In titles and headings, use the abbreviation, but be sure to properly introduce it (see above) in the text that follows.
 - Use "a" or "an" depending on the pronunciation of the acronym. Example: a DLL, an APK, a URL, a SQL.
 - Add an "s" for the plural form unless the abbreviation already stands for a plural noun. Example: the APIs, CSS (not CSSs).
-- If the abbreviation is better known as its full spelled-out term, use only the abbreviation. Example: PDF, URL, USB, ZIP.
+- If the abbreviation is better known as its full spelled-out term, use only the acronym. Example: PDF, URL, USB, ZIP.
 
 The following snippet demonstrates most of these points:
 
@@ -195,23 +195,23 @@ JAR (Java ARchive) files are [...]
 APKs are packed using the ZIP format. An APK is a variation of a JAR file [...]
 ```
 
-For commonly used file formats such as APK, IPA or ZIP, please do not refer to them as ".apk", ".ipa" or ".zip" unless you're explicitly referring to the file extension.
+For commonly used file formats such as APK, IPA, or ZIP, please do not refer to them as ".apk", ".ipa", or ".zip" unless you're explicitly referring to the file extension.
 
 ### Referencing Android versions
 
-Use the following format when referring to an Android version: Android X (API level YY). Usage of the descriptive name (Ex: Oreo) is discouraged.
+Use the following format when referring to an Android version: Android X (API level YY). Usage of the descriptive name (e.g. Oreo) is discouraged.
 
-Ex: Android 9 (API level 28)
+e.g. Android 9 (API level 28)
 
 ### Addressing the Reader in Test Cases
 
-Throughout the guide, you may want to address the readers in order to tell them what to do, or what they should notice. For any such case, use an active approach and simply address the reader using "you".
+Throughout the guide, you may want to address the readers directly to inform them of what to do or what to notice. For any such case, use an active approach and simply address the reader using "you".
 
-**Correct:** If you open the AndroidManifest.xml file, you will see a main Application tag, with the following attributes: atr1, atr2 and atr3. If you run the following command, you will see that atr1 is actually dangerous: [...].
+**Correct:** If you open the AndroidManifest.xml file, you will see a main Application tag, with the following attributes: atr1, atr2, and atr3. If you run the following command, you will see that atr1 is actually dangerous: [...].
 
-**Wrong:** The AndroidManifest.xml file contains an Application tag, with the following attributes: atr1, atr2 and atr3. The command below shows that atr1 is dangerous: [...].
+**Wrong:** The AndroidManifest.xml file contains an Application tag, with the following attributes: atr1, atr2, and atr3. The command below shows that atr1 is dangerous: [...].
 
-**Wrong:** If we open the AndroidManifest.xml file, we will see a main Application tag, with the following attributes: atr1, atr2 and atr3. If we run the following command, we will see that atr1 is actually dangerous: [...].
+**Wrong:** If we open the AndroidManifest.xml file, we will see a main Application tag, with the following attributes: atr1, atr2, and atr3. If we run the following command, we will see that atr1 is actually dangerous: [...].
 
 ## 3. External References
 
@@ -239,7 +239,7 @@ When using (A), be sure to escape special characters such as apostrophe (\') or 
 [UDID of your iOS device via iTunes](https://medium.com/@igor_marques/how-to-find-an-iphones-udid-2d157f1cf2b9 "How to Find Your iPhone\'s UDID")
 ```
 
-When adding links to the **"References"** section at the end of the chapters use `- Title - <url>`. This is needed to force latex to print URLs properly for the PDF.
+When adding links to the **"References"** section at the end of the chapters, use `- Title - <url>`. This is needed to force latex to print URLs properly for the PDF.
 
 For example:
 
@@ -266,7 +266,7 @@ And under the **"References"** section at the end of the chapters:
 
 **Papers:**
 
-The general form for citing technical reports is to place the name and location of the company or institution after the author and title and to give the report number and date at the end of the reference.
+The general form for citing technical reports is to place the name and location of the company or institution after the author and title, and to give the report number and date at the end of the reference.
 
 Basic Format:
 
@@ -297,13 +297,13 @@ e.g.
 
 ## 4. References Within The Guide
 
-For references to other chapters in the MASTG, simply name the chapter, e.g.: `See also the chapter "Basic Security Testing"`, `See the section "Apktool" in the chapter "Basic Security Testing"` etc. The MASTG should be convenient to read as a printed book, so use internal references sparingly. Alternatively you can create a link for the specific section:
+For references to other chapters in the MASTG, simply name the chapter, e.g.: `See also the chapter "Basic Security Testing"`, `See the section "Apktool" in the chapter "Basic Security Testing"` etc. The MASTG should be convenient to read as a printed book, so use internal references sparingly. Alternatively, you can create a link for the specific section:
 
 ```markdown
 See the section "[App Bundles](0x05a-Platform-Overview.md#app-bundles)" in the chapter ...
 ```
 
-Note that in such a case the anchor (everything after the `#`) should be lowercase, and spaces should be replaced with hyphens.
+Note that in such a case, the anchor (everything after the `#`) should be lowercase, and spaces should be replaced with hyphens.
 
 ## 5. Insert Pictures
 
@@ -345,33 +345,33 @@ In order of preference, spell/punctuate **generic** technical terms according to
 2. Microsoft Manual of Style, 4th edition
 3. foldoc.org (Free Online Dictionary of Computing)
 
-| Noun Form  | Adjectival Form |
-| ---------  | --------------- |
-| App Store  |       NA       |
-|  backend  |    backend      |
-|  Base64    |    Base64-      |
-| black box  |     *same*      |
-| Bundle ID  |      NA        |
-| bytecode  |       NA        |
-|client side |  client-side    |
-|  codebase  |     *same*      |
-|code signing|     *same*      |
-|command line|     *same*      |
-|disassembler|       NA        |
-|  end users |       NA        |
-| file name  |     *same*      |
-|   macOS    |      NA         |
-|   OS X     |      NA         |
-|  pentest   |     *same*      |
-|  PhoneGap  |       NA        |
-|   Python   |       NA        |
-| repackage  |       NA        |
-|  runtime   |     *same*      |
-| server side|   server-side   |
-|snapshot length|    NA        |
-| use case   |    *same*       |
-| Wi-Fi      |    *same*       |
-| white box  |    *same*       |
+| Noun Form       | Adjectival Form |
+|-----------------|-----------------|
+| App Store       | NA              |
+| backend         | backend         |
+| Base64          | Base64-         |
+| black box       | *same*          |
+| Bundle ID       | NA              |
+| bytecode        | NA              |
+| client side     | client-side     |
+| codebase        | *same*          |
+| code signing    | *same*          |
+| command line    | *same*          |
+| disassembler    | NA              |
+| end users       | NA              |
+| file name       | *same*          |
+| macOS           | NA              |
+| OS X            | NA              |
+| pentest         | *same*          |
+| PhoneGap        | NA              |
+| Python          | NA              |
+| repackage       | NA              |
+| runtime         | *same*          |
+| server side     | server-side     |
+| snapshot length | NA              |
+| use case        | *same*          |
+| Wi-Fi           | *same*          |
+| white box       | *same*          |
 
 ## 7. Comments
 

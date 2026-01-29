@@ -1,6 +1,6 @@
 # How Can You Contribute?
 
-You can directly contribute to the MASVS, MASWE, or MASTG in many different ways!
+You can directly contribute to the MASVS, MASWE, or MASTG in various ways.
 
 ## Contribution Flow
 

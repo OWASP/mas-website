@@ -78,7 +78,7 @@ Run the following command in the terminal:
 ./run_web.sh
 ```
 
-The script simply runs `mkdocs serve` with some additional arguments. Open the script in a code editor for more information.
+The script runs `mkdocs serve` with some additional arguments. Open the script in a code editor for more information.
 
 Access the website at [http://localhost:8000](http://localhost:8000).
 

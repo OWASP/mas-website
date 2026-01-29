@@ -83,7 +83,7 @@ Please refer to the respective certification body's guidelines for claiming CPEs
 
 ## Tool Inclusion Disclaimer for Contributors
 
-OWASP MASTG encourages community contributions, including security testing tools that provide clear and practical value. However, all tool submissions are subject to review and may be rejected if they appear to be self-promotional, lack relevance, or do not meet minimum quality standards (e.g., documentation, usability, maintenance).
+OWASP MASTG encourages community contributions, including security testing tools that provide clear and practical value. However, all tool submissions are subject to review and may be rejected if they appear to be self-promotional, lack relevance, or fail to meet minimum quality standards (e.g., documentation, usability, and maintenance).
 
 To be considered for inclusion, tools should be:
 
@@ -93,9 +93,9 @@ To be considered for inclusion, tools should be:
 
 Even after inclusion, tools may be removed if they become outdated, broken, unmaintained, or no longer align with the goals of the MASTG. Inclusion is not permanent and does not imply endorsement by OWASP.
 
-When no suitable open-source alternative exists, we may include closed-source tools. However, any closed-source tools included must be free to use, as we aim to avoid featuring paid tools whenever possible. This also extends to freeware or community editions of commercial tools.
+In instances where no suitable open-source alternative exists, we may include closed-source tools. However, any closed-source tools included must be freely available for use, as we aim to avoid featuring paid tools whenever possible. This also extends to freeware or community editions of commercial tools.
 
-Our goal is to be vendor-neutral and serve as a trusted learning resource, which is why we've **avoided the inclusion of "automated mobile application security scanners"** due to the competitive challenges they pose. Instead, we focus on tools that provide full code access and comprehensive testing, as they are better suited for educational purposes. Tools that lack this transparency, even if they offer a free version, typically do not meet the OWASP MAS project's inclusion criteria.
+Our goal is to be vendor-neutral and to serve as a trusted learning resource, which is why we've **avoided the inclusion of "automated mobile application security scanners"** due to the competitive challenges they pose. Instead, we focus on tools that provide full code access and comprehensive testing, as they are better suited for educational purposes. Tools that lack this transparency, even if they offer a free version, typically do not meet the OWASP MAS project's inclusion criteria.
 
 <br>
 
@@ -130,22 +130,22 @@ The latest version of the MASVS v1, including all translations, is available her
 
 <br/>
 
-| Language | Translators & Reviewers |
-| --------------- | ------------------------------------------------------------ |
-| Brazilian Portuguese | Mateus Polastro, Humberto Junior, Rodrigo Araujo, Maurício Ariza, Fernando Galves |
-| Chinese (Traditonal) | Peter Chi, Lex Chien, Henry Hu, Leo Wang |
-| Chinese (Simplified) | Bob Peng, Harold Zang, Jack S |
-| French | Romuald Szkudlarek, Abderrahmane Aftahi, Christian Dong (Review) |
-| German | Rocco Gränitz, Sven Schleier (Review) |
-| Hindi | Mukesh Sharma, Ritesh Kumar, Kunwar Atul Singh, Parag Dave, Devendra Kumar Sinha, Vikrant Shah |
-| Japanese | Koki Takeyama, Riotaro Okada (Review) |
-| Korean | Youngjae Jeon, Jeongwon Cho, Jiyou Han, Jiyeon Sung |
-| Persian | Hamed Salimian, Ramin Atefinia, Dorna Azhirak, Bardiya Akbari, Mahsa Omidvar, Alireza Mazhari, Milad Khoshdel |
-| Portuguese | Ana Filipa Mota, Fernando Nogueira, Filipa Gomes, Luis Fontes, Sónia Dias|
-| Russian | Gall Maxim, Eugen Martynov, Chelnokov Vladislav, Oprya Egor, Tereshin Dmitry |
-| Spanish | Martin Marsicano, Carlos Holguera |
-| Turkish | Anıl Baş, Haktan Emik |
-| Greek | Panagiotis Yialouris |
+| Language              | Translators & Reviewers |
+|-----------------------| ------------------------------------------------------------ |
+| Brazilian Portuguese  | Mateus Polastro, Humberto Junior, Rodrigo Araujo, Maurício Ariza, Fernando Galves |
+| Chinese (Traditional) | Peter Chi, Lex Chien, Henry Hu, Leo Wang |
+| Chinese (Simplified)  | Bob Peng, Harold Zang, Jack S |
+| French                | Romuald Szkudlarek, Abderrahmane Aftahi, Christian Dong (Review) |
+| German                | Rocco Gränitz, Sven Schleier (Review) |
+| Hindi                 | Mukesh Sharma, Ritesh Kumar, Kunwar Atul Singh, Parag Dave, Devendra Kumar Sinha, Vikrant Shah |
+| Japanese              | Koki Takeyama, Riotaro Okada (Review) |
+| Korean                | Youngjae Jeon, Jeongwon Cho, Jiyou Han, Jiyeon Sung |
+| Persian               | Hamed Salimian, Ramin Atefinia, Dorna Azhirak, Bardiya Akbari, Mahsa Omidvar, Alireza Mazhari, Milad Khoshdel |
+| Portuguese            | Ana Filipa Mota, Fernando Nogueira, Filipa Gomes, Luis Fontes, Sónia Dias|
+| Russian               | Gall Maxim, Eugen Martynov, Chelnokov Vladislav, Oprya Egor, Tereshin Dmitry |
+| Spanish               | Martin Marsicano, Carlos Holguera |
+| Turkish               | Anıl Baş, Haktan Emik |
+| Greek                 | Panagiotis Yialouris |
 
 ### OWASP MASTG V1
 
@@ -153,7 +153,7 @@ The latest version of the MASTG v1 is available here: <https://github.com/OWASP/
 
 **Note**: This contributor table is generated based on our [GitHub contribution statistics](https://github.com/OWASP/mastg/graphs/contributors "GitHub contribution statistics"). For more information on these stats, see the [GitHub Repository README](https://github.com/OWASP/mastg/blob/master/README.md "GitHub Repository README"). We manually update the table, so be patient if you're not listed immediately.
 
-- **Reviewers**: Reviewers have consistently provided useful feedback through GitHub issues and pull request comments.
+- **Reviewers**: Reviewers have consistently provided valuable feedback through GitHub issues and pull request comments.
 - **Top Contributors**: Top contributors have consistently contributed quality content and have at least 500 additions logged in the GitHub repository.
 - **Contributors**: Contributors have contributed quality content and have at least 50 additions logged in the GitHub repository.
 - **Mini Contributors**: Many other contributors have committed small amounts of content, such as a single word or sentence (fewer than 50 additions).
