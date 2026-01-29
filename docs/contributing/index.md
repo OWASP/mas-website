@@ -6,45 +6,96 @@ _First of all,_ [⭐ Give us a Star in GitHub](https://github.com/OWASP/mastg)!
 
 <br>
 
-The MAS project is an open source effort and we welcome all kinds of contributions and feedback.
+The MAS project is an open-source effort, and we welcome contributions and feedback that improve the quality, accuracy, and usefulness of the project.
 
-**Help us improve & join our community:**
+## Ways to contribute
 
-- 🐞 [Report an error (typos, grammar)](3_PRs_and_Reviews.md#how-to-create-issues) or [fix it on a Pull Request](3_PRs_and_Reviews.md#how-to-open-a-pr).
+**Help improve the project:**
+
+- 🐞 [Report an error (typos, grammar)](3_PRs_and_Reviews.md#how-to-create-issues).  
 - 💬 Give feedback ([MASTG](https://github.com/OWASP/mastg/discussions/categories/general)/[MASVS](https://github.com/OWASP/masvs/discussions/categories/general)).
 - 🙏 Ask questions ([MASTG](https://github.com/OWASP/mastg/discussions/categories/q-a)/[MASVS](https://github.com/OWASP/masvs/discussions/categories/q-a)).
 
-**Contribute with content:**
+**Contribute content:**
 
-- 💡 Propose ideas or suggest improvements ([MASTG](https://github.com/OWASP/mastg/discussions/categories/ideas)/[MASVS](https://github.com/OWASP/masvs/discussions/categories/ideas)). If it qualifies we'll promote it to an Issue.
-- 📄 [Create a Pull Request](3_PRs_and_Reviews.md#how-to-open-a-pr) for concrete fixes (e.g. grammar/typos) or content already approved by the core team.
+- 💡 Propose ideas or suggest improvements ([MASTG](https://github.com/OWASP/mastg/discussions/categories/ideas) / [MASVS](https://github.com/OWASP/masvs/discussions/categories/ideas)). Approved ideas may be promoted to issues.  
+- 📄 [Create a Pull Request](3_PRs_and_Reviews.md#how-to-open-a-pr) for concrete fixes addressing an existing GitHub issue, or for content that has been explicitly approved by the core team.
 
-Before you start contributing, please check our pages ["How Can You Contribute?"](1_How_Can_You_Contribute.md) and ["Getting Started"](2_Getting_Started.md). If you have any doubts [please contact us](../contact.md).
+Before contributing, review the pages ["How Can You Contribute?"](1_How_Can_You_Contribute.md) and ["Getting Started"](2_Getting_Started.md), as well as the following sections in this page.
 
-## 🚫 What not to do
+**IMPORTANT: Pull requests that don't comply with the following guidelines will be closed.**
 
-Although we greatly appreciate any and all contributions to the project, there are a few things that you should take into consideration:
+If anything is unclear, [contact the project maintainers](../contact.md).
 
-- **No advertisement**: The OWASP mobile Security Project cannot be used as a platform for advertisement of commercial tools, companies or individuals. Technical content such as the implementation of certain techniques or tests should be written with free and open-source tools in mind. Commercial tools are typically not accepted, but might be referenced in some specific cases.
-- **No unnecessary self-promotion of tools or blog posts**: If you have a relation with one of the URLs or tools you are referencing, please state so in the PR so that we can verify that the reference is in line with the rest of the guide.
+## Use of AI tools in contributions
 
-Please be sure to take a careful look at our [Code of Conduct](https://github.com/OWASP/mastg/blob/master/.github/CODE_OF_CONDUCT.md "Code of Conduct") for all the details and [ask us](../contact.md) in case of doubt.
+AI tools may be used to assist with contributions, but their use must be transparent, limited, and reviewed by the contributor.
+
+### Disclosure requirements
+
+If you used AI tools to generate or substantially modify code or text, you must disclose this in the pull request template. The disclosure must include:
+
+- The AI tools used (e.g. ChatGPT, GitHub Copilot, Claude, etc.).  
+- The models and versions (e.g. GPT-<version>, Claude <version>, etc.).
+- A brief summary of the prompts or instructions.
+- Your level of mobile security expertise: low, medium, high.
+- **IMPORTANT for first time contributors** using AI tools:
+    - an export of the AI Chat or session (e.g. a link from ChatGPT "Share" feature or PDF as attachment) is required.
+    - an initial commit including the AI generated content as-is must be followed by consecutive commits where the contributor demonstrates having reviewed and edited the AI output for accuracy and quality.
+
+### Unacceptable AI usage
+
+AI generated output must never be applied blindly. The following is not acceptable:
+
+- Submitting AI generated content without verification of correctness.
+- Large rewrites that replace existing material without justification or explicit prior approval from the maintainers.
+- Using AI to compensate for lack of subject matter knowledge.
+
+## Technical and content expectations
+
+The OWASP MAS project maintains high standards for technical quality and content accuracy.
+
+Contributors are expected to:
+
+- Have familiarity with git and GitHub fundamentals. Contributors must understand forks, branches, commits, and pull requests. The project does not provide training.
+- Understand the topic they are contributing to. If new to mobile security, start by thoroughly studying the [existing MAS content](https://mas.owasp.org/) (learn about the mobile platforms, testing techniques, try to reproduce the demos yourself, etc.).
+- Review [existing content](https://mas.owasp.org/MASTG/) and relevant MAS component [writing instructions](https://github.com/OWASP/mastg/tree/master/.github/instructions) before proposing changes. For example, if contributing a new test, [check if a similar test already exists](https://mas.owasp.org/MASTG/tests), read the [test writing instructions](https://github.com/OWASP/mastg/blob/master/.github/instructions/mastg-test.instructions.md) and follow the established format.
+- Only open a pull request after an issue has been assigned to you or after receiving explicit prior approval from the maintainers.
+- Validate claims, techniques, and recommendations independently.
+- Ensure contributions align with the project's goals, style, and quality standards. No spam or low-effort content is permitted, including blindly AI-generated content or content that does not add clear value.
+
+In addition, all contributions must adhere to the following principles:
+
+- **Advertisement:** The OWASP Mobile Security Project must not be used to promote commercial tools, companies, or individuals. Content should focus on free and open-source tooling. Commercial tools may only be referenced in exceptional cases.
+- **Unnecessary self-promotion:** If you are related to a tool, link, or resource you reference, you must disclose this in the pull request.
+
+## Code of conduct and enforcement
+
+All contributors must follow the [Code of Conduct](https://github.com/OWASP/mastg/blob/master/.github/CODE_OF_CONDUCT.md).
+
+Violations of these guidelines, or of the Code of Conduct, may result in pull request closure, temporary restrictions, or permanent bans, depending on severity and repetition.
+
+## CPEs (Continuing Professional Education) and CEUs (Continuing Education Units) accreditation
+
+Information security professionals holding certifications from major organizations, such as (ISC)², ISACA, and GIAC, may be eligible to claim Continuing Professional Education (CPE) credits or CompTIA Continuing Education Units (CEUs) for their active contributions to the OWASP Mobile Application Security (MAS) project.
+
+Please refer to the respective certification body's guidelines for claiming CPEs or CEUs, as they may have specific requirements regarding the type and extent of contributions that qualify for credit. Generally, contributions such as technical writing for the MASVS, MASWE, and MASTG may be eligible for professional credits in a ratio of 1 hour of contribution to the Profession = 1 CPE/CEU.
 
 ## Tool Inclusion Disclaimer for Contributors
 
-OWASP MASTG encourages community contributions, including security testing tools that provide clear and practical value. However, all tool submissions are subject to review and may be rejected if they appear to be self-promotional, lack relevance, or do not meet minimum quality standards (e.g., documentation, usability, maintenance).
+OWASP MASTG encourages community contributions, including security testing tools that provide clear and practical value. However, all tool submissions are subject to review and may be rejected if they appear to be self-promotional, lack relevance, or fail to meet minimum quality standards (e.g., documentation, usability, and maintenance).
 
 To be considered for inclusion, tools should be:
 
-- Open source or freely accessible
+- Open-source or freely accessible
 - Clearly documented and usable by the community
 - Actively maintained, with updates tracking Android and iOS platform changes whenever applicable
 
-Even after inclusion, tools are subject to removal if they become outdated, broken, unmaintained, or otherwise no longer align with the goals of the MASTG. Inclusion is not permanent and does not imply endorsement by OWASP.
+Even after inclusion, tools may be removed if they become outdated, broken, unmaintained, or no longer align with the goals of the MASTG. Inclusion is not permanent and does not imply endorsement by OWASP.
 
-In instances where no suitable open-source alternative exists, we may include closed-source tools. However, any closed-source tools included must be free to use, as we aim to avoid featuring paid tools whenever possible. This also extends to freeware or community editions of commercial tools.
+In instances where no suitable open-source alternative exists, we may include closed-source tools. However, any closed-source tools included must be freely available for use, as we aim to avoid featuring paid tools whenever possible. This also extends to freeware or community editions of commercial tools.
 
-Our goal is to be vendor-neutral and to serve as a trusted learning resource, which is why we've **avoid the inclusion of "automated mobile application security scanners"** due to the competitive challenges they pose. Instead, we focus on tools that provide full code access and comprehensive testing, as they are better suited for educational purposes. Tools that lack this transparency, even if they offer a free version, typically do not meet the OWASP MAS project's inclusion criteria.
+Our goal is to be vendor-neutral and to serve as a trusted learning resource, which is why we've **avoided the inclusion of "automated mobile application security scanners"** due to the competitive challenges they pose. Instead, we focus on tools that provide full code access and comprehensive testing, as they are better suited for educational purposes. Tools that lack this transparency, even if they offer a free version, typically do not meet the OWASP MAS project's inclusion criteria.
 
 <br>
 
@@ -71,7 +122,7 @@ _Coming soon..._
 
 ### OWASP MASVS V1
 
-The latest version of the MASVS v1 including all translations is available here: <https://github.com/OWASP/masvs/releases/tag/v1.5.0>
+The latest version of the MASVS v1, including all translations, is available here: <https://github.com/OWASP/masvs/releases/tag/v1.5.0>
 
 | Project Lead | Lead Author | Contributors and Reviewers |
 | ------- | --- | ----------------- |
@@ -79,22 +130,22 @@ The latest version of the MASVS v1 including all translations is available here:
 
 <br/>
 
-| Language | Translators & Reviewers |
-| --------------- | ------------------------------------------------------------ |
-| Brazilian Portuguese | Mateus Polastro, Humberto Junior, Rodrigo Araujo, Maurício Ariza, Fernando Galves |
-| Chinese (Traditonal) | Peter Chi, Lex Chien, Henry Hu, Leo Wang |
-| Chinese (Simplified) | Bob Peng, Harold Zang, Jack S |
-| French | Romuald Szkudlarek, Abderrahmane Aftahi, Christian Dong (Review) |
-| German | Rocco Gränitz, Sven Schleier (Review) |
-| Hindi | Mukesh Sharma, Ritesh Kumar, Kunwar Atul Singh, Parag Dave, Devendra Kumar Sinha, Vikrant Shah |
-| Japanese | Koki Takeyama, Riotaro Okada (Review) |
-| Korean | Youngjae Jeon, Jeongwon Cho, Jiyou Han, Jiyeon Sung |
-| Persian | Hamed Salimian, Ramin Atefinia, Dorna Azhirak, Bardiya Akbari, Mahsa Omidvar, Alireza Mazhari, Milad Khoshdel |
-| Portuguese | Ana Filipa Mota, Fernando Nogueira, Filipa Gomes, Luis Fontes, Sónia Dias|
-| Russian | Gall Maxim, Eugen Martynov, Chelnokov Vladislav, Oprya Egor, Tereshin Dmitry |
-| Spanish | Martin Marsicano, Carlos Holguera |
-| Turkish | Anıl Baş, Haktan Emik |
-| Greek | Panagiotis Yialouris |
+| Language              | Translators & Reviewers |
+|-----------------------| ------------------------------------------------------------ |
+| Brazilian Portuguese  | Mateus Polastro, Humberto Junior, Rodrigo Araujo, Maurício Ariza, Fernando Galves |
+| Chinese (Traditional) | Peter Chi, Lex Chien, Henry Hu, Leo Wang |
+| Chinese (Simplified)  | Bob Peng, Harold Zang, Jack S |
+| French                | Romuald Szkudlarek, Abderrahmane Aftahi, Christian Dong (Review) |
+| German                | Rocco Gränitz, Sven Schleier (Review) |
+| Hindi                 | Mukesh Sharma, Ritesh Kumar, Kunwar Atul Singh, Parag Dave, Devendra Kumar Sinha, Vikrant Shah |
+| Japanese              | Koki Takeyama, Riotaro Okada (Review) |
+| Korean                | Youngjae Jeon, Jeongwon Cho, Jiyou Han, Jiyeon Sung |
+| Persian               | Hamed Salimian, Ramin Atefinia, Dorna Azhirak, Bardiya Akbari, Mahsa Omidvar, Alireza Mazhari, Milad Khoshdel |
+| Portuguese            | Ana Filipa Mota, Fernando Nogueira, Filipa Gomes, Luis Fontes, Sónia Dias|
+| Russian               | Gall Maxim, Eugen Martynov, Chelnokov Vladislav, Oprya Egor, Tereshin Dmitry |
+| Spanish               | Martin Marsicano, Carlos Holguera |
+| Turkish               | Anıl Baş, Haktan Emik |
+| Greek                 | Panagiotis Yialouris |
 
 ### OWASP MASTG V1
 
@@ -102,10 +153,10 @@ The latest version of the MASTG v1 is available here: <https://github.com/OWASP/
 
 **Note**: This contributor table is generated based on our [GitHub contribution statistics](https://github.com/OWASP/mastg/graphs/contributors "GitHub contribution statistics"). For more information on these stats, see the [GitHub Repository README](https://github.com/OWASP/mastg/blob/master/README.md "GitHub Repository README"). We manually update the table, so be patient if you're not listed immediately.
 
-- **Reviewers**: Reviewers have consistently provided useful feedback through GitHub issues and pull request comments.
+- **Reviewers**: Reviewers have consistently provided valuable feedback through GitHub issues and pull request comments.
 - **Top Contributors**: Top contributors have consistently contributed quality content and have at least 500 additions logged in the GitHub repository.
 - **Contributors**: Contributors have contributed quality content and have at least 50 additions logged in the GitHub repository.
-- **Mini Contributors**: Many other contributors have committed small amounts of content, such as a single word or sentence (less than 50 additions).
+- **Mini Contributors**: Many other contributors have committed small amounts of content, such as a single word or sentence (fewer than 50 additions).
 
 | Authors | Reviewers | Top Contributors | Contributors | Mini Contributors | Editors |
 | ---- | ---- | ----- | --- | --- | --- |

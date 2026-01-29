@@ -59,12 +59,12 @@ def structure_masvs(docs_dir):
     for md_path in Path(masvs_local_dir).rglob("controls/*.md"):
         control_id = md_path.stem
         control_regex = r"## Control\n\n([^#]*)\n\n"
-        description_regex = r"## Description\n\n(.*)"
+        description_regex = r"## Description\n\n(.*?)(?=\n## |\Z)"
 
         content = md_path.read_text(encoding="utf-8")
         # Extract the control content
-        control_content = re.search(control_regex, content).group(1).strip()
-        description_content = re.search(description_regex, content).group(1).strip()
+        control_content = re.search(control_regex, content, re.DOTALL).group(1).strip()
+        description_content = re.search(description_regex, content, re.DOTALL).group(1).strip()
 
         content = f'# {control_id}\n\n'
         content += f'<p style="font-size: 2em">{control_content}</p>\n\n'
@@ -155,6 +155,31 @@ def structure_mastg(docs_dir):
         ("src=\"Images/", "src=\"../../../assets/Images/"),
         ("Document/", "")
     ])
+
+    # Copy MASTG writing guidelines to contributing section
+    instructions_src = mastg_repo_dir / ".github" / "instructions"
+    instructions_dest = docs_dir / "contributing" / "writing-content"
+    
+    if instructions_src.exists():
+        log.info(f"Copying MASTG writing guidelines from {instructions_src} to {instructions_dest}")
+        clean_and_copy(instructions_src, instructions_dest)
+        
+        # Only copy mastg-*.instructions.md files and specific instruction files
+        # Remove any other files that might have been copied except for index.md
+        for file in instructions_dest.iterdir():
+            if file.is_file():
+                # Keep only .md files that are instructions
+                if not (file.suffix == ".md" and "instructions" in file.name) and file.name != "index.md":
+                    file.unlink()
+                    log.info(f"Removed non-instruction file: {file.name}")
+        # For any remaining instruction files, do a replacement of `name:` to `title:`
+        for file in instructions_dest.iterdir():
+            if file.is_file() and file.suffix == ".md" and "instructions" in file.name:
+                replace_in_file(file, "name:", "title:")
+    else:
+        log.warning(f"Instructions directory not found at {instructions_src}")
+
+    return mastg_repo_dir
 
 
 
