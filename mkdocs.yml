@@ -222,6 +222,8 @@ nav:
   - "&#11088; Contribute":
       - contributing/index.md
       - ... | flat | contributing/*.md
+      - Writing Content:
+        - ... | flat | contributing/writing-content/*.md
   - "&#128153; Donate":
       - donate.md
       - ... | flat | donate/*.md
