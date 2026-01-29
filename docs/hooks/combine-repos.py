@@ -156,6 +156,27 @@ def structure_mastg(docs_dir):
         ("Document/", "")
     ])
 
+    # Copy MASTG writing guidelines to contributing section
+    instructions_src = mastg_repo_dir / ".github" / "instructions"
+    instructions_dest = docs_dir / "contributing" / "writing-content"
+    
+    if instructions_src.exists():
+        log.info(f"Copying MASTG writing guidelines from {instructions_src} to {instructions_dest}")
+        clean_and_copy(instructions_src, instructions_dest)
+        
+        # Only copy mastg-*.instructions.md files and specific instruction files
+        # Remove any other files that might have been copied
+        for file in instructions_dest.iterdir():
+            if file.is_file():
+                # Keep only .md files that are instructions
+                if not (file.suffix == ".md" and "instructions" in file.name):
+                    file.unlink()
+                    log.info(f"Removed non-instruction file: {file.name}")
+    else:
+        log.warning(f"Instructions directory not found at {instructions_src}")
+
+    return mastg_repo_dir
+
 
 
 def locate_external_repo(repo_name):
