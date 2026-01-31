@@ -12,7 +12,7 @@ As part of the MASVS refactoring, we've replaced the three traditional verificat
 
 <!-- more -->
 
-The [new MAS Testing Profiles](https://docs.google.com/document/d/1paz7dxKXHzAC9MN7Mnln1JiZwBNyg7Gs364AJ6KudEs/edit?usp=sharing) include revamped versions of the traditional levels and one new addition:
+The [new MAS Testing Profiles](https://mas.owasp.org/MASTG/0x03b-Testing-Profiles/) include revamped versions of the traditional levels and one new addition:
 
 <center>
 <img style="width: 60%; border-radius: 5px" src="/assets/news/mas_profiles.png"/>
@@ -20,7 +20,7 @@ The [new MAS Testing Profiles](https://docs.google.com/document/d/1paz7dxKXHzAC9
 
 Another interesting addition we're exploring for the near future is a 'Privacy' profile, which would focus on [tests that consider the privacy implications of various app features and functionalities](https://mas.owasp.org/MASTG/General/0x04i-Testing-User-Privacy-Protection/). We believe that this profile can become an essential tool in an era where privacy has become a significant concern.
 
-> **HELP WANTED:** Today we're releasing the new MAS Testing Profiles and would love to hear what you think. Please [give your feedback here until the 31st of August 2023](https://docs.google.com/document/d/1paz7dxKXHzAC9MN7Mnln1JiZwBNyg7Gs364AJ6KudEs/edit?usp=sharing).
+> **HELP WANTED:** Today we're releasing the new MAS Testing Profiles and would love to hear what you think. Please give your feedback here until the 31st of August 2023 (you can use GitHub discussions after the deadline).
 
 ### Atomic Tests
 
