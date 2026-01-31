@@ -22,3 +22,9 @@ cross_references.yaml
 site/
 .cache/
 repos/
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

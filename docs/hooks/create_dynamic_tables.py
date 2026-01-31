@@ -428,20 +428,100 @@ def on_page_markdown(markdown, page, config, **kwargs):
 
         # tools/index.md
 
-        column_titles = {'id': 'ID', 'title': 'Name', 'platform': "Platform"} # TODO , 'refs': 'Refs', 'techniques': 'Techniques'
+        column_titles = {'id': 'ID', 'title': 'Name', 'platform': "Platform", 'used_in': "Used in", 'used_in_demos': "Used in Demos"}
 
         tools = get_mastg_components_dict("docs/MASTG/tools")
+        
+        # Add "Used in" information from cross-references
+        cross_references = getattr(config, 'cross_references', {})
+        tool_refs = cross_references.get("tools", {})
+        
+        def create_used_in_link(base_path, ids, count, icon, label):
+            """Helper to generate a 'Used in' link with icon and count"""
+            ids_str = ",".join([item["id"] for item in ids])
+            return f'<a href="/MASTG/{base_path}/#q:{ids_str.lower()}" title="Used in {count} {label}(s)"><span style="display: inline-flex; align-items: center; gap: 0.25rem;">{icon} {count} MASTG-{label.upper()}</span></a>'
+        
+        for tool in tools:
+            tool_id = tool['id']
+            refs = tool_refs.get(tool_id, {"techniques": [], "tests": [], "demos": []})
+            
+            tech_count = len(refs.get("techniques", []))
+            test_count = len(refs.get("tests", []))
+            demo_count = len(refs.get("demos", []))
+            
+            # Create links with counts and icons
+            used_in_parts = []
+            
+            if tech_count > 0:
+                used_in_parts.append(create_used_in_link("techniques", refs["techniques"], tech_count, ":material-magic-staff:", "tech"))
+            
+            if demo_count > 0:
+                used_in_parts.append(create_used_in_link("demos", refs["demos"], demo_count, ":material-flask-outline:", "demo"))
+            
+            if test_count > 0:
+                used_in_parts.append(create_used_in_link("tests", refs["tests"], test_count, ":octicons-codescan-checkmark-24:", "test"))
+            
+            # Add "unused" marker if no references
+            if tech_count == 0 and demo_count == 0 and test_count == 0:
+                tool['used_in'] = '<span style="display: none;">unused</span><span style="color: #999; font-style: italic;">Unused</span>'
+            else:
+                tool['used_in'] = "<br>".join(used_in_parts)
+            
+            # Add separate "Used in Demos" column
+            if demo_count > 0:
+                tool['used_in_demos'] = str(demo_count)
+            else:
+                tool['used_in_demos'] = '0'
+        
         tools_of_type = [reorder_dict_keys(tool, column_titles.keys()) for tool in tools]
         return append_to_page(markdown, "\n" + list_of_dicts_to_md_table(tools_of_type, column_titles))
 
     elif path.endswith("techniques/index.md"):
         # techniques/index.md
 
-        column_titles = {'id': 'ID', 'title': 'Name', 'platform': "Platform"} # TODO , 'tools': 'Tools'
+        column_titles = {'id': 'ID', 'title': 'Name', 'platform': "Platform", 'used_in': "Used in", 'used_in_tests': "Used in Tests"}
 
         techniques = get_mastg_components_dict("docs/MASTG/techniques")
+        
+        # Add "Used in" information from cross-references
+        cross_references = getattr(config, 'cross_references', {})
+        technique_refs = cross_references.get("techniques", {})
+        
+        def create_used_in_link(base_path, ids, count, icon, label):
+            """Helper to generate a 'Used in' link with icon and count"""
+            ids_str = ",".join([item["id"] for item in ids])
+            return f'<a href="/MASTG/{base_path}/#q:{ids_str.lower()}" title="Used in {count} {label}(s)"><span style="display: inline-flex; align-items: center; gap: 0.25rem;">{icon} {count} MASTG-{label.upper()}</span></a>'
+        
+        for technique in techniques:
+            technique_id = technique['id']
+            refs = technique_refs.get(technique_id, {"tests": [], "demos": []})
+            
+            test_count = len(refs.get("tests", []))
+            demo_count = len(refs.get("demos", []))
+            
+            # Create links with counts and icons
+            used_in_parts = []
+            
+            if demo_count > 0:
+                used_in_parts.append(create_used_in_link("demos", refs["demos"], demo_count, ":material-flask-outline:", "demo"))
+            
+            if test_count > 0:
+                used_in_parts.append(create_used_in_link("tests", refs["tests"], test_count, ":octicons-codescan-checkmark-24:", "test"))
+            
+            # Add "unused" marker if no references
+            if test_count == 0 and demo_count == 0:
+                technique['used_in'] = '<span style="display: none;">unused</span><span style="color: #999; font-style: italic;">Unused</span>'
+            else:
+                technique['used_in'] = "<br>".join(used_in_parts)
+            
+            # Add separate "Used in Tests" column
+            if test_count > 0:
+                technique['used_in_tests'] = str(test_count)
+            else:
+                technique['used_in_tests'] = '0'
+        
         techniques_of_type = [reorder_dict_keys(technique, column_titles.keys()) for technique in techniques]
-        return append_to_page(markdown, list_of_dicts_to_md_table(techniques_of_type, column_titles) )
+        return append_to_page(markdown, "\n" + list_of_dicts_to_md_table(techniques_of_type, column_titles))
 
     elif path.endswith("apps/index.md"):
         # apps/index.md
