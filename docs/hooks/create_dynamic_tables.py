@@ -428,9 +428,46 @@ def on_page_markdown(markdown, page, config, **kwargs):
 
         # tools/index.md
 
-        column_titles = {'id': 'ID', 'title': 'Name', 'platform': "Platform"} # TODO , 'refs': 'Refs', 'techniques': 'Techniques'
+        column_titles = {'id': 'ID', 'title': 'Name', 'platform': "Platform", 'used_in': "Used in"}
 
         tools = get_mastg_components_dict("docs/MASTG/tools")
+        
+        # Add "Used in" information from cross-references
+        cross_references = getattr(config, 'cross_references', {})
+        tool_refs = cross_references.get("tools", {})
+        
+        for tool in tools:
+            tool_id = tool['id']
+            refs = tool_refs.get(tool_id, {"techniques": [], "tests": [], "demos": []})
+            
+            tech_count = len(refs.get("techniques", []))
+            test_count = len(refs.get("tests", []))
+            demo_count = len(refs.get("demos", []))
+            
+            # Create links with counts and icons
+            used_in_parts = []
+            
+            if tech_count > 0:
+                tech_ids = ",".join([t["id"] for t in refs["techniques"]])
+                tech_link = f'<a href="/MASTG/techniques/#q:{tech_ids.lower()}" title="Used in {tech_count} technique(s)"><span style="display: inline-flex; align-items: center; gap: 0.25rem;">:material-magic-staff: {tech_count} MASTG-TECH</span></a>'
+                used_in_parts.append(tech_link)
+            
+            if demo_count > 0:
+                demo_ids = ",".join([d["id"] for d in refs["demos"]])
+                demo_link = f'<a href="/MASTG/demos/#q:{demo_ids.lower()}" title="Used in {demo_count} demo(s)"><span style="display: inline-flex; align-items: center; gap: 0.25rem;">:material-flask-outline: {demo_count} MASTG-DEMO</span></a>'
+                used_in_parts.append(demo_link)
+            
+            if test_count > 0:
+                test_ids = ",".join([t["id"] for t in refs["tests"]])
+                test_link = f'<a href="/MASTG/tests/#q:{test_ids.lower()}" title="Used in {test_count} test(s)"><span style="display: inline-flex; align-items: center; gap: 0.25rem;">:octicons-codescan-checkmark-24: {test_count} MASTG-TEST</span></a>'
+                used_in_parts.append(test_link)
+            
+            # Add "unused" marker if no references
+            if tech_count == 0 and demo_count == 0 and test_count == 0:
+                tool['used_in'] = '<span style="display: none;">unused</span><span style="color: #999; font-style: italic;">Unused</span>'
+            else:
+                tool['used_in'] = "<br>".join(used_in_parts)
+        
         tools_of_type = [reorder_dict_keys(tool, column_titles.keys()) for tool in tools]
         return append_to_page(markdown, "\n" + list_of_dicts_to_md_table(tools_of_type, column_titles))
 

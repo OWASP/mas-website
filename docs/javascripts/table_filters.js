@@ -123,7 +123,7 @@
     '/MASTG/tests/': ['status', 'platform', 'profile', 'search'],
     '/MASWE/': ['status', 'platform', 'profile', 'search'],
     '/MASTG/knowledge/': ['platform', 'search'],
-    '/MASTG/tools/': ['platform', 'search'],
+    '/MASTG/tools/': ['status', 'platform', 'search'],
     '/MASTG/techniques/': ['platform', 'search'],
     '/MASTG/demos/': ['status', 'platform', 'search'],
     '/MASTG/best-practices/': ['platform', 'search'],
@@ -135,7 +135,7 @@
   const PAGE_CONFIG = Object.assign({}, DEFAULT_PAGE_CONFIG, GLOBAL.MAS_TABLE_FILTERS || {});
 
   // Tokens supported in URL hash, applied across pages
-  const HASH_TOKENS = ['android', 'ios', 'network', 'generic', 'l1', 'l2', 'r', 'p', 'deprecated'];
+  const HASH_TOKENS = ['android', 'ios', 'network', 'generic', 'l1', 'l2', 'r', 'p', 'deprecated', 'unused'];
 
   // Utility: case-insensitive includes on HTML/text
   function cellIncludes(htmlOrText, token) {
@@ -183,6 +183,7 @@
       control: findIncludes(['control / mastg test']) ?? findExact('control'),
       platform: findExact('platform'),
       status: findExact('status'),
+      used_in: findAnyEquals(['used in']),
       L1: findExact('l1'),
       L2: findExact('l2'),
       R: findExact('r'),
@@ -361,22 +362,38 @@
           // Active state per table
           const state = {
             showDeprecated: false,
+            showUnused: false,
             platforms: [], // values: android, ios, network, generic
             profiles: [], // values: L1,L2,R,P
             search: ''
           };
 
-          // Status group (Show Deprecated)
+          // Status group (Show Deprecated and Show Unused)
           if (show.status) {
             const { groupContainer } = createGroup('Status:');
-            const { toggleLabel, checkbox } = createCheckbox(`mas-filter-${tIndex}-status-deprecated`, 'Show Deprecated', {
+            
+            // Show Deprecated checkbox
+            const { toggleLabel: deprecatedLabel, checkbox: deprecatedCheckbox } = createCheckbox(`mas-filter-${tIndex}-status-deprecated`, 'Show Deprecated', {
               type: 'status', token: 'deprecated'
             });
-            checkbox.addEventListener('change', () => {
-              state.showDeprecated = checkbox.checked;
+            deprecatedCheckbox.addEventListener('change', () => {
+              state.showDeprecated = deprecatedCheckbox.checked;
               applyFilters();
             });
-            groupContainer.appendChild(toggleLabel);
+            groupContainer.appendChild(deprecatedLabel);
+            
+            // Show Unused checkbox (for tools page)
+            if (cols.used_in != null) {
+              const { toggleLabel: unusedLabel, checkbox: unusedCheckbox } = createCheckbox(`mas-filter-${tIndex}-status-unused`, 'Show Unused', {
+                type: 'status', token: 'unused'
+              });
+              unusedCheckbox.addEventListener('change', () => {
+                state.showUnused = unusedCheckbox.checked;
+                applyFilters();
+              });
+              groupContainer.appendChild(unusedLabel);
+            }
+            
             row.appendChild(groupContainer);
           }
 
@@ -508,6 +525,7 @@
             container.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = false; cb.dispatchEvent(new Event('change')); });
             if (searchInput) searchInput.value = '';
             state.showDeprecated = false;
+            state.showUnused = false;
             state.platforms = [];
             state.profiles = [];
             state.search = '';
@@ -535,6 +553,12 @@
             if (cols.status != null && !state.showDeprecated) {
               const statusHtml = (rowData[cols.status] || '').toString().toLowerCase();
               if (statusHtml.includes('status:deprecated')) return false;
+            }
+
+            // Status: hide unused unless explicitly shown (for tools page)
+            if (cols.used_in != null && !state.showUnused) {
+              const usedInHtml = (rowData[cols.used_in] || '').toString().toLowerCase();
+              if (usedInHtml.includes('unused')) return false;
             }
 
             // Platform filter
@@ -566,12 +590,24 @@
             }
 
             // Search across common columns
+            // Support both substring search and comma-separated ID list
             if (state.search && state.search.length > 0) {
+              const searchTerm = state.search.trim();
               const candidates = [cols.id, cols.title, cols.control, cols.masvs, cols.mastgTestId]
                 .filter(idx => idx != null)
                 .map(idx => (rowData[idx] || '').toString().toLowerCase());
-              const ok = candidates.some(text => text.includes(state.search));
-              if (!ok) return false;
+              
+              // Check if search contains commas (multi-ID search)
+              if (searchTerm.includes(',')) {
+                // Split by comma and check if any ID matches
+                const ids = searchTerm.split(',').map(id => id.trim()).filter(id => id.length > 0);
+                const ok = ids.some(searchId => candidates.some(text => text.includes(searchId)));
+                if (!ok) return false;
+              } else {
+                // Regular substring search
+                const ok = candidates.some(text => text.includes(searchTerm));
+                if (!ok) return false;
+              }
             }
 
             return true;
@@ -594,6 +630,7 @@
             // Update hash
             const tokens = [];
             if (state.showDeprecated) tokens.push('deprecated');
+            if (state.showUnused) tokens.push('unused');
             state.platforms.forEach(p => tokens.push(p));
             state.profiles.forEach(p => tokens.push(p.toLowerCase()));
             updateHash(tokens, state.search);
@@ -603,7 +640,10 @@
 
           // Apply initial hash tokens
           if (initialTokens.length) {
-            if (show.status && initialTokens.includes('deprecated')) state.showDeprecated = true;
+            if (show.status) {
+              if (initialTokens.includes('deprecated')) state.showDeprecated = true;
+              if (initialTokens.includes('unused')) state.showUnused = true;
+            }
             if (show.platform) state.platforms = initialTokens.filter(t => ['android', 'ios', 'network', 'generic'].includes(t));
             if (show.profile) state.profiles = initialTokens.filter(t => ['l1', 'l2', 'r', 'p'].includes(t)).map(s => s.toUpperCase());
           }
