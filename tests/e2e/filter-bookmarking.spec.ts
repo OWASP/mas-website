@@ -56,6 +56,47 @@ test.describe('Filter Bookmarking via URL Hash', () => {
     await expect(searchInput).toHaveValue('frida', { timeout: 5000 });
   });
 
+  test('should update URL hash when search term is typed', async ({ page }) => {
+    await page.goto('/MASTG/tools/');
+    await page.waitForSelector('table', { timeout: 10000 });
+    
+    // Type in search box
+    const searchInput = page.locator('input[id*="search"]').last();
+    await searchInput.fill('frida');
+    
+    // URL should contain search query
+    await expect(page).toHaveURL(/q:frida/, { timeout: 5000 });
+  });
+
+  test('should update URL hash when combining search with filters', async ({ page }) => {
+    await page.goto('/MASTG/tools/');
+    await page.waitForSelector('table', { timeout: 10000 });
+    
+    // Check iOS filter
+    const iosCheckbox = page.locator('label:has-text("iOS") input').first();
+    await iosCheckbox.check();
+    
+    // Type in search box
+    const searchInput = page.locator('input[id*="search"]').last();
+    await searchInput.fill('frida');
+    
+    // URL should contain both filter and search query
+    await expect(page).toHaveURL(/ios/, { timeout: 5000 });
+    await expect(page).toHaveURL(/q:frida/, { timeout: 5000 });
+  });
+
+  test('should clear search term from URL when cleared', async ({ page }) => {
+    await page.goto('/MASTG/tools/#q:frida');
+    await page.waitForSelector('table', { timeout: 10000 });
+    
+    // Clear the search box
+    const searchInput = page.locator('input[id*="search"]').last();
+    await searchInput.clear();
+    
+    // URL should not contain search query anymore
+    await expect(page).not.toHaveURL(/q:frida/, { timeout: 5000 });
+  });
+
   test('should clear all filters button work correctly', async ({ page }) => {
     await page.goto('/MASTG/tools/#ios;unused');
     await page.waitForSelector('table', { timeout: 10000 });
@@ -77,5 +118,21 @@ test.describe('Filter Bookmarking via URL Hash', () => {
     // URL hash should be cleared
     await expect(page).not.toHaveURL(/ios/);
     await expect(page).not.toHaveURL(/unused/);
+  });
+
+  test('should clear search term when clear all filters is clicked', async ({ page }) => {
+    await page.goto('/MASTG/tools/#ios;q:frida');
+    await page.waitForSelector('table', { timeout: 10000 });
+    
+    // Click "Clear All Filters" button
+    const clearButton = page.locator('button:has-text("Clear All Filters")').first();
+    await clearButton.click();
+    
+    // URL should not contain search query
+    await expect(page).not.toHaveURL(/q:frida/, { timeout: 5000 });
+    
+    // Search box should be empty
+    const searchInput = page.locator('input[id*="search"]').last();
+    await expect(searchInput).toHaveValue('', { timeout: 5000 });
   });
 });
