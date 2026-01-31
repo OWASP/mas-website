@@ -58,6 +58,11 @@ def gather_tool_references_from_content(content, file_path):
     tool_pattern = r'@(MASTG-TOOL-\d+)'
     return list(set(re.findall(tool_pattern, content)))
 
+def gather_technique_references_from_content(content, file_path):
+    """Extract all @MASTG-TECH-XXXX references from file content"""
+    technique_pattern = r'@(MASTG-TECH-\d+)'
+    return list(set(re.findall(technique_pattern, content)))
+
 def generate_cross_references():
     tests = gather_metadata("MASTG/tests", "id", "TEST")
     demos = gather_metadata("MASTG/demos", "id", "DEMO")
@@ -69,7 +74,8 @@ def generate_cross_references():
         "tests": {},
         "best-practices": {},
         "weakness-to-best-practices": {},
-        "tools": {}  # New: tools cross-references
+        "tools": {},  # Tools cross-references
+        "techniques": {}  # Techniques cross-references
     }
 
     for test_id, test_meta in tests.items():
@@ -198,6 +204,57 @@ def generate_cross_references():
                     })
         except Exception as e:
             log.warning(f"Error reading demo file {demo_file_path}: {e}")
+    
+    # Create cross-references for techniques
+    # Scan tests for technique references
+    for test_id, test_meta in tests.items():
+        test_path = test_meta.get("path")
+        test_title = test_meta.get("title")
+        test_platform = test_meta.get("platform")
+        
+        # Read the full content of the test file to find @MASTG-TECH-XXXX references
+        test_file_path = os.path.join("./docs", test_path)
+        try:
+            with open(test_file_path, 'r') as f:
+                content = f.read()
+                technique_refs = gather_technique_references_from_content(content, test_file_path)
+                
+                for technique_id in technique_refs:
+                    if technique_id not in cross_references["techniques"]:
+                        cross_references["techniques"][technique_id] = {"tests": [], "demos": []}
+                    cross_references["techniques"][technique_id]["tests"].append({
+                        "id": test_id,
+                        "path": test_path,
+                        "title": test_title,
+                        "platform": test_platform
+                    })
+        except Exception as e:
+            log.warning(f"Error reading test file {test_file_path} for technique references: {e}")
+    
+    # Scan demos for technique references
+    for demo_id, demo_meta in demos.items():
+        demo_path = demo_meta.get("path")
+        demo_title = demo_meta.get("title")
+        demo_platform = demo_meta.get("platform")
+        
+        # Read the full content of the demo file to find @MASTG-TECH-XXXX references
+        demo_file_path = os.path.join("./docs", demo_path)
+        try:
+            with open(demo_file_path, 'r') as f:
+                content = f.read()
+                technique_refs = gather_technique_references_from_content(content, demo_file_path)
+                
+                for technique_id in technique_refs:
+                    if technique_id not in cross_references["techniques"]:
+                        cross_references["techniques"][technique_id] = {"tests": [], "demos": []}
+                    cross_references["techniques"][technique_id]["demos"].append({
+                        "id": demo_id,
+                        "path": demo_path,
+                        "title": demo_title,
+                        "platform": demo_platform
+                    })
+        except Exception as e:
+            log.warning(f"Error reading demo file {demo_file_path} for technique references: {e}")
 
     with open("cross_references.yaml", 'w') as f:
         yaml.dump(cross_references, f)

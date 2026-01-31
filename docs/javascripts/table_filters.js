@@ -124,7 +124,7 @@
     '/MASWE/': ['status', 'platform', 'profile', 'search'],
     '/MASTG/knowledge/': ['platform', 'search'],
     '/MASTG/tools/': ['used_in', 'platform', 'search'],
-    '/MASTG/techniques/': ['platform', 'search'],
+    '/MASTG/techniques/': ['used_in', 'platform', 'search'],
     '/MASTG/demos/': ['status', 'platform', 'search'],
     '/MASTG/best-practices/': ['platform', 'search'],
     '/MASTG/apps/': ['platform', 'search'],
@@ -363,7 +363,7 @@
           // Active state per table
           const state = {
             showDeprecated: false,
-            showUnused: false,
+            showUnused: path.indexOf('/MASTG/techniques/') !== -1, // Default to true for techniques page
             platforms: [], // values: android, ios, network, generic
             profiles: [], // values: L1,L2,R,P
             search: ''
