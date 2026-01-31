@@ -63,6 +63,7 @@ test.describe('Filter Bookmarking via URL Hash', () => {
     // Type in search box
     const searchInput = page.locator('input[id*="search"]').last();
     await searchInput.fill('frida');
+    await searchInput.dispatchEvent('keyup'); 
     
     // URL should contain search query
     await expect(page).toHaveURL(/q:frida/, { timeout: 5000 });
@@ -79,6 +80,7 @@ test.describe('Filter Bookmarking via URL Hash', () => {
     // Type in search box
     const searchInput = page.locator('input[id*="search"]').last();
     await searchInput.fill('frida');
+    await searchInput.dispatchEvent('keyup'); 
     
     // URL should contain both filter and search query
     await expect(page).toHaveURL(/ios/, { timeout: 5000 });
