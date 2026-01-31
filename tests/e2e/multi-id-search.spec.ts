@@ -68,12 +68,21 @@ test.describe('Multi-ID Search Functionality', () => {
     const techLink = await usedInCell.locator('a:has-text("MASTG-TECH")').first();
     
     if (await techLink.isVisible()) {
-      await techLink.click();
-      await page.waitForTimeout(2000);
+      // Get the href to verify it has the hash
+      const href = await techLink.getAttribute('href');
+      expect(href).toContain('#q:');
+      
+      // Click and wait for navigation
+      await Promise.all([
+        page.waitForNavigation({ timeout: 5000 }),
+        techLink.click()
+      ]);
       
       // Should navigate to techniques page with search query
       expect(page.url()).toContain('/MASTG/techniques/');
       expect(page.url()).toContain('#q:');
+      
+      await page.waitForTimeout(2000);
       
       // Search input should contain comma-separated IDs
       const newSearchInput = await page.locator('input[id*="search"]').last();

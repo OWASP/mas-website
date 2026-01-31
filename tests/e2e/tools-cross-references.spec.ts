@@ -32,10 +32,11 @@ test.describe('MASTG Tools - Cross-References and "Used in" Column', () => {
   });
 
   test('should mark unused tools with "Unused" label', async ({ page }) => {
-    // Show unused tools first
-    const showUnusedCheckbox = await page.locator('input[type="checkbox"]:has-text("Show Unused")').first();
-    if (await showUnusedCheckbox.isVisible()) {
-      await showUnusedCheckbox.check();
+    // Show unused tools first - find checkbox via label
+    const showUnusedLabel = await page.locator('label:has-text("Show Unused")').first();
+    if (await showUnusedLabel.isVisible()) {
+      // Click the label to check the checkbox
+      await showUnusedLabel.click();
       await page.waitForTimeout(1000);
     }
 
