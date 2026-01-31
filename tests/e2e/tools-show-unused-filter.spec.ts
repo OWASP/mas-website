@@ -4,7 +4,6 @@ test.describe('MASTG Tools - Show Unused Filter', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/MASTG/tools/');
     await page.waitForSelector('table', { timeout: 10000 });
-    await page.waitForTimeout(2000);
   });
 
   test('should have "Show Unused" checkbox in Status filter group', async ({ page }) => {
@@ -18,9 +17,11 @@ test.describe('MASTG Tools - Show Unused Filter', () => {
     const totalRowsBefore = await page.locator('tbody tr').count();
     
     // Enable "Show Unused" filter
-    const showUnusedCheckbox = await page.locator('label:has-text("Show Unused") input').first();
+    const showUnusedCheckbox = page.locator('label:has-text("Show Unused") input').first();
     await showUnusedCheckbox.check();
-    await page.waitForTimeout(1000);
+    
+    // Wait for table to update - look for unused rows to appear
+    await page.waitForSelector('td:has-text("Unused")', { timeout: 5000 });
     
     // Count rows after enabling
     const totalRowsAfter = await page.locator('tbody tr').count();
@@ -31,28 +32,24 @@ test.describe('MASTG Tools - Show Unused Filter', () => {
 
   test('should update URL hash when "Show Unused" is toggled', async ({ page }) => {
     // Check initial URL (should not have "unused")
-    let url = page.url();
-    expect(url).not.toContain('#unused');
+    await expect(page).not.toHaveURL(/unused/);
     
     // Enable "Show Unused" filter
-    const showUnusedCheckbox = await page.locator('label:has-text("Show Unused") input').first();
+    const showUnusedCheckbox = page.locator('label:has-text("Show Unused") input').first();
     await showUnusedCheckbox.check();
-    await page.waitForTimeout(500);
     
     // Check URL contains "unused" hash
-    url = page.url();
-    expect(url).toContain('unused');
+    await expect(page).toHaveURL(/unused/, { timeout: 5000 });
   });
 
   test('should restore "Show Unused" state from URL hash', async ({ page }) => {
     // Navigate to tools page with #unused hash
     await page.goto('/MASTG/tools/#unused');
     await page.waitForSelector('table', { timeout: 10000 });
-    await page.waitForTimeout(2000);
     
     // Check that "Show Unused" checkbox is checked
-    const showUnusedCheckbox = await page.locator('label:has-text("Show Unused") input').first();
-    await expect(showUnusedCheckbox).toBeChecked();
+    const showUnusedCheckbox = page.locator('label:has-text("Show Unused") input').first();
+    await expect(showUnusedCheckbox).toBeChecked({ timeout: 5000 });
   });
 
   test('should display filter info showing filtered entries', async ({ page }) => {

@@ -19,9 +19,12 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'mkdocs build && cd site && python3 -m http.server 8000',
+    // In CI, mkdocs is installed globally via pip. Locally, use the venv if available.
+    command: process.env.CI 
+      ? 'mkdocs build && cd site && python3 -m http.server 8000'
+      : '[ -f .venv/bin/activate ] && source .venv/bin/activate; mkdocs build && cd site && python3 -m http.server 8000',
     url: 'http://localhost:8000',
     reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
+    timeout: 180 * 1000,
   },
 });
