@@ -23,8 +23,13 @@ jobs:
     - name: Install system dependencies
       run: sudo apt-get update && sudo apt-get install -y libxml2-dev libxslt-dev
 
-    - name: Install Python dependencies
-      run: pip install -r requirements.txt
+    - name: Setup Python virtual environment and install dependencies
+      uses: getsentry/action-setup-venv@v2.1.1
+      id: venv
+      with:
+        python-version: 3.x
+        cache-dependency-path: requirements.txt
+        install-cmd: pip install -r requirements.txt
 
     - name: Create repository directory structure
       run: |
@@ -66,9 +71,10 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
+        cache: 'npm'
 
     - name: Install Node dependencies
-      run: npm ci
+      run: npm install
 
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps chromium
