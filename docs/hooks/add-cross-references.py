@@ -35,7 +35,7 @@ def gather_metadata(directory, id_key, component_type):
                 if not id_key in frontmatter:
                     # Extract ID from filename (e.g., MASTG-TECH-0001.md -> MASTG-TECH-0001)
                     filename = os.path.basename(file)
-                    id_match = re.search(r'(MASTG-' + component_type + r'-\d+)', filename)
+                    id_match = re.search(rf'(MASTG-{component_type}-\d+)', filename)
                     if id_match:
                         frontmatter[id_key] = id_match.group(1)
                     elif is_v2_test(file):

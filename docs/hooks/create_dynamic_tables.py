@@ -436,6 +436,11 @@ def on_page_markdown(markdown, page, config, **kwargs):
         cross_references = getattr(config, 'cross_references', {})
         tool_refs = cross_references.get("tools", {})
         
+        def create_used_in_link(base_path, ids, count, icon, label):
+            """Helper to generate a 'Used in' link with icon and count"""
+            ids_str = ",".join([item["id"] for item in ids])
+            return f'<a href="/MASTG/{base_path}/#q:{ids_str.lower()}" title="Used in {count} {label}(s)"><span style="display: inline-flex; align-items: center; gap: 0.25rem;">{icon} {count} MASTG-{label.upper()}</span></a>'
+        
         for tool in tools:
             tool_id = tool['id']
             refs = tool_refs.get(tool_id, {"techniques": [], "tests": [], "demos": []})
@@ -448,19 +453,13 @@ def on_page_markdown(markdown, page, config, **kwargs):
             used_in_parts = []
             
             if tech_count > 0:
-                tech_ids = ",".join([t["id"] for t in refs["techniques"]])
-                tech_link = f'<a href="/MASTG/techniques/#q:{tech_ids.lower()}" title="Used in {tech_count} technique(s)"><span style="display: inline-flex; align-items: center; gap: 0.25rem;">:material-magic-staff: {tech_count} MASTG-TECH</span></a>'
-                used_in_parts.append(tech_link)
+                used_in_parts.append(create_used_in_link("techniques", refs["techniques"], tech_count, ":material-magic-staff:", "tech"))
             
             if demo_count > 0:
-                demo_ids = ",".join([d["id"] for d in refs["demos"]])
-                demo_link = f'<a href="/MASTG/demos/#q:{demo_ids.lower()}" title="Used in {demo_count} demo(s)"><span style="display: inline-flex; align-items: center; gap: 0.25rem;">:material-flask-outline: {demo_count} MASTG-DEMO</span></a>'
-                used_in_parts.append(demo_link)
+                used_in_parts.append(create_used_in_link("demos", refs["demos"], demo_count, ":material-flask-outline:", "demo"))
             
             if test_count > 0:
-                test_ids = ",".join([t["id"] for t in refs["tests"]])
-                test_link = f'<a href="/MASTG/tests/#q:{test_ids.lower()}" title="Used in {test_count} test(s)"><span style="display: inline-flex; align-items: center; gap: 0.25rem;">:octicons-codescan-checkmark-24: {test_count} MASTG-TEST</span></a>'
-                used_in_parts.append(test_link)
+                used_in_parts.append(create_used_in_link("tests", refs["tests"], test_count, ":octicons-codescan-checkmark-24:", "test"))
             
             # Add "unused" marker if no references
             if tech_count == 0 and demo_count == 0 and test_count == 0:

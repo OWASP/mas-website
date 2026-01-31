@@ -590,7 +590,11 @@
             }
 
             // Search across common columns
-            // Support both substring search and comma-separated ID list
+            // Multi-ID Search Feature:
+            // Supports both substring search and comma-separated ID list search.
+            // Format: "#q:mastg-tech-0001,mastg-tech-0002,mastg-test-0100"
+            // Behavior: Matches if ANY of the comma-separated IDs is found in ANY candidate field
+            // (ID, Title, Control, MASVS ID, or MASTG-TEST-ID columns)
             if (state.search && state.search.length > 0) {
               const searchTerm = state.search.trim();
               const candidates = [cols.id, cols.title, cols.control, cols.masvs, cols.mastgTestId]
