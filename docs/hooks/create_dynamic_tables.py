@@ -428,7 +428,7 @@ def on_page_markdown(markdown, page, config, **kwargs):
 
         # tools/index.md
 
-        column_titles = {'id': 'ID', 'title': 'Name', 'platform': "Platform", 'used_in': "Used in"}
+        column_titles = {'id': 'ID', 'title': 'Name', 'platform': "Platform", 'used_in': "Used in", 'used_in_demos': "Used in Demos"}
 
         tools = get_mastg_components_dict("docs/MASTG/tools")
         
@@ -466,6 +466,12 @@ def on_page_markdown(markdown, page, config, **kwargs):
                 tool['used_in'] = '<span style="display: none;">unused</span><span style="color: #999; font-style: italic;">Unused</span>'
             else:
                 tool['used_in'] = "<br>".join(used_in_parts)
+            
+            # Add separate "Used in Demos" column
+            if demo_count > 0:
+                tool['used_in_demos'] = str(demo_count)
+            else:
+                tool['used_in_demos'] = '0'
         
         tools_of_type = [reorder_dict_keys(tool, column_titles.keys()) for tool in tools]
         return append_to_page(markdown, "\n" + list_of_dicts_to_md_table(tools_of_type, column_titles))
@@ -473,7 +479,7 @@ def on_page_markdown(markdown, page, config, **kwargs):
     elif path.endswith("techniques/index.md"):
         # techniques/index.md
 
-        column_titles = {'id': 'ID', 'title': 'Name', 'platform': "Platform", 'used_in': "Used in"}
+        column_titles = {'id': 'ID', 'title': 'Name', 'platform': "Platform", 'used_in': "Used in", 'used_in_tests': "Used in Tests"}
 
         techniques = get_mastg_components_dict("docs/MASTG/techniques")
         
@@ -507,6 +513,12 @@ def on_page_markdown(markdown, page, config, **kwargs):
                 technique['used_in'] = '<span style="display: none;">unused</span><span style="color: #999; font-style: italic;">Unused</span>'
             else:
                 technique['used_in'] = "<br>".join(used_in_parts)
+            
+            # Add separate "Used in Tests" column
+            if test_count > 0:
+                technique['used_in_tests'] = str(test_count)
+            else:
+                technique['used_in_tests'] = '0'
         
         techniques_of_type = [reorder_dict_keys(technique, column_titles.keys()) for technique in techniques]
         return append_to_page(markdown, "\n" + list_of_dicts_to_md_table(techniques_of_type, column_titles))
