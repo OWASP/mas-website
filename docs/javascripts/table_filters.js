@@ -123,7 +123,7 @@
     '/MASTG/tests/': ['status', 'platform', 'profile', 'search'],
     '/MASWE/': ['status', 'platform', 'profile', 'search'],
     '/MASTG/knowledge/': ['platform', 'search'],
-    '/MASTG/tools/': ['status', 'platform', 'search'],
+    '/MASTG/tools/': ['used_in', 'platform', 'search'],
     '/MASTG/techniques/': ['platform', 'search'],
     '/MASTG/demos/': ['status', 'platform', 'search'],
     '/MASTG/best-practices/': ['platform', 'search'],
@@ -316,6 +316,7 @@
           // Determine which groups to show (auto if not configured)
           const show = {
             status: !!cols.status,
+            used_in: !!cols.used_in,
             platform: !!cols.platform,
             profile: !!(cols.L1 || cols.L2 || cols.R || cols.P),
             search: true
@@ -325,7 +326,7 @@
           }
 
           // If nothing applicable, skip this table
-          if (!show.status && !show.platform && !show.profile && !show.search) return;
+          if (!show.status && !show.used_in && !show.platform && !show.profile && !show.search) return;
 
           // Remove default search box next to this table only
           const wrapper = $table.closest('.dataTables_wrapper');
@@ -368,7 +369,7 @@
             search: ''
           };
 
-          // Status group (Show Deprecated and Show Unused)
+          // Status group (Show Deprecated)
           if (show.status) {
             const { groupContainer } = createGroup('Status:');
             
@@ -382,17 +383,22 @@
             });
             groupContainer.appendChild(deprecatedLabel);
             
-            // Show Unused checkbox (for tools page)
-            if (cols.used_in != null) {
-              const { toggleLabel: unusedLabel, checkbox: unusedCheckbox } = createCheckbox(`mas-filter-${tIndex}-status-unused`, 'Show Unused', {
-                type: 'status', token: 'unused'
-              });
-              unusedCheckbox.addEventListener('change', () => {
-                state.showUnused = unusedCheckbox.checked;
-                applyFilters();
-              });
-              groupContainer.appendChild(unusedLabel);
-            }
+            row.appendChild(groupContainer);
+          }
+
+          // Used In group (Show Unused)
+          if (show.used_in) {
+            const { groupContainer } = createGroup('Used In:');
+            
+            // Show Unused checkbox
+            const { toggleLabel: unusedLabel, checkbox: unusedCheckbox } = createCheckbox(`mas-filter-${tIndex}-used_in-unused`, 'Show Unused', {
+              type: 'used_in', token: 'unused'
+            });
+            unusedCheckbox.addEventListener('change', () => {
+              state.showUnused = unusedCheckbox.checked;
+              applyFilters();
+            });
+            groupContainer.appendChild(unusedLabel);
             
             row.appendChild(groupContainer);
           }
@@ -644,10 +650,8 @@
 
           // Apply initial hash tokens
           if (initialTokens.length) {
-            if (show.status) {
-              if (initialTokens.includes('deprecated')) state.showDeprecated = true;
-              if (initialTokens.includes('unused')) state.showUnused = true;
-            }
+            if (show.status && initialTokens.includes('deprecated')) state.showDeprecated = true;
+            if (show.used_in && initialTokens.includes('unused')) state.showUnused = true;
             if (show.platform) state.platforms = initialTokens.filter(t => ['android', 'ios', 'network', 'generic'].includes(t));
             if (show.profile) state.profiles = initialTokens.filter(t => ['l1', 'l2', 'r', 'p'].includes(t)).map(s => s.toUpperCase());
           }
