@@ -73,7 +73,6 @@ def generate_cross_references():
         "weaknesses": {},
         "tests": {},
         "best-practices": {},
-        "weakness-to-best-practices": {},
         "tools": {},  # Tools cross-references
         "techniques": {}  # Techniques cross-references
     }
@@ -85,25 +84,22 @@ def generate_cross_references():
         test_platform = test_meta.get("platform")
         best_practices_ids = test_meta.get("best-practices")
 
-        # Create cross-references for weaknesses listing all tests that reference each weakness ID
+        # Create cross-references for weaknesses listing all tests and best practices that reference each weakness ID
         if weakness_id:
             if weakness_id not in cross_references["weaknesses"]:
-                cross_references["weaknesses"][weakness_id] = []
-            cross_references["weaknesses"][weakness_id].append({"id": test_id, "path": test_path, "title": test_title, "platform": test_platform})
+                cross_references["weaknesses"][weakness_id] = {"tests": [], "best_practices": {}}
+            cross_references["weaknesses"][weakness_id]["tests"].append({"id": test_id, "path": test_path, "title": test_title, "platform": test_platform})
             
-            # Create cross-references for weaknesses to best-practices
             # Collect best-practices from tests that reference each weakness
             if best_practices_ids:
-                if weakness_id not in cross_references["weakness-to-best-practices"]:
-                    cross_references["weakness-to-best-practices"][weakness_id] = {}
                 for best_practice_id in best_practices_ids:
-                    if best_practice_id not in cross_references["weakness-to-best-practices"][weakness_id]:
+                    if best_practice_id not in cross_references["weaknesses"][weakness_id]["best_practices"]:
                         # Get the best-practice metadata if available
                         best_practice_meta = best_practices_metadata.get(best_practice_id, {})
                         best_practice_path = best_practice_meta.get("path", f"MASTG/best-practices/{best_practice_id}.md")
                         best_practice_title = best_practice_meta.get("title", best_practice_id)
                         best_practice_platform = best_practice_meta.get("platform", test_platform)
-                        cross_references["weakness-to-best-practices"][weakness_id][best_practice_id] = {
+                        cross_references["weaknesses"][weakness_id]["best_practices"][best_practice_id] = {
                             "id": best_practice_id,
                             "path": best_practice_path,
                             "title": best_practice_title,
@@ -259,7 +255,7 @@ def generate_cross_references():
     with open("cross_references.yaml", 'w') as f:
         yaml.dump(cross_references, f)
 
-    return cross_references
+    return cross_references, best_practices_metadata
 
 def get_platform_icon(platform):
     if platform == "ios":
@@ -269,7 +265,9 @@ def get_platform_icon(platform):
     return ":material-asterisk:"
 
 def on_pre_build(config):
-    config.cross_references = generate_cross_references()
+    cross_references, best_practices_metadata = generate_cross_references()
+    config.cross_references = cross_references
+    config.best_practices_metadata = best_practices_metadata
 
 @mkdocs.plugins.event_priority(-40)
 def on_page_markdown(markdown, page, config, **kwargs):
@@ -282,11 +280,13 @@ def on_page_markdown(markdown, page, config, **kwargs):
     if "MASWE-" in filename:
         weakness_id = meta.get('id')
 
-        # Add Tests section to weaknesses as buttons
+        # Add Tests and Best Practices sections to weaknesses as buttons
         # ORIGIN: Cross-references from this script
 
         if weakness_id in cross_references["weaknesses"]:
-            tests = cross_references["weaknesses"][weakness_id]
+            weakness_refs = cross_references["weaknesses"][weakness_id]
+            
+            tests = weakness_refs.get("tests", [])
             meta['tests'] = tests
             if tests:
                 tests_section =  "## Tests\n\n"
@@ -294,12 +294,8 @@ def on_page_markdown(markdown, page, config, **kwargs):
                     relPath = os.path.relpath(test['path'], os.path.dirname(path))
                     tests_section += f"[{get_platform_icon(test['platform'])} {test['id']}: {test['title']}]({relPath}){{: .mas-test-button}} "
                 markdown += f"\n\n{tests_section}"
-        
-        # Add Best Practices section to weaknesses as buttons
-        # ORIGIN: Cross-references from this script (collected from tests that reference this weakness)
-        
-        if weakness_id in cross_references["weakness-to-best-practices"]:
-            best_practices = cross_references["weakness-to-best-practices"][weakness_id]
+            
+            best_practices = weakness_refs.get("best_practices", {})
             meta['best-practices'] = list(best_practices.values())
             if best_practices:
                 best_practices_section = "## Best Practices\n\n"
@@ -310,16 +306,17 @@ def on_page_markdown(markdown, page, config, **kwargs):
 
     if "MASTG-TEST-" in filename:
 
-        # Add best_practices section to tests as a bullet point list with IDs, links are resolved in a separate hook
-        # ORIGIN: Test metadata
+        # Add best_practices section to tests as buttons (same style as weaknesses)
+        # ORIGIN: Test metadata + best practices metadata from config
 
-        best_practices = meta.get('best-practices')
-        if best_practices:
-            best_practices_section = "## Mitigations\n\n"
-            for best_practice_id in best_practices:
-                best_practice_path = f"MASTG/best-practices/{best_practice_id}.md"
-                relPath = os.path.relpath(best_practice_path, os.path.dirname(path))
-                best_practices_section += f"- @{best_practice_id}\n"
+        best_practices_ids = meta.get('best-practices')
+        if best_practices_ids:
+            best_practices_section = "## Best Practices\n\n"
+            best_practices_metadata = config.best_practices_metadata
+            for best_practice_id in best_practices_ids:
+                best_practice = best_practices_metadata.get(best_practice_id, {})
+                relPath = os.path.relpath(best_practice.get("path", f"MASTG/best-practices/{best_practice_id}.md"), os.path.dirname(path))
+                best_practices_section += f"[{get_platform_icon(best_practice.get('platform', 'generic'))} {best_practice_id}: {best_practice.get('title', best_practice_id)}]({relPath}){{: .mas-best-button}} "
 
             markdown += f"\n\n{best_practices_section}"
 
@@ -337,6 +334,76 @@ def on_page_markdown(markdown, page, config, **kwargs):
                     relPath = os.path.relpath(demo['path'], os.path.dirname(path))
                     demos_section += f"[{get_platform_icon(demo['platform'])} {demo['id']}: {demo['title']}]({relPath}){{: .mas-demo-button}} "
 
+                markdown += f"\n\n{demos_section}"
+
+    if "MASTG-TECH-" in filename:
+        technique_id = meta.get('id')
+        
+        # If no id in meta, try to extract from filename
+        if not technique_id:
+            tech_match = re.search(r'(MASTG-TECH-\d+)', filename)
+            if tech_match:
+                technique_id = tech_match.group(1)
+
+        # Add Tests section to techniques as buttons
+        # ORIGIN: Cross-references from this script
+
+        if technique_id and technique_id in cross_references.get("techniques", {}):
+            refs = cross_references["techniques"][technique_id]
+            
+            tests = refs.get("tests", [])
+            if tests:
+                tests_section = "## Tests\n\n"
+                for test in tests:
+                    relPath = os.path.relpath(test['path'], os.path.dirname(path))
+                    tests_section += f"[{get_platform_icon(test['platform'])} {test['id']}: {test['title']}]({relPath}){{: .mas-test-button}} "
+                markdown += f"\n\n{tests_section}"
+            
+            demos = refs.get("demos", [])
+            if demos:
+                demos_section = "## Demos\n\n"
+                for demo in demos:
+                    relPath = os.path.relpath(demo['path'], os.path.dirname(path))
+                    demos_section += f"[{get_platform_icon(demo['platform'])} {demo['id']}: {demo['title']}]({relPath}){{: .mas-demo-button}} "
+                markdown += f"\n\n{demos_section}"
+
+    if "MASTG-TOOL-" in filename:
+        tool_id = meta.get('id')
+        
+        # If no id in meta, try to extract from filename
+        if not tool_id:
+            tool_match = re.search(r'(MASTG-TOOL-\d+)', filename)
+            if tool_match:
+                tool_id = tool_match.group(1)
+
+        # Add Techniques, Tests, and Demos sections to tools as buttons
+        # ORIGIN: Cross-references from this script
+
+        if tool_id and tool_id in cross_references.get("tools", {}):
+            refs = cross_references["tools"][tool_id]
+            
+            techniques = refs.get("techniques", [])
+            if techniques:
+                techniques_section = "## Techniques\n\n"
+                for technique in techniques:
+                    relPath = os.path.relpath(technique['path'], os.path.dirname(path))
+                    techniques_section += f"[{get_platform_icon(technique['platform'])} {technique['id']}: {technique['title']}]({relPath}){{: .mas-tech-button}} "
+                markdown += f"\n\n{techniques_section}"
+            
+            tests = refs.get("tests", [])
+            if tests:
+                tests_section = "## Tests\n\n"
+                for test in tests:
+                    relPath = os.path.relpath(test['path'], os.path.dirname(path))
+                    tests_section += f"[{get_platform_icon(test['platform'])} {test['id']}: {test['title']}]({relPath}){{: .mas-test-button}} "
+                markdown += f"\n\n{tests_section}"
+            
+            demos = refs.get("demos", [])
+            if demos:
+                demos_section = "## Demos\n\n"
+                for demo in demos:
+                    relPath = os.path.relpath(demo['path'], os.path.dirname(path))
+                    demos_section += f"[{get_platform_icon(demo['platform'])} {demo['id']}: {demo['title']}]({relPath}){{: .mas-demo-button}} "
                 markdown += f"\n\n{demos_section}"
 
     if "MASTG-BEST" in filename:
