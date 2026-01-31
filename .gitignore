@@ -22,6 +22,9 @@ cross_references.yaml
 site/
 .cache/
 repos/
+mastg/
+maswe/
+masvs/
 
 # Playwright
 /test-results/
