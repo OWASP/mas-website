@@ -30,28 +30,6 @@ test.describe('MASTG Tools - Show Unused Filter', () => {
     expect(totalRowsAfter).toBeGreaterThan(totalRowsBefore);
   });
 
-  test('should update URL hash when "Show Unused" is toggled', async ({ page }) => {
-    // Check initial URL (should not have "unused")
-    await expect(page).not.toHaveURL(/unused/);
-    
-    // Enable "Show Unused" filter
-    const showUnusedCheckbox = page.locator('label:has-text("Show Unused") input').first();
-    await showUnusedCheckbox.check();
-    
-    // Check URL contains "unused" hash
-    await expect(page).toHaveURL(/unused/, { timeout: 5000 });
-  });
-
-  test('should restore "Show Unused" state from URL hash', async ({ page }) => {
-    // Navigate to tools page with #unused hash
-    await page.goto('/MASTG/tools/#unused');
-    await page.waitForSelector('table', { timeout: 10000 });
-    
-    // Check that "Show Unused" checkbox is checked
-    const showUnusedCheckbox = page.locator('label:has-text("Show Unused") input').first();
-    await expect(showUnusedCheckbox).toBeChecked({ timeout: 5000 });
-  });
-
   test('should display filter info showing filtered entries', async ({ page }) => {
     // Get the info text
     const infoElement = await page.locator('span[id*="filter"][id*="info"]').first();

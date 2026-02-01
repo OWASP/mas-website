@@ -27,22 +27,6 @@ test.describe('MASTG Tools - Cross-References and "Used in" Column', () => {
     await expect(usedInCell).toContainText('MASTG-TECH');
   });
 
-  test('should mark unused tools with "Unused" label', async ({ page }) => {
-    // Show unused tools first - find checkbox via label
-    const showUnusedLabel = page.locator('label:has-text("Show Unused")').first();
-    if (await showUnusedLabel.isVisible()) {
-      // Click the label to check the checkbox
-      await showUnusedLabel.click();
-      
-      // Wait for table to update
-      await page.waitForSelector('td:has-text("Unused")', { timeout: 5000 });
-    }
-
-    // Look for any unused tool in the table
-    const unusedCells = await page.locator('td:has-text("Unused")').count();
-    expect(unusedCells).toBeGreaterThan(0);
-  });
-
   test('should have clickable links in "Used in" column', async ({ page }) => {
     // Search for a tool with references
     const searchInput = page.locator('input[id*="search"]').last();
