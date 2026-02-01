@@ -404,6 +404,14 @@ hooks:
   # Modify watch folder settings to remove docs/
   - docs/hooks/fix-serve-watch.py
 
+  # Injects method-*.md files into folder-based MASTG tests (Issue #41)
+  # - Supports MASTG-TEST-XXXX/MASTG-TEST-XXXX.md structure
+  # - Merges method content before Evaluation section
+  # - Aggregates method `type` metadata
+  # Injects folder-based MASTG test methods (Issue #41)
+  # Runs after repo combination and before final rendering
+  -  docs/hooks/inject_mastg_methods.py
+
 extra:
   generator: false # removed but recreated in copyright above
   analytics:
