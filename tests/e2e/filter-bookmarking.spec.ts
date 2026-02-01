@@ -26,7 +26,7 @@ test.describe('Filter Bookmarking via URL Hash', () => {
     await page.goto('/MASTG/tools/#l1');
     await page.waitForSelector('table', { timeout: 10000 });
     const l1Checkbox = page.locator('label:has-text("L1") input').first();
-    if (await l1Checkbox.count() > 0) {
+    if ((await l1Checkbox.count()) > 0) {
       await expect(l1Checkbox).toBeChecked({ timeout: 5000 });
     } else {
       test.skip();
@@ -40,7 +40,7 @@ test.describe('Filter Bookmarking via URL Hash', () => {
     const l2Checkbox = page.locator('label:has-text("L2") input').first();
     const rCheckbox = page.locator('label:has-text("R") input').first();
     const pCheckbox = page.locator('label:has-text("P") input').first();
-    if ((await l1Checkbox.count() > 0) && (await l2Checkbox.count() > 0) && (await rCheckbox.count() > 0) && (await pCheckbox.count() > 0)) {
+    if (((await l1Checkbox.count()) > 0) && ((await l2Checkbox.count()) > 0) && ((await rCheckbox.count()) > 0) && ((await pCheckbox.count()) > 0)) {
       await expect(l1Checkbox).toBeChecked({ timeout: 5000 });
       await expect(l2Checkbox).toBeChecked({ timeout: 5000 });
       await expect(rCheckbox).toBeChecked({ timeout: 5000 });
