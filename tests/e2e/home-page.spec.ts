@@ -4,7 +4,7 @@ test.describe('Home Page', () => {
   test('should load and display main sections (if present)', async ({ page }) => {
     await page.goto('/');
     const nav = page.locator('nav').first();
-    if (await page.locator('nav').count() === 0) test.skip();
+    if ((await page.locator('nav').count()) === 0) test.skip();
     await expect(nav).toBeVisible();
 
     // Accept any section with h1/h2 Mission, Sponsors, Advocates but don't fail if not present
@@ -22,7 +22,7 @@ test.describe('Home Page', () => {
     const nav = page.locator('nav');
     for (const section of ["MASVS", "MASWE", "MASTG"]) {
       const link = nav.locator(`a:has-text(\"${section}\")`).first();
-      if (await link.count() > 0) {
+      if ((await link.count()) > 0) {
         await link.click();
         await expect(page).toHaveURL(new RegExp(section));
         await page.goBack();
