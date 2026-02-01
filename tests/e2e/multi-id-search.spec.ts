@@ -65,28 +65,29 @@ test.describe('Multi-ID Search Functionality', () => {
     const usedInCell = toolRow.locator('td').nth(3);
     const techLink = usedInCell.locator('a:has-text("MASTG-TECH")').first();
     
-    if (await techLink.isVisible()) {
-      // Get the href to verify it has the hash
-      const href = await techLink.getAttribute('href');
-      expect(href).toContain('#q:');
-      
-      // Click and wait for navigation
-      await Promise.all([
-        page.waitForNavigation({ timeout: 5000 }),
-        techLink.click()
-      ]);
-      
-      // Should navigate to techniques page with search query
-      // URL format is #[filters;]q:ids - filters like "unused" may be present
-      expect(page.url()).toContain('/MASTG/techniques/');
-      expect(page.url()).toMatch(/[#;]q:/);
-      
-      await page.waitForSelector('table', { timeout: 10000 });
-      
-      // Search input should contain comma-separated IDs
-      const newSearchInput = page.locator('input[id*="search"]').last();
-      await expect(newSearchInput).toHaveValue(/,/, { timeout: 5000 });
-    }
+    // Ensure the link is visible (fail if not)
+    await expect(techLink).toBeVisible({ timeout: 5000 });
+    
+    // Get the href to verify it has the hash
+    const href = await techLink.getAttribute('href');
+    expect(href).toContain('#q:');
+    
+    // Click and wait for navigation
+    await Promise.all([
+      page.waitForNavigation({ timeout: 5000 }),
+      techLink.click()
+    ]);
+    
+    // Should navigate to techniques page with search query
+    // URL format is #[filters;]q:ids - filters like "unused" may be present
+    expect(page.url()).toContain('/MASTG/techniques/');
+    expect(page.url()).toMatch(/[#;]q:/);
+    
+    await page.waitForSelector('table', { timeout: 10000 });
+    
+    // Search input should contain comma-separated IDs
+    const newSearchInput = page.locator('input[id*="search"]').last();
+    await expect(newSearchInput).toHaveValue(/,/, { timeout: 5000 });
   });
 
   test('should clear search when hash is removed', async ({ page }) => {
