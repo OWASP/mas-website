@@ -5,19 +5,32 @@ test.describe('MASTG Knowledge Index', () => {
     await page.goto('/MASTG/knowledge/');
     const categoryHeader = page.locator('th:has-text("Category")').first();
     await expect(categoryHeader).toBeVisible();
-    
-    // Check that category chips display full MASVS names (e.g., "MASVS-STORAGE" not "STORAGE")
-    const categoryCell = page.locator('td .md-tag').first();
+
+    // Determine the index of the "Category" column
+    const headerCells = page.locator('table thead tr th');
+    const headerCount = await headerCells.count();
+    let categoryColIndex = -1;
+    for (let i = 0; i < headerCount; i++) {
+      const text = await headerCells.nth(i).textContent();
+      if (text && text.includes('Category')) {
+        categoryColIndex = i;
+        break;
+      }
+    }
+    expect(categoryColIndex).toBeGreaterThan(-1);
+
+    // Check that category chips in the Category column display full MASVS names
+    const firstRow = page.locator('table tbody tr').first();
+    const categoryCell = firstRow.locator('td').nth(categoryColIndex).locator('.md-tag').first();
     if ((await categoryCell.count()) > 0) {
       await expect(categoryCell).toBeVisible();
       const chipText = await categoryCell.textContent();
       // Should contain "MASVS-" prefix
       expect(chipText).toMatch(/MASVS-/);
-      
+
       // Verify white text color
       const color = await categoryCell.evaluate(el => window.getComputedStyle(el).color);
       expect(color).toContain('rgb(255, 255, 255)'); // White color
-      
       // Verify it has background color (indicating it's styled)
       const bgColor = await categoryCell.evaluate(el => window.getComputedStyle(el).backgroundColor);
       expect(bgColor).not.toBe('rgba(0, 0, 0, 0)'); // Not transparent
