@@ -122,12 +122,12 @@
   const DEFAULT_PAGE_CONFIG = {
     '/MASTG/tests/': ['status', 'platform', 'profile', 'search'],
     '/MASWE/': ['status', 'platform', 'profile', 'search'],
-    '/MASTG/knowledge/': ['platform', 'search'],
-    '/MASTG/tools/': ['used_in', 'platform', 'search'],
-    '/MASTG/techniques/': ['used_in', 'platform', 'search'],
+    '/MASTG/knowledge/': ['status', 'platform', 'search'],
+    '/MASTG/tools/': ['status', 'used_in', 'platform', 'search'],
+    '/MASTG/techniques/': ['status', 'used_in', 'platform', 'search'],
     '/MASTG/demos/': ['status', 'platform', 'search'],
-    '/MASTG/best-practices/': ['platform', 'search'],
-    '/MASTG/apps/': ['platform', 'search'],
+    '/MASTG/best-practices/': ['status', 'platform', 'search'],
+    '/MASTG/apps/': ['status', 'platform', 'search'],
     '/checklists/': ['status', 'platform', 'profile', 'search']
   };
 
@@ -363,7 +363,7 @@
           // Active state per table
           const state = {
             showDeprecated: false,
-            showUnused: path.indexOf('/MASTG/techniques/') !== -1, // Default to true for techniques page
+            showUnused: false,
             platforms: [], // values: android, ios, network, generic
             profiles: [], // values: L1,L2,R,P
             search: ''

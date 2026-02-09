@@ -266,6 +266,7 @@ theme:
       update-pending: material/information-outline
       deprecated: octicons/circle-slash-16
       new: material/alert-decagram
+      current: material/check-circle
       tool: octicons/tools-24
       know: material/book-open-blank-variant-outline
       test: octicons/codescan-checkmark-24
@@ -391,7 +392,7 @@ hooks:
   - docs/hooks/add-checklists-banner.py
   - docs/hooks/add-cross-references.py
   - docs/hooks/replace_snippets.py
-  - docs/hooks/maswe-beta-banner.py
+  - docs/hooks/status-banners.py
   - docs/hooks/create_dynamic_tables.py
 
   # Priority -49 for last-minute tag modification
@@ -446,6 +447,8 @@ extra:
     placeholder-tag-app: app
     placeholder-tag-tool: tool
 
+    current: current
+
     masvs-storage-1: masvs-storage
     masvs-storage-2: masvs-storage
     masvs-crypto-1: masvs-crypto
@@ -476,4 +479,5 @@ extra:
     placeholder: This page is a placeholder.
     deprecated: This page is deprecated.
     new: This page is new!
+    current: This page is current.
     update-pending: This page is pending an update.
