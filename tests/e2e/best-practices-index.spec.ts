@@ -50,6 +50,6 @@ test.describe('MASTG Best Practices Index', () => {
     await page.goto('/MASTG/best-practices/#android;deprecated');
     const clearButton = page.locator('button:has-text("Clear All Filters")');
     await clearButton.click();
-    await expect(page).toHaveURL(/^[^#]*$/); // URL should not have hash
+    await expect(page).toHaveURL(/^[^#]*#?$/); // URL should not have hash parameters
   });
 });

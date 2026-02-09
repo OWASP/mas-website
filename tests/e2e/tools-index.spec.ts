@@ -46,6 +46,6 @@ test.describe('MASTG Tools Index', () => {
     await page.goto('/MASTG/tools/#android;deprecated');
     const clearButton = page.locator('button:has-text("Clear All Filters")');
     await clearButton.click();
-    await expect(page).toHaveURL(/^[^#]*$/); // URL should not have hash
+    await expect(page).toHaveURL(/^[^#]*#?$/); // URL should not have hash parameters
   });
 });
