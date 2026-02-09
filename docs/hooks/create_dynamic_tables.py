@@ -503,17 +503,21 @@ def on_page_markdown(markdown, page, config, **kwargs):
         
         for tool in tools:
             tool_id = tool['id']
-            refs = tool_refs.get(tool_id, {"techniques": [], "tests": [], "demos": []})
+            refs = tool_refs.get(tool_id, {"techniques": [], "tests": [], "demos": [], "knowledge": []})
             
             tech_count = len(refs.get("techniques", []))
             test_count = len(refs.get("tests", []))
             demo_count = len(refs.get("demos", []))
+            know_count = len(refs.get("knowledge", []))
             
             # Create links with counts and icons
             used_in_parts = []
             
             if tech_count > 0:
                 used_in_parts.append(create_used_in_link("techniques", refs["techniques"], tech_count, ":material-magic-staff:", "tech"))
+            
+            if know_count > 0:
+                used_in_parts.append(create_used_in_link("knowledge", refs["knowledge"], know_count, ":material-book-open-variant:", "know"))
             
             if demo_count > 0:
                 used_in_parts.append(create_used_in_link("demos", refs["demos"], demo_count, ":material-flask-outline:", "demo"))
@@ -522,7 +526,7 @@ def on_page_markdown(markdown, page, config, **kwargs):
                 used_in_parts.append(create_used_in_link("tests", refs["tests"], test_count, ":octicons-codescan-checkmark-24:", "test"))
             
             # Add "unused" marker if no references
-            if tech_count == 0 and demo_count == 0 and test_count == 0:
+            if tech_count == 0 and demo_count == 0 and test_count == 0 and know_count == 0:
                 tool['used_in'] = '<span style="display: none;">unused</span><span style="color: #999; font-style: italic;">Unused</span>'
             else:
                 tool['used_in'] = "<br>".join(used_in_parts)

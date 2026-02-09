@@ -68,6 +68,7 @@ def generate_cross_references():
     demos = gather_metadata("MASTG/demos", "id", "DEMO")
     best_practices_metadata = gather_metadata("MASTG/best-practices", "id", "BEST")
     techniques = gather_metadata("MASTG/techniques", "id", "TECH")
+    knowledge = gather_metadata("MASTG/knowledge", "id", "KNOW")
 
     cross_references = {
         "weaknesses": {},
@@ -141,7 +142,7 @@ def generate_cross_references():
                 
                 for tool_id in tool_refs:
                     if tool_id not in cross_references["tools"]:
-                        cross_references["tools"][tool_id] = {"techniques": [], "tests": [], "demos": []}
+                        cross_references["tools"][tool_id] = {"techniques": [], "tests": [], "demos": [], "knowledge": []}
                     cross_references["tools"][tool_id]["techniques"].append({
                         "id": technique_id,
                         "path": technique_path,
@@ -166,7 +167,7 @@ def generate_cross_references():
                 
                 for tool_id in tool_refs:
                     if tool_id not in cross_references["tools"]:
-                        cross_references["tools"][tool_id] = {"techniques": [], "tests": [], "demos": []}
+                        cross_references["tools"][tool_id] = {"techniques": [], "tests": [], "demos": [], "knowledge": []}
                     cross_references["tools"][tool_id]["tests"].append({
                         "id": test_id,
                         "path": test_path,
@@ -191,7 +192,7 @@ def generate_cross_references():
                 
                 for tool_id in tool_refs:
                     if tool_id not in cross_references["tools"]:
-                        cross_references["tools"][tool_id] = {"techniques": [], "tests": [], "demos": []}
+                        cross_references["tools"][tool_id] = {"techniques": [], "tests": [], "demos": [], "knowledge": []}
                     cross_references["tools"][tool_id]["demos"].append({
                         "id": demo_id,
                         "path": demo_path,
@@ -200,6 +201,31 @@ def generate_cross_references():
                     })
         except Exception as e:
             log.warning(f"Error reading demo file {demo_file_path}: {e}")
+    
+    # Scan knowledge articles for tool references
+    for knowledge_id, knowledge_meta in knowledge.items():
+        knowledge_path = knowledge_meta.get("path")
+        knowledge_title = knowledge_meta.get("title")
+        knowledge_platform = knowledge_meta.get("platform")
+        
+        # Read the full content of the knowledge file to find @MASTG-TOOL-XXXX references
+        knowledge_file_path = os.path.join("./docs", knowledge_path)
+        try:
+            with open(knowledge_file_path, 'r') as f:
+                content = f.read()
+                tool_refs = gather_tool_references_from_content(content, knowledge_file_path)
+                
+                for tool_id in tool_refs:
+                    if tool_id not in cross_references["tools"]:
+                        cross_references["tools"][tool_id] = {"techniques": [], "tests": [], "demos": [], "knowledge": []}
+                    cross_references["tools"][tool_id]["knowledge"].append({
+                        "id": knowledge_id,
+                        "path": knowledge_path,
+                        "title": knowledge_title,
+                        "platform": knowledge_platform
+                    })
+        except Exception as e:
+            log.warning(f"Error reading knowledge file {knowledge_file_path}: {e}")
     
     # Create cross-references for techniques
     # Scan tests for technique references
