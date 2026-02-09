@@ -1,6 +1,29 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('MASWE Index Filters', () => {
+  test('should have MASVS v2 ID column with styled category chips', async ({ page }) => {
+    await page.goto('/MASWE/');
+    const masvsCategoryHeader = page.locator('th:has-text("MASVS v2 ID")').first();
+    await expect(masvsCategoryHeader).toBeVisible();
+    
+    // Check that MASVS v2 ID cells have category chips with full control IDs inside
+    const categoryChip = page.locator('td span.md-tag:has-text("MASVS-")').first();
+    if ((await categoryChip.count()) > 0) {
+      await expect(categoryChip).toBeVisible();
+      const chipText = await categoryChip.textContent();
+      // Should contain full control ID (e.g., "MASVS-STORAGE-1", "MASVS-CRYPTO-2")
+      expect(chipText).toMatch(/MASVS-\w+-\d+/);
+      
+      // Verify white text color
+      const color = await categoryChip.evaluate(el => window.getComputedStyle(el).color);
+      expect(color).toContain('rgb(255, 255, 255)'); // White color
+      
+      // Verify it has background color
+      const bgColor = await categoryChip.evaluate(el => window.getComputedStyle(el).backgroundColor);
+      expect(bgColor).not.toBe('rgba(0, 0, 0, 0)'); // Not transparent
+    }
+  });
+
   test('should filter by platform', async ({ page }) => {
     await page.goto('/MASWE/');
     const androidCheckbox = page.locator('label:has-text("Android") input').first();
