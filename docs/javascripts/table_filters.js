@@ -184,6 +184,8 @@
       platform: findExact('platform'),
       status: findExact('status'),
       used_in: findAnyEquals(['used in']),
+      masvs_v2_id: findAnyEquals(['masvs v2 id', 'masvs-v2-id']),
+      category: findExact('category'),
       L1: findExact('l1'),
       L2: findExact('l2'),
       R: findExact('r'),
@@ -600,10 +602,10 @@
             // Supports both substring search and comma-separated ID list search.
             // Format: "#q:mastg-tech-0001,mastg-tech-0002,mastg-test-0100"
             // Behavior: Matches if ANY of the comma-separated IDs is found in ANY candidate field
-            // (ID, Title, Control, MASVS ID, or MASTG-TEST-ID columns)
+            // (ID, Title, Control, MASVS ID, MASTG-TEST-ID, MASVS v2 ID, or Category columns)
             if (state.search && state.search.length > 0) {
               const searchTerm = state.search.trim();
-              const candidates = [cols.id, cols.title, cols.control, cols.masvs, cols.mastgTestId]
+              const candidates = [cols.id, cols.title, cols.control, cols.masvs, cols.mastgTestId, cols.masvs_v2_id, cols.category]
                 .filter(idx => idx != null)
                 .map(idx => (rowData[idx] || '').toString().toLowerCase());
               

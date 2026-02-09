@@ -14,6 +14,28 @@ Tests for the "Used in" column functionality on the tools page:
 - Tests clickable links in the "Used in" column
 - Verifies proper icon display for different reference types
 
+### Tools Knowledge References (`tools-knowledge-references.spec.ts`)
+
+Tests for knowledge article references in the tools "Used in" column:
+
+- Verifies knowledge references appear in the "Used in" column
+- Tests clickable knowledge links with proper navigation
+- Validates knowledge icon display in "Used in" column
+- Tests navigation to knowledge page from tool links
+- Verifies proper ordering of multiple reference types (techniques, knowledge, demos, tests)
+
+### MASVS Category and Control Search (`masvs-category-control-search.spec.ts`)
+
+Tests for MASVS category and control search functionality:
+
+- Tests search by MASVS category (e.g., MASVS-STORAGE) in MASWE table
+- Tests search by specific MASVS control (e.g., MASVS-STORAGE-1) in MASWE table
+- Validates case-insensitive MASVS search
+- Tests multi-control search with comma separation
+- Tests MASVS category search in knowledge table
+- Validates combination of MASVS search with platform filters
+- Tests search term persistence across page navigations
+
 ### Show Unused Filter (`tools-show-unused-filter.spec.ts`)
 
 Tests for the "Show Unused" filter functionality:
