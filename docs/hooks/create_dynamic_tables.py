@@ -97,10 +97,12 @@ def get_all_weaknessess():
             frontmatter['L2'] = get_level_icon('L2', "L2" in frontmatter['profiles'])
             frontmatter['R'] = get_level_icon('R', "R" in frontmatter['profiles'])
             frontmatter['P'] = get_level_icon('P', "P" in frontmatter['profiles'])
-            frontmatter['status'] = frontmatter.get('status', 'new')
+            frontmatter['status'] = frontmatter.get('status', 'current')
             status = frontmatter['status']
             if status == 'new':
-                frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--new">new</span><span style="display: none;">status:new</span>'
+                status = 'current'
+            if status == 'current':
+                frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--current">current</span><span style="display: none;">status:current</span>'
             elif status == 'placeholder':
                 frontmatter['status'] = f'<a href="https://github.com/OWASP/maswe/issues?q=is%3Aopen+in%3Atitle+%22{weaknesses_id}%22" target="_blank"><span class="md-tag md-tag-icon md-tag--placeholder" style="min-width: 4em">placeholder</span></a><span style="display: none;">status:placeholder</span>'
             elif status == 'deprecated':
