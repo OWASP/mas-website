@@ -14,7 +14,7 @@ log = logging.getLogger('mkdocs')
 MASVS = None
 
 # MASVS category to CSS color variable mapping
-MAVS_CATEGORY_COLORS = {
+MASVS_CATEGORY_COLORS = {
     'MASVS-STORAGE': 'var(--tag-color-masvs-storage)',
     'MASVS-CRYPTO': 'var(--tag-color-masvs-crypto)',
     'MASVS-AUTH': 'var(--tag-color-masvs-auth)',
@@ -70,7 +70,7 @@ def get_platform_icon(platform):
 
 def get_masvs_category_chip(masvs_category):
     """Generate a styled chip for MASVS category"""
-    color = MAVS_CATEGORY_COLORS.get(masvs_category, '#999999')
+    color = MASVS_CATEGORY_COLORS.get(masvs_category, '#999999')
     
     return f'<span class="md-tag" style="background-color: {color}; color: white;">{masvs_category}</span><span style="display: none;">{masvs_category.lower()}</span>'
 
@@ -91,7 +91,7 @@ def get_all_weaknessess():
             frontmatter['masvs_category'] = frontmatter['masvs_v2_id'][:frontmatter['masvs_v2_id'].rfind('-')]
             # Apply chip styling to masvs_v2_id column with full control ID inside the chip
             masvs_v2_control_id = frontmatter['masvs_v2_id']
-            color = MAVS_CATEGORY_COLORS.get(frontmatter['masvs_category'], '#999999')
+            color = MASVS_CATEGORY_COLORS.get(frontmatter['masvs_category'], '#999999')
             frontmatter['masvs_v2_id'] = f'<span class="md-tag" style="background-color: {color}; color: white;">{masvs_v2_control_id}</span><span style="display: none;">{masvs_v2_control_id.lower()}</span>'
             frontmatter['L1'] = get_level_icon('L1', "L1" in frontmatter['profiles'])
             frontmatter['L2'] = get_level_icon('L2', "L2" in frontmatter['profiles'])
