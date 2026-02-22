@@ -430,7 +430,7 @@ def on_page_markdown(markdown, page, config, **kwargs):
     path = page.file.src_uri
     metadata = page.meta
 
-    if path.startswith("MASTG/0x05") or path.startswith("MASTG/0x06"):
+    if path.startswith(("MASTG/0x04", "MASTG/0x05", "MASTG/0x06")):
         column_titles = {'id': 'ID', 'title': 'Name', 'platform': "Platform"}
         header = "## Knowledge Articles\n\n"
         knowledge = get_mastg_components_dict("docs/MASTG/knowledge")
