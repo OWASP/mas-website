@@ -1,6 +1,6 @@
 ---
 title: "OWASP MAScon is here!"
-date: 2025-05-23
+date: 2025-03-20
 authors: [carlos, sven]
 slug: owasp-mascon-is-here
 ---
