@@ -2,7 +2,7 @@
 title: "OWASP MAScon is here!"
 date: 2025-05-23
 authors: [carlos, sven]
-slug: new-advocate-guardsquare
+slug: owasp-mascon-is-here
 ---
 
 For the very first time, the OWASP MAS team is organizing **OWASP MAScon**, a dedicated event built around the people, research, and practical work that drive mobile app security forward.
