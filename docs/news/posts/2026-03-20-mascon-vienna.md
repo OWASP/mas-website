@@ -18,22 +18,20 @@ Even more importantly, MAScon is being held within **OWASP Global AppSec EU 2026
 Organized by **Carlos Holguera** and **Sven Schleier**, OWASP MAS Leaders, MAScon is designed as a compact, high value program for practitioners who want substance, not fluff. The schedule brings together talks on offensive research, runtime internals, dynamic instrumentation, real world incidents, and the evolving tooling around mobile application testing.
 
 <center>
-<img style="width: 30%; border-radius: 5px" src="/assets/MAScon-vienna-schedule.png"/>
+<img style="width: 50%; border-radius: 5px" src="/assets/MAScon-vienna-schedule.png"/>
 </center>
 
-The event opens with an **introduction by the OWASP MAS team**, with **Carlos Holguera** and **Sven Schleier** appearing as the organizers and opening speakers.
+The event opens with an **introduction by the OWASP MAS team**, with **Carlos Holguera** and **Sven Schleier** appearing as the organizers and opening speakers. From there, the program dives straight into technical depth:
 
-From there, the program dives straight into technical depth.
+- **Carlos Holguera** and **Stefan Bernhardsgrütter** will present [**Let’s get frooky, Structured Mobile DAST with Frida**](https://owaspglobalappseceuvienna20.sched.com/event/2ICJK/owasp-mascon-lets-get-frooky-structured-mobile-dast-with-frida), a session focused on the practical challenges of mobile penetration testing and how structured, Frida powered instrumentation can help assess hardened applications at runtime.
 
-**Carlos Holguera** and **Stefan Bernhardsgrütter** will present [**Let’s get frooky, Structured Mobile DAST with Frida**](https://owaspglobalappseceuvienna20.sched.com/event/2ICJK/owasp-mascon-lets-get-frooky-structured-mobile-dast-with-frida), a session focused on the practical challenges of mobile penetration testing and how structured, Frida powered instrumentation can help assess hardened applications at runtime.
+- **Sergi Alvarez** (aka "pancake") will present [**Unveiling The Internals From Multiplatform Mobile Runtimes**](https://owaspglobalappseceuvienna20.sched.com/event/2ICKH/owasp-mascon-unveiling-the-internals-from-multiplatform-mobile-runtimes), taking attendees into the internals of frameworks such as Flutter, React, and Unity, and showing how low level reverse engineering techniques can recover code and data from release binaries.
 
-**Sergi Alvarez** (aka "pancake") will present [**Unveiling The Internals From Multiplatform Mobile Runtimes**](https://owaspglobalappseceuvienna20.sched.com/event/2ICKH/owasp-mascon-unveiling-the-internals-from-multiplatform-mobile-runtimes), taking attendees into the internals of frameworks such as Flutter, React, and Unity, and showing how low level reverse engineering techniques can recover code and data from release binaries.
+- **Jan Seredynski** will present [**Recent Mobile App Security Incidents from Real World Cases**](https://owaspglobalappseceuvienna20.sched.com/event/2ICWy/owasp-mascon-recent-mobile-app-security-incidents-from-real-world-cases), walking through concrete incidents from real mobile applications and extracting practical lessons on what fails in production and which secure practices actually hold up.
 
-**Jan Seredynski** will present [**Recent Mobile App Security Incidents from Real World Cases**](https://owaspglobalappseceuvienna20.sched.com/event/2ICWy/owasp-mascon-recent-mobile-app-security-incidents-from-real-world-cases), walking through concrete incidents from real mobile applications and extracting practical lessons on what fails in production and which secure practices actually hold up.
+- **Ole André Vadla Ravnås** will present [**Meet the New Frida Frontend on the Block**](https://owaspglobalappseceuvienna20.sched.com/event/2ICXO/owasp-mascon-meet-the-new-frida-frontend-on-the-block), introducing a new Frida frontend for macOS and iOS and exploring a more persistent, interactive, GUI driven workflow for live process analysis.
 
-**Ole André Vadla Ravnås** will present [**Meet the New Frida Frontend on the Block**](https://owaspglobalappseceuvienna20.sched.com/event/2ICXO/owasp-mascon-meet-the-new-frida-frontend-on-the-block), introducing a new Frida frontend for macOS and iOS and exploring a more persistent, interactive, GUI driven workflow for live process analysis.
-
-**Jeroen Beckers** will present [**Attacking ART**](https://owaspglobalappseceuvienna20.sched.com/event/2ICYA/owasp-mascon-attacking-art), a talk centered on a lesser known technique targeting the Android Runtime through ODEX and VDEX manipulation, especially relevant when dealing with applications protected by strong resiliency controls.
+- **Jeroen Beckers** will present [**Attacking ART**](https://owaspglobalappseceuvienna20.sched.com/event/2ICYA/owasp-mascon-attacking-art), a talk centered on a lesser known technique targeting the Android Runtime through ODEX and VDEX manipulation, especially relevant when dealing with applications protected by strong resiliency controls.
 
 The day concludes with a **closing session by the OWASP MAS team**, rounding out a memorable first edition.
 
