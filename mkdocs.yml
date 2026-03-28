@@ -150,8 +150,8 @@ nav:
             - ... | flat | MASTG/demos/android/MASVS-STORAGE/**/MASTG-DEMO-*.md
           - MASVS-CRYPTO:
             - ... | flat | MASTG/demos/android/MASVS-CRYPTO/**/MASTG-DEMO-*.md
-          # - MASVS-AUTH:
-          #   - ... | flat | MASTG/demos/android/MASVS-AUTH/**/MASTG-DEMO-*.md
+          - MASVS-AUTH:
+            - ... | flat | MASTG/demos/android/MASVS-AUTH/**/MASTG-DEMO-*.md
           - MASVS-NETWORK:
             - ... | flat | MASTG/demos/android/MASVS-NETWORK/**/MASTG-DEMO-*.md
           - MASVS-PLATFORM:
@@ -169,12 +169,12 @@ nav:
             - ... | flat | MASTG/demos/ios/MASVS-CRYPTO/**/MASTG-DEMO-*.md
           - MASVS-AUTH:
             - ... | flat | MASTG/demos/ios/MASVS-AUTH/**/MASTG-DEMO-*.md
-          # - MASVS-NETWORK:
-          #   - ... | flat | MASTG/demos/ios/MASVS-NETWORK/**/MASTG-DEMO-*.md
-          # - MASVS-PLATFORM:
-          #   - ... | flat | MASTG/demos/ios/MASVS-PLATFORM/**/MASTG-DEMO-*.md
-          # - MASVS-CODE:
-          #   - ... | flat | MASTG/demos/ios/MASVS-CODE/**/MASTG-DEMO-*.md
+          - MASVS-NETWORK:
+            - ... | flat | MASTG/demos/ios/MASVS-NETWORK/**/MASTG-DEMO-*.md
+          - MASVS-PLATFORM:
+            - ... | flat | MASTG/demos/ios/MASVS-PLATFORM/**/MASTG-DEMO-*.md
+          - MASVS-CODE:
+            - ... | flat | MASTG/demos/ios/MASVS-CODE/**/MASTG-DEMO-*.md
           - MASVS-RESILIENCE:
             - ... | flat | MASTG/demos/ios/MASVS-RESILIENCE/**/MASTG-DEMO-*.md
           # - MASVS-PRIVACY:
