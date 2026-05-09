@@ -314,7 +314,7 @@ def get_mastg_components_dict(name):
                     if frontmatter.get('platform') and type(frontmatter['platform']) == list:
                         frontmatter['platform'] = "".join([get_platform_icon(platform) for platform in frontmatter['platform']])
                     else:
-                        frontmatter['platform'] = get_platform_icon(frontmatter['platform'])
+                        frontmatter['platform'] = get_platform_icon(frontmatter.get('platform'))
 
                     profiles = frontmatter.get('profiles', [])
                     frontmatter['L1'] = get_level_icon('L1', "L1" in profiles)
