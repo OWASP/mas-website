@@ -202,6 +202,7 @@
     groupContainer.style.display = 'flex';
     groupContainer.style.alignItems = 'center';
     groupContainer.style.gap = '0.5rem';
+    groupContainer.style.marginRight = '0.5rem';
 
     const groupLabel = document.createElement('span');
     groupLabel.textContent = labelText;
