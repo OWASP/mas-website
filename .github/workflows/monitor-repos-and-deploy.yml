@@ -5,6 +5,9 @@ on:
     - cron: "*/30 * * * *"
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -59,6 +62,8 @@ jobs:
   deploy:
     needs: check
     if: needs.check.outputs.changed == 'true'
+    permissions:
+      contents: write
     uses: ./.github/workflows/build-website-reusable.yml
     with:
       deploy: true
@@ -69,6 +74,8 @@ jobs:
     needs: [check, deploy]
     if: needs.check.outputs.changed == 'true'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout gh-pages
         uses: actions/checkout@v4
