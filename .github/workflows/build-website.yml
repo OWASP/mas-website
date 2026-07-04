@@ -10,9 +10,14 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     if: github.event_name == 'workflow_dispatch' || github.actor == 'cpholguera' || github.actor == 'sushi2k' || github.actor == 'TheDauntless'
+    permissions:
+      contents: write
     uses: ./.github/workflows/build-website-reusable.yml
     with:
       deploy: true
