@@ -335,7 +335,7 @@ plugins:
   # https://squidfunk.github.io/mkdocs-material/plugins/blog/
       blog_dir: news
       pagination_per_page: 10
-      post_excerpt_max_authors: 2
+      post_excerpt_max_authors: 3
   - tags
       # tags_file: tags.md # TODO: bug in mkdocs? dynamic tags from hooks not appearing in tags.md
 markdown_extensions:
