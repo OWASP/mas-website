@@ -96,7 +96,7 @@ def get_maswe_placeholder_banner(meta, config):
     This weakness hasn't been created yet and it's a **placeholder**. But you can check its status or start working on it yourself.
     If the issue has not yet been assigned, you can request to be assigned to it and submit a PR with the new content for that weakness by following our [guidelines](https://docs.google.com/document/d/1EMsVdfrDBAu0gmjWAUEs60q-fWaOmDB5oecY9d9pOlg/edit?usp=sharing).
 
-    <a href="https://github.com/OWASP/mastg/issues?q=is%3Aopen+{id}" target="_blank">:material-github: Check our GitHub Issues for {id}</a>
+    <a href="https://github.com/OWASP/maswe/issues?q=is%3Aopen+{id}" target="_blank">:material-github: Check our GitHub Issues for {id}</a>
 
     ## Initial Description or Hints
 
@@ -121,11 +121,11 @@ def get_tests_placeholder_banner(meta):
 !!! warning "Placeholder MASTG-TEST"
 
     This test hasn't been created yet and it's a **placeholder**. But you can check its status or start working on it yourself.
-    If the issue has not yet been assigned, you can request to be assigned to it and submit a PR with the new content for that test by following our [guidelines](https://docs.google.com/document/d/1EMsVdfrDBAu0gmjWAUEs60q-fWaOmDB5oecY9d9pOlg/edit?pli=1&tab=t.0#heading=h.j1tiymiuocrm).
+    If the issue has not yet been assigned, you can request to be assigned to it and submit a PR with the new content for that test by following our [guidelines](https://mas.owasp.org/contributing/writing-content/).
 
     <a href="https://github.com/OWASP/mastg/issues?q=is%3Aopen+{id}" target="_blank">:material-github: Check our GitHub Issues for {id}</a>
 
-    If an issue doesn't exist yet, please create one and assign it to yourself or request to be assigned to it.
+    If an issue doesn't exist yet, please create one and request to be assigned to it.
 
 ## Draft Description
 
@@ -207,6 +207,198 @@ def get_deprecated_knowledge_banner(meta):
 
     return banner
 
+def get_demos_placeholder_banner(meta):
+    id = meta.get('id')
+    note = meta.get('note', None)
+    test = meta.get('test', None)
+
+    banner = f"""
+!!! warning "Placeholder MASTG-DEMO"
+
+    This demo hasn't been created yet and it's a **placeholder**. But you can check its status or start working on it yourself.
+    If the issue has not yet been assigned, you can request to be assigned to it and submit a PR with the new content for that demo by following our [guidelines](https://mas.owasp.org/contributing/writing-content/).
+
+    <a href="https://github.com/OWASP/mastg/issues?q=is%3Aopen+{id}" target="_blank">:material-github: Check our GitHub Issues for {id}</a>
+
+    If an issue doesn't exist yet, please create one and request to be assigned to it.
+
+## Draft Description
+
+{note}
+
+For more details, check the associated test: @{test}
+
+"""
+    return banner
+
+def get_demos_deprecated_banner(meta):
+    id = meta.get('id')
+    deprecation_note = meta.get('deprecation_note', "The demo is no longer relevant or was replaced by other demos.")
+    covered_by = meta.get('covered_by', [])
+
+    if covered_by:
+        covered_by_section = "\n".join([f"    - @{demo}" for demo in covered_by])
+    else:
+        covered_by_section = "    No demos are covering this demo."
+
+    banner = f"""
+!!! danger "Deprecated Demo"
+
+    This demo is **deprecated** and should not be used anymore. **Reason**: {deprecation_note}
+
+    Please check the following demos that cover this demo:
+
+{covered_by_section}
+"""
+    return banner
+
+def get_best_practices_placeholder_banner(meta):
+    id = meta.get('id')
+    note = meta.get('note', "This best practice is a placeholder and will be created soon.")
+
+    banner = f"""
+!!! warning "Placeholder Best Practice"
+
+    This best practice hasn't been created yet and it's a **placeholder**. But you can check its status or start working on it yourself.
+    If the issue has not yet been assigned, you can request to be assigned to it and submit a PR with the new content for that best practice by following our [guidelines](https://docs.google.com/document/d/1EMsVdfrDBAu0gmjWAUEs60q-fWaOmDB5oecY9d9pOlg/edit?usp=sharing).
+
+    <a href="https://github.com/OWASP/mastg/issues?q=is%3Aopen+{id}" target="_blank">:material-github: Check our GitHub Issues for {id}</a>
+
+    If an issue doesn't exist yet, please create one and request to be assigned to it.
+
+## Draft Description
+
+{note}
+
+"""
+    return banner
+
+def get_best_practices_deprecated_banner(meta):
+    id = meta.get('id')
+    deprecation_note = meta.get('deprecation_note', "The best practice is no longer relevant or was replaced by other best practices.")
+    covered_by = meta.get('covered_by', [])
+
+    if covered_by:
+        covered_by_section = "\n".join([f"    - @{bp}" for bp in covered_by])
+    else:
+        covered_by_section = "    No best practices are covering this best practice."
+
+    banner = f"""
+!!! danger "Deprecated Best Practice"
+
+    This best practice is **deprecated** and should not be used anymore. **Reason**: {deprecation_note}
+
+    Please check the following best practices that cover this best practice:
+
+{covered_by_section}
+"""
+    return banner
+
+def get_tools_placeholder_banner(meta):
+    id = meta.get('id')
+    note = meta.get('note', "This tool is a placeholder and will be created soon.")
+
+    banner = f"""
+!!! warning "Placeholder Tool"
+
+    This tool hasn't been created yet and it's a **placeholder**. But you can check its status or start working on it yourself.
+    If the issue has not yet been assigned, you can request to be assigned to it and submit a PR with the new content for that tool by following our [guidelines](https://docs.google.com/document/d/1EMsVdfrDBAu0gmjWAUEs60q-fWaOmDB5oecY9d9pOlg/edit?usp=sharing).
+
+    <a href="https://github.com/OWASP/mastg/issues?q=is%3Aopen+{id}" target="_blank">:material-github: Check our GitHub Issues for {id}</a>
+
+    If an issue doesn't exist yet, please create one and request to be assigned to it.
+
+## Draft Description
+
+{note}
+
+"""
+    return banner
+
+def get_apps_placeholder_banner(meta):
+    id = meta.get('id')
+    note = meta.get('note', "This app is a placeholder and will be created soon.")
+
+    banner = f"""
+!!! warning "Placeholder App"
+
+    This app hasn't been created yet and it's a **placeholder**. But you can check its status or start working on it yourself.
+    If the issue has not yet been assigned, you can request to be assigned to it and submit a PR with the new content for that app by following our [guidelines](https://docs.google.com/document/d/1EMsVdfrDBAu0gmjWAUEs60q-fWaOmDB5oecY9d9pOlg/edit?usp=sharing).
+
+    <a href="https://github.com/OWASP/mastg/issues?q=is%3Aopen+{id}" target="_blank">:material-github: Check our GitHub Issues for {id}</a>
+
+    If an issue doesn't exist yet, please create one and request to be assigned to it.
+
+## Draft Description
+
+{note}
+
+"""
+    return banner
+
+def get_apps_deprecated_banner(meta):
+    id = meta.get('id')
+    deprecation_note = meta.get('deprecation_note', "The app is no longer relevant or was replaced by other apps.")
+    covered_by = meta.get('covered_by', [])
+
+    if covered_by:
+        covered_by_section = "\n".join([f"    - @{app}" for app in covered_by])
+    else:
+        covered_by_section = "    No apps are covering this app."
+
+    banner = f"""
+!!! danger "Deprecated App"
+
+    This app is **deprecated** and should not be used anymore. **Reason**: {deprecation_note}
+
+    Please check the following apps that cover this app:
+
+{covered_by_section}
+"""
+    return banner
+
+def get_techniques_placeholder_banner(meta):
+    id = meta.get('id')
+    note = meta.get('note', "This technique is a placeholder and will be created soon.")
+
+    banner = f"""
+!!! warning "Placeholder Technique"
+
+    This technique hasn't been created yet and it's a **placeholder**. But you can check its status or start working on it yourself.
+    If the issue has not yet been assigned, you can request to be assigned to it and submit a PR with the new content for that technique by following our [guidelines](https://docs.google.com/document/d/1EMsVdfrDBAu0gmjWAUEs60q-fWaOmDB5oecY9d9pOlg/edit?usp=sharing).
+
+    <a href="https://github.com/OWASP/mastg/issues?q=is%3Aopen+{id}" target="_blank">:material-github: Check our GitHub Issues for {id}</a>
+
+    If an issue doesn't exist yet, please create one and request to be assigned to it.
+
+## Draft Description
+
+{note}
+
+"""
+    return banner
+
+def get_techniques_deprecated_banner(meta):
+    id = meta.get('id')
+    deprecation_note = meta.get('deprecation_note', "The technique is no longer relevant or was replaced by other techniques.")
+    covered_by = meta.get('covered_by', [])
+
+    if covered_by:
+        covered_by_section = "\n".join([f"    - @{tech}" for tech in covered_by])
+    else:
+        covered_by_section = "    No techniques are covering this technique."
+
+    banner = f"""
+!!! danger "Deprecated Technique"
+
+    This technique is **deprecated** and should not be used anymore. **Reason**: {deprecation_note}
+
+    Please check the following techniques that cover this technique:
+
+{covered_by_section}
+"""
+    return banner
+
 def get_maswe_deprecated_banner(meta, config):
     id = meta.get('id')
     deprecation_note = meta.get('deprecation_note', "The weakness is no longer relevant or was replaced by other weaknesses.")
@@ -254,11 +446,38 @@ def on_page_markdown(markdown, page, config, **kwargs):
         if link := config["issue_mapping"].get(page.meta.get("id")):
             banners.append(get_v1_refactor_tests_banner(page.meta, link[0], escape(link[1])))
 
-    if "MASTG/tools/" in path and page.meta.get('status') == 'deprecated':
-        banners.append(get_deprecated_tools_banner(page.meta))
+    if "MASTG/tools/" in path:
+        if page.meta.get('status') == 'deprecated':
+            banners.append(get_deprecated_tools_banner(page.meta))
+        if page.meta.get('status') == 'placeholder':
+            banners.append(get_tools_placeholder_banner(page.meta))
 
     if "MASTG/knowledge/" in path and page.meta.get('status') == 'deprecated':
         banners.append(get_deprecated_knowledge_banner(page.meta))
+
+    if "MASTG/apps/" in path:
+        if page.meta.get('status') == 'deprecated':
+            banners.append(get_apps_deprecated_banner(page.meta))
+        if page.meta.get('status') == 'placeholder':
+            banners.append(get_apps_placeholder_banner(page.meta))
+
+    if "MASTG/techniques/" in path:
+        if page.meta.get('status') == 'deprecated':
+            banners.append(get_techniques_deprecated_banner(page.meta))
+        if page.meta.get('status') == 'placeholder':
+            banners.append(get_techniques_placeholder_banner(page.meta))
+
+    if "MASTG/demos/" in path:
+        if page.meta.get('status') == 'deprecated':
+            banners.append(get_demos_deprecated_banner(page.meta))
+        if page.meta.get('status') == 'placeholder':
+            banners.append(get_demos_placeholder_banner(page.meta))
+
+    if "MASTG/best-practices/" in path:
+        if page.meta.get('status') == 'deprecated':
+            banners.append(get_best_practices_deprecated_banner(page.meta))
+        if page.meta.get('status') == 'placeholder':
+            banners.append(get_best_practices_placeholder_banner(page.meta))
 
     if banners:
         markdown = "\n\n".join(banners) + "\n\n" + markdown

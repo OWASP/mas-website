@@ -1,0 +1,92 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install system dependencies
+      run: sudo apt-get update && sudo apt-get install -y libxml2-dev libxslt-dev
+
+    - name: Setup Python virtual environment and install dependencies
+      uses: getsentry/action-setup-venv@v2.1.1
+      id: venv
+      with:
+        python-version: 3.x
+        cache-dependency-path: requirements.txt
+        install-cmd: pip install -r requirements.txt
+
+    - name: Create repository directory structure
+      run: |
+        mkdir -p repos/mastg
+        mkdir -p repos/maswe
+        mkdir -p repos/masvs
+
+    - name: Checkout MASTG
+      uses: actions/checkout@v4
+      with:
+        repository: "OWASP/mastg"
+        ref: 'master'
+        fetch-depth: 1
+        path: repos/mastg
+
+    - name: Checkout MASWE
+      uses: actions/checkout@v4
+      with:
+        repository: "OWASP/maswe"
+        ref: 'main'
+        fetch-depth: 1
+        path: repos/maswe
+
+    - name: Checkout MASVS
+      uses: actions/checkout@v4
+      with:
+        repository: "OWASP/masvs"
+        ref: 'master'
+        fetch-depth: 1
+        path: repos/masvs
+
+    - name: Generate MASVS yaml
+      run: python3 repos/masvs/tools/generate_masvs_yaml.py -v v2.0.0 -i repos/masvs/Document -c repos/masvs/controls
+
+    - name: Build website
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: mkdocs build --clean --verbose
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install Node dependencies
+      run: npm install
+
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps chromium
+
+    - name: Run Playwright tests
+      run: npm test
+
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30

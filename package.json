@@ -1,0 +1,17 @@
+{
+  "name": "mas-website",
+  "version": "1.0.0",
+  "description": "OWASP Mobile Application Security Website",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug"
+  },
+  "keywords": ["owasp", "mobile", "security"],
+  "author": "OWASP MAS Team",
+  "license": "CC-BY-4.0",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  }
+}

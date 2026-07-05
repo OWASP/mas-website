@@ -10,8 +10,20 @@ import logging
 
 import requests
 log = logging.getLogger('mkdocs')
+
 MASVS = None
 
+# MASVS category to CSS color variable mapping
+MASVS_CATEGORY_COLORS = {
+    'MASVS-STORAGE': 'var(--tag-color-masvs-storage)',
+    'MASVS-CRYPTO': 'var(--tag-color-masvs-crypto)',
+    'MASVS-AUTH': 'var(--tag-color-masvs-auth)',
+    'MASVS-NETWORK': 'var(--tag-color-masvs-network)',
+    'MASVS-PLATFORM': 'var(--tag-color-masvs-platform)',
+    'MASVS-CODE': 'var(--tag-color-masvs-code)',
+    'MASVS-RESILIENCE': 'var(--tag-color-masvs-resilience)',
+    'MASVS-PRIVACY': 'var(--tag-color-masvs-privacy)'
+}
 def is_v1_test(test_identifier):
     """Check if a test is v1 (MASTG-TEST-0000 to MASTG-TEST-0199)"""
     match = re.search(r'MASTG-TEST-(\d+)', test_identifier)
@@ -56,6 +68,12 @@ def get_platform_icon(platform):
     else:
         return '<span style="font-size: x-large; color: darkgrey;" title="Unknown"> :material-progress-question: </span><span style="display: none;">platform:unknown</span>'
 
+def get_masvs_category_chip(masvs_category):
+    """Generate a styled chip for MASVS category"""
+    color = MASVS_CATEGORY_COLORS.get(masvs_category, '#999999')
+    
+    return f'<span class="md-tag" style="background-color: {color}; color: white;">{masvs_category}</span><span style="display: none;">{masvs_category.lower()}</span>'
+
 def get_all_weaknessess():
 
     weaknesses = []
@@ -71,16 +89,22 @@ def get_all_weaknessess():
             frontmatter['title'] = f"@{frontmatter['id']}"
             frontmatter['masvs_v2_id'] = frontmatter['mappings']['masvs-v2'][0]
             frontmatter['masvs_category'] = frontmatter['masvs_v2_id'][:frontmatter['masvs_v2_id'].rfind('-')]
+            # Apply chip styling to masvs_v2_id column with full control ID inside the chip
+            masvs_v2_control_id = frontmatter['masvs_v2_id']
+            color = MASVS_CATEGORY_COLORS.get(frontmatter['masvs_category'], '#999999')
+            frontmatter['masvs_v2_id'] = f'<span class="md-tag" style="background-color: {color}; color: white;">{masvs_v2_control_id}</span><span style="display: none;">{masvs_v2_control_id.lower()}</span>'
             frontmatter['L1'] = get_level_icon('L1', "L1" in frontmatter['profiles'])
             frontmatter['L2'] = get_level_icon('L2', "L2" in frontmatter['profiles'])
             frontmatter['R'] = get_level_icon('R', "R" in frontmatter['profiles'])
             frontmatter['P'] = get_level_icon('P', "P" in frontmatter['profiles'])
-            frontmatter['status'] = frontmatter.get('status', 'new')
+            frontmatter['status'] = frontmatter.get('status', 'current')
             status = frontmatter['status']
             if status == 'new':
-                frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--new">new</span><span style="display: none;">status:new</span>'
+                status = 'current'
+            if status == 'current':
+                frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--current">current</span><span style="display: none;">status:current</span>'
             elif status == 'placeholder':
-                frontmatter['status'] = f'<a href="https://github.com/OWASP/mastg/issues?q=is%3Aopen+in%3Atitle+%22{weaknesses_id}%22" target="_blank"><span class="md-tag md-tag-icon md-tag--placeholder" style="min-width: 4em">placeholder</span></a><span style="display: none;">status:placeholder</span>'
+                frontmatter['status'] = f'<a href="https://github.com/OWASP/maswe/issues?q=is%3Aopen+in%3Atitle+%22{weaknesses_id}%22" target="_blank"><span class="md-tag md-tag-icon md-tag--placeholder" style="min-width: 4em">placeholder</span></a><span style="display: none;">status:placeholder</span>'
             elif status == 'deprecated':
                 frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--deprecated">deprecated</span><span style="display: none;">status:deprecated</span>'
             frontmatter['platform'] = "".join([get_platform_icon(platform) for platform in frontmatter['platform']])
@@ -199,7 +223,10 @@ def add_test_rows(checklist, platform, control):
             if is_v1_test(test['id']):
                 checklist_row['Status'] = test.get('status', 'update-pending')
             elif is_v2_test(test['id']):
-                checklist_row['Status'] = test.get('status', 'new')
+                status = test.get('status', 'current')
+                if status == 'new':
+                    status = 'current'
+                checklist_row['Status'] = status
             checklist.append(checklist_row)
 
 def get_checklist_dict():
@@ -247,7 +274,9 @@ def set_icons_for_web(checklist):
             # Process status field for test rows
             status = row.get('Status')
             if status == 'new':
-                row['Status'] = '<span class="md-tag md-tag-icon md-tag--new">new</span><span style="display: none;">status:new</span>'
+                status = 'current'
+            if status == 'current':
+                row['Status'] = '<span class="md-tag md-tag-icon md-tag--current">current</span><span style="display: none;">status:current</span>'
             elif status == 'placeholder':
                 row['Status'] = f'<a href="https://github.com/OWASP/mastg/issues?q=is%3Aopen+in%3Atitle+%22{test_id}%22" target="_blank"><span class="md-tag md-tag-icon md-tag--placeholder" style="min-width: 4em;">placeholder</span></a><span style="display: none;">status:placeholder</span>'
             elif status == 'deprecated':
@@ -285,7 +314,7 @@ def get_mastg_components_dict(name):
                     if frontmatter.get('platform') and type(frontmatter['platform']) == list:
                         frontmatter['platform'] = "".join([get_platform_icon(platform) for platform in frontmatter['platform']])
                     else:
-                        frontmatter['platform'] = get_platform_icon(frontmatter['platform'])
+                        frontmatter['platform'] = get_platform_icon(frontmatter.get('platform'))
 
                     profiles = frontmatter.get('profiles', [])
                     frontmatter['L1'] = get_level_icon('L1', "L1" in profiles)
@@ -293,21 +322,40 @@ def get_mastg_components_dict(name):
                     frontmatter['R'] = get_level_icon('R', "R" in profiles)
                     frontmatter['P'] = get_level_icon('P', "P" in profiles)
 
+                    # Handle status for all component types
                     if is_v1_test(component_id):
                         frontmatter['status'] = frontmatter.get('status', 'update-pending')
                         if frontmatter['status'] == 'update-pending':
-                            # add github link to the issue tracker
                             frontmatter['status'] = f'<a href="https://github.com/OWASP/mastg/issues?q=is%3Aopen+in%3Atitle+%22{component_id}%22" target="_blank"><span class="md-tag md-tag-icon md-tag--update-pending" style="min-width: 4em">update-pending</span></a><span style="display: none;">status:update-pending</span>'
                         elif frontmatter['status'] == 'deprecated':
                             frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--deprecated">deprecated</span><span style="display: none;">status:deprecated</span>'
                     elif is_v2_test(component_id):
-                        frontmatter['status'] = frontmatter.get('status', 'new')
-                        if frontmatter['status'] == 'new':
-                            frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--new">new</span><span style="display: none;">status:new</span>'
+                        frontmatter['status'] = frontmatter.get('status', 'current')
+                        status = frontmatter['status']
+                        if status == 'new':
+                            status = 'current'
+                        if status == 'current':
+                            frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--current">current</span><span style="display: none;">status:current</span>'
                         elif frontmatter['status'] == 'placeholder':
                             frontmatter['status'] = f'<a href="https://github.com/OWASP/mastg/issues?q=is%3Aopen+in%3Atitle+%22{component_id}%22" target="_blank"><span class="md-tag md-tag-icon md-tag--placeholder" style="min-width: 4em">placeholder</span></a><span style="display: none;">status:placeholder</span>'
                         elif frontmatter['status'] == 'deprecated':
                             frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--deprecated">deprecated</span><span style="display: none;">status:deprecated</span>'
+                    else:
+                        # For non-test components (tools, apps, techniques, knowledge)
+                        frontmatter['status'] = frontmatter.get('status', 'current')
+                        status = frontmatter['status']
+                        if status == 'new':
+                            status = 'current'
+                        if status == 'current':
+                            frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--current">current</span><span style="display: none;">status:current</span>'
+                        elif status == 'placeholder':
+                            frontmatter['status'] = f'<a href="https://github.com/OWASP/mastg/issues?q=is%3Aopen+in%3Atitle+%22{component_id}%22" target="_blank"><span class="md-tag md-tag-icon md-tag--placeholder" style="min-width: 4em">placeholder</span></a><span style="display: none;">status:placeholder</span>'
+                        elif status == 'deprecated':
+                            frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--deprecated">deprecated</span><span style="display: none;">status:deprecated</span>'
+                    
+                    # Add MASVS category chip for knowledge articles
+                    if 'masvs_category' in frontmatter and frontmatter['masvs_category']:
+                        frontmatter['category'] = get_masvs_category_chip(frontmatter['masvs_category'])
 
                     components.append(frontmatter)
         return components
@@ -329,10 +377,12 @@ def get_all_demos_beta():
             frontmatter['id'] = demo_id
             frontmatter['title'] = f"@{demo_id}"
             frontmatter['platform'] = get_platform_icon(frontmatter['platform'])
-            frontmatter['status'] = frontmatter.get('status', 'new')
+            frontmatter['status'] = frontmatter.get('status', 'current')
             status = frontmatter['status']
             if status == 'new':
-                frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--new">new</span><span style="display: none;">status:new</span>'
+                status = 'current'
+            if status == 'current':
+                frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--current">current</span><span style="display: none;">status:current</span>'
             elif status == 'placeholder':
                 frontmatter['status'] = f'<a href="https://github.com/OWASP/mastg/issues?q=is%3Aopen+in%3Atitle+%22{demo_id}%22" target="_blank"><span class="md-tag md-tag-icon md-tag--placeholder" style="min-width: 4em">placeholder</span></a><span style="display: none;">status:placeholder</span>'
             elif status == 'deprecated':
@@ -356,6 +406,16 @@ def get_all_mitigations_beta():
                 frontmatter['id'] = mitigation_id
                 frontmatter['title'] = f"@{mitigation_id}"
                 frontmatter['platform'] = get_platform_icon(frontmatter['platform'])
+                frontmatter['status'] = frontmatter.get('status', 'current')
+                status = frontmatter['status']
+                if status == 'new':
+                    status = 'current'
+                if status == 'current':
+                    frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--current">current</span><span style="display: none;">status:current</span>'
+                elif status == 'placeholder':
+                    frontmatter['status'] = f'<a href="https://github.com/OWASP/mastg/issues?q=is%3Aopen+in%3Atitle+%22{mitigation_id}%22" target="_blank"><span class="md-tag md-tag-icon md-tag--placeholder" style="min-width: 4em">placeholder</span></a><span style="display: none;">status:placeholder</span>'
+                elif status == 'deprecated':
+                    frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--deprecated">deprecated</span><span style="display: none;">status:deprecated</span>'
 
                 mitigations.append(frontmatter)
         return mitigations
@@ -370,7 +430,7 @@ def on_page_markdown(markdown, page, config, **kwargs):
     path = page.file.src_uri
     metadata = page.meta
 
-    if path.startswith("MASTG/0x05") or path.startswith("MASTG/0x06"):
+    if path.startswith(("MASTG/0x04", "MASTG/0x05", "MASTG/0x06")):
         column_titles = {'id': 'ID', 'title': 'Name', 'platform': "Platform"}
         header = "## Knowledge Articles\n\n"
         knowledge = get_mastg_components_dict("docs/MASTG/knowledge")
@@ -384,7 +444,7 @@ def on_page_markdown(markdown, page, config, **kwargs):
     if path.endswith("knowledge/index.md"):
         # knowledge/index.md
 
-        column_titles = {'id': 'ID', 'title': 'Name', 'platform': "Platform"}
+        column_titles = {'id': 'ID', 'title': 'Name', 'platform': "Platform", 'category': 'Category', 'status': 'Status'}
 
         knowledge = get_mastg_components_dict("docs/MASTG/knowledge")
         knowledge_of_type = [reorder_dict_keys(know, column_titles.keys()) for know in knowledge]
@@ -417,7 +477,7 @@ def on_page_markdown(markdown, page, config, **kwargs):
     elif path.endswith("best-practices/index.md"):
         # mitigations/index.md
 
-        column_titles = {'id': 'ID', 'title': 'Title', 'platform': "Platform"}
+        column_titles = {'id': 'ID', 'title': 'Title', 'platform': "Platform", 'status': 'Status'}
 
         mitigations_beta = config["mitigations_beta"]
         mitigations_beta_columns_reordered = [reorder_dict_keys(mitigation, column_titles.keys()) for mitigation in mitigations_beta]
@@ -428,25 +488,109 @@ def on_page_markdown(markdown, page, config, **kwargs):
 
         # tools/index.md
 
-        column_titles = {'id': 'ID', 'title': 'Name', 'platform': "Platform"} # TODO , 'refs': 'Refs', 'techniques': 'Techniques'
+        column_titles = {'id': 'ID', 'title': 'Name', 'platform': "Platform", 'used_in': "Used in", 'used_in_demos': "Used in Demos", 'status': 'Status'}
 
         tools = get_mastg_components_dict("docs/MASTG/tools")
+        
+        # Add "Used in" information from cross-references
+        cross_references = getattr(config, 'cross_references', {})
+        tool_refs = cross_references.get("tools", {})
+        
+        def create_used_in_link(base_path, ids, count, icon, label):
+            """Helper to generate a 'Used in' link with icon and count"""
+            ids_str = ",".join([item["id"] for item in ids])
+            return f'<a href="/MASTG/{base_path}/#q:{ids_str.lower()}" title="Used in {count} {label}(s)"><span style="display: inline-flex; align-items: center; gap: 0.25rem;">{icon} {count} MASTG-{label.upper()}</span></a>'
+        
+        for tool in tools:
+            tool_id = tool['id']
+            refs = tool_refs.get(tool_id, {"techniques": [], "tests": [], "demos": [], "knowledge": []})
+            
+            tech_count = len(refs.get("techniques", []))
+            test_count = len(refs.get("tests", []))
+            demo_count = len(refs.get("demos", []))
+            know_count = len(refs.get("knowledge", []))
+            
+            # Create links with counts and icons
+            used_in_parts = []
+            
+            if tech_count > 0:
+                used_in_parts.append(create_used_in_link("techniques", refs["techniques"], tech_count, ":material-magic-staff:", "tech"))
+            
+            if know_count > 0:
+                used_in_parts.append(create_used_in_link("knowledge", refs["knowledge"], know_count, ":material-book-open-variant:", "know"))
+            
+            if demo_count > 0:
+                used_in_parts.append(create_used_in_link("demos", refs["demos"], demo_count, ":material-flask-outline:", "demo"))
+            
+            if test_count > 0:
+                used_in_parts.append(create_used_in_link("tests", refs["tests"], test_count, ":octicons-codescan-checkmark-24:", "test"))
+            
+            # Add "unused" marker if no references
+            if tech_count == 0 and demo_count == 0 and test_count == 0 and know_count == 0:
+                tool['used_in'] = '<span style="display: none;">unused</span><span style="color: #999; font-style: italic;">Unused</span>'
+            else:
+                tool['used_in'] = "<br>".join(used_in_parts)
+            
+            # Add separate "Used in Demos" column
+            if demo_count > 0:
+                tool['used_in_demos'] = str(demo_count)
+            else:
+                tool['used_in_demos'] = '0'
+        
         tools_of_type = [reorder_dict_keys(tool, column_titles.keys()) for tool in tools]
         return append_to_page(markdown, "\n" + list_of_dicts_to_md_table(tools_of_type, column_titles))
 
     elif path.endswith("techniques/index.md"):
         # techniques/index.md
 
-        column_titles = {'id': 'ID', 'title': 'Name', 'platform': "Platform"} # TODO , 'tools': 'Tools'
+        column_titles = {'id': 'ID', 'title': 'Name', 'platform': "Platform", 'used_in': "Used in", 'used_in_tests': "Used in Tests", 'status': 'Status'}
 
         techniques = get_mastg_components_dict("docs/MASTG/techniques")
+        
+        # Add "Used in" information from cross-references
+        cross_references = getattr(config, 'cross_references', {})
+        technique_refs = cross_references.get("techniques", {})
+        
+        def create_used_in_link(base_path, ids, count, icon, label):
+            """Helper to generate a 'Used in' link with icon and count"""
+            ids_str = ",".join([item["id"] for item in ids])
+            return f'<a href="/MASTG/{base_path}/#q:{ids_str.lower()}" title="Used in {count} {label}(s)"><span style="display: inline-flex; align-items: center; gap: 0.25rem;">{icon} {count} MASTG-{label.upper()}</span></a>'
+        
+        for technique in techniques:
+            technique_id = technique['id']
+            refs = technique_refs.get(technique_id, {"tests": [], "demos": []})
+            
+            test_count = len(refs.get("tests", []))
+            demo_count = len(refs.get("demos", []))
+            
+            # Create links with counts and icons
+            used_in_parts = []
+            
+            if demo_count > 0:
+                used_in_parts.append(create_used_in_link("demos", refs["demos"], demo_count, ":material-flask-outline:", "demo"))
+            
+            if test_count > 0:
+                used_in_parts.append(create_used_in_link("tests", refs["tests"], test_count, ":octicons-codescan-checkmark-24:", "test"))
+            
+            # Add "unused" marker if no references
+            if test_count == 0 and demo_count == 0:
+                technique['used_in'] = '<span style="display: none;">unused</span><span style="color: #999; font-style: italic;">Unused</span>'
+            else:
+                technique['used_in'] = "<br>".join(used_in_parts)
+            
+            # Add separate "Used in Tests" column
+            if test_count > 0:
+                technique['used_in_tests'] = str(test_count)
+            else:
+                technique['used_in_tests'] = '0'
+        
         techniques_of_type = [reorder_dict_keys(technique, column_titles.keys()) for technique in techniques]
-        return append_to_page(markdown, list_of_dicts_to_md_table(techniques_of_type, column_titles) )
+        return append_to_page(markdown, "\n" + list_of_dicts_to_md_table(techniques_of_type, column_titles))
 
     elif path.endswith("apps/index.md"):
         # apps/index.md
 
-        column_titles = {'id': 'ID', 'title': 'Name', 'platform': "Platform"} # TODO , 'techniques': 'Used in'
+        column_titles = {'id': 'ID', 'title': 'Name', 'platform': "Platform", 'status': 'Status'}
 
         apps = get_mastg_components_dict("docs/MASTG/apps")
         apps_of_type = [reorder_dict_keys(app, column_titles.keys()) for app in apps]

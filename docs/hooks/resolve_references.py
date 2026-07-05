@@ -12,6 +12,12 @@ mapping = {"KNOW":{}, "TECH":{}, "TOOL":{}, "TEST": {}, "APP": {}, "MASWE": {}, 
 
 @mkdocs.plugins.event_priority(-50)
 def on_page_markdown(markdown, page, config, **kwargs):
+    src_path = getattr(page.file, "src_path", page.file.src_uri)
+    normalized_src_path = src_path.replace("\\", "/")
+
+    if normalized_src_path.startswith("contributing/writing-content/"):
+        return markdown
+
     path = page.file.src_uri
 
     icons = config.get('resolve_ref_icons')
@@ -30,7 +36,7 @@ def on_page_markdown(markdown, page, config, **kwargs):
 
         icon = icons_for_text.get(refType, ":octicons-question-24: ")
 
-        return f"_[{icon}{mapping[refType][match]['title']}](/{match.group(1)} \"{refType}\")_"
+        return f"*[{icon}{mapping[refType][match]['title']}](/{match.group(1)} \"{refType}\")*"
 
     def replaceReferenceMASWE(match):
         refType = "MASWE"
@@ -42,7 +48,7 @@ def on_page_markdown(markdown, page, config, **kwargs):
             mapping[refType][match] = target
 
         icon = icons_for_text.get(refType, ":octicons-question-24: ")
-        return f"_[{icon}{mapping[refType][match]['title']}](/{match.group(1)} \"{refType}\")_"
+        return f"*[{icon}{mapping[refType][match]['title']}](/{match.group(1)} \"{refType}\")*"
 
     def replaceReferenceMASVS(match):
         refType = "MASVS"
@@ -54,7 +60,7 @@ def on_page_markdown(markdown, page, config, **kwargs):
             mapping[refType][match] = target
 
         icon = icons_for_text.get(refType, ":octicons-question-24: ")
-        return f"_[{icon}{mapping[refType][match]['title']}](/{match.group(1)} \"{refType}\")_"
+        return f"*[{icon}{mapping[refType][match]['title']}](/{match.group(1)} \"{refType}\")*"
 
 
     updated_markdown = re.sub(r'@(MASTG-(KNOW|TECH|TOOL|TEST|APP|DEMO|BEST)-\d{3,})', replaceReference, markdown)

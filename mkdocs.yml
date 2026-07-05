@@ -150,8 +150,8 @@ nav:
             - ... | flat | MASTG/demos/android/MASVS-STORAGE/**/MASTG-DEMO-*.md
           - MASVS-CRYPTO:
             - ... | flat | MASTG/demos/android/MASVS-CRYPTO/**/MASTG-DEMO-*.md
-          # - MASVS-AUTH:
-          #   - ... | flat | MASTG/demos/android/MASVS-AUTH/**/MASTG-DEMO-*.md
+          - MASVS-AUTH:
+            - ... | flat | MASTG/demos/android/MASVS-AUTH/**/MASTG-DEMO-*.md
           - MASVS-NETWORK:
             - ... | flat | MASTG/demos/android/MASVS-NETWORK/**/MASTG-DEMO-*.md
           - MASVS-PLATFORM:
@@ -169,12 +169,12 @@ nav:
             - ... | flat | MASTG/demos/ios/MASVS-CRYPTO/**/MASTG-DEMO-*.md
           - MASVS-AUTH:
             - ... | flat | MASTG/demos/ios/MASVS-AUTH/**/MASTG-DEMO-*.md
-          # - MASVS-NETWORK:
-          #   - ... | flat | MASTG/demos/ios/MASVS-NETWORK/**/MASTG-DEMO-*.md
-          # - MASVS-PLATFORM:
-          #   - ... | flat | MASTG/demos/ios/MASVS-PLATFORM/**/MASTG-DEMO-*.md
-          # - MASVS-CODE:
-          #   - ... | flat | MASTG/demos/ios/MASVS-CODE/**/MASTG-DEMO-*.md
+          - MASVS-NETWORK:
+            - ... | flat | MASTG/demos/ios/MASVS-NETWORK/**/MASTG-DEMO-*.md
+          - MASVS-PLATFORM:
+            - ... | flat | MASTG/demos/ios/MASVS-PLATFORM/**/MASTG-DEMO-*.md
+          - MASVS-CODE:
+            - ... | flat | MASTG/demos/ios/MASVS-CODE/**/MASTG-DEMO-*.md
           - MASVS-RESILIENCE:
             - ... | flat | MASTG/demos/ios/MASVS-RESILIENCE/**/MASTG-DEMO-*.md
           # - MASVS-PRIVACY:
@@ -222,6 +222,9 @@ nav:
   - "&#11088; Contribute":
       - contributing/index.md
       - ... | flat | contributing/*.md
+      - Writing Content:
+        - contributing/writing-content/index.md
+        - ... | flat | contributing/writing-content/*.md
   - "&#128153; Donate":
       - donate.md
       - ... | flat | donate/*.md
@@ -232,9 +235,10 @@ copyright: |
     <div style="min-width: 120px; padding-right: 1em;">
       <a href="https://www.owasp.org"><img src="https://github.com/OWASP/mastg/blob/master/Document/Images/OWASP_logo_white.png?raw=true" width="100px" /></a>
     </div>
+    <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=8ebff783-233d-4cac-95d8-960a4a460df3" />
     <div style="flex: 1; min-width: 250px;">
       <span style="font-size: smaller">
-        &#169; OWASP Foundation 2025. This work is licensed under
+        &#169; OWASP Foundation 2026. This work is licensed under
         <a href="https://creativecommons.org/licenses/by/4.0">CC-BY-4.0</a>. For any reuse or distribution, you must make clear to others the license terms of this work.
       </span><br>
       <span style="font-size: x-small">OWASP &#174; is a registered trademark of the OWASP Foundation, Inc.</span>
@@ -262,6 +266,7 @@ theme:
       update-pending: material/information-outline
       deprecated: octicons/circle-slash-16
       new: material/alert-decagram
+      current: material/check-circle
       tool: octicons/tools-24
       know: material/book-open-blank-variant-outline
       test: octicons/codescan-checkmark-24
@@ -330,7 +335,7 @@ plugins:
   # https://squidfunk.github.io/mkdocs-material/plugins/blog/
       blog_dir: news
       pagination_per_page: 10
-      post_excerpt_max_authors: 2
+      post_excerpt_max_authors: 3
   - tags
       # tags_file: tags.md # TODO: bug in mkdocs? dynamic tags from hooks not appearing in tags.md
 markdown_extensions:
@@ -390,7 +395,7 @@ hooks:
   - docs/hooks/add-checklists-banner.py
   - docs/hooks/add-cross-references.py
   - docs/hooks/replace_snippets.py
-  - docs/hooks/maswe-beta-banner.py
+  - docs/hooks/status-banners.py
   - docs/hooks/create_dynamic_tables.py
 
   # Priority -49 for last-minute tag modification
@@ -445,6 +450,8 @@ extra:
     placeholder-tag-app: app
     placeholder-tag-tool: tool
 
+    current: current
+
     masvs-storage-1: masvs-storage
     masvs-storage-2: masvs-storage
     masvs-crypto-1: masvs-crypto
@@ -475,4 +482,5 @@ extra:
     placeholder: This page is a placeholder.
     deprecated: This page is deprecated.
     new: This page is new!
+    current: This page is current.
     update-pending: This page is pending an update.

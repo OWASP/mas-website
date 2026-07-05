@@ -122,12 +122,12 @@
   const DEFAULT_PAGE_CONFIG = {
     '/MASTG/tests/': ['status', 'platform', 'profile', 'search'],
     '/MASWE/': ['status', 'platform', 'profile', 'search'],
-    '/MASTG/knowledge/': ['platform', 'search'],
-    '/MASTG/tools/': ['platform', 'search'],
-    '/MASTG/techniques/': ['platform', 'search'],
+    '/MASTG/knowledge/': ['status', 'platform', 'search'],
+    '/MASTG/tools/': ['status', 'used_in', 'platform', 'search'],
+    '/MASTG/techniques/': ['status', 'used_in', 'platform', 'search'],
     '/MASTG/demos/': ['status', 'platform', 'search'],
-    '/MASTG/best-practices/': ['platform', 'search'],
-    '/MASTG/apps/': ['platform', 'search'],
+    '/MASTG/best-practices/': ['status', 'platform', 'search'],
+    '/MASTG/apps/': ['status', 'platform', 'search'],
     '/checklists/': ['status', 'platform', 'profile', 'search']
   };
 
@@ -135,7 +135,7 @@
   const PAGE_CONFIG = Object.assign({}, DEFAULT_PAGE_CONFIG, GLOBAL.MAS_TABLE_FILTERS || {});
 
   // Tokens supported in URL hash, applied across pages
-  const HASH_TOKENS = ['android', 'ios', 'network', 'generic', 'l1', 'l2', 'r', 'p', 'deprecated'];
+  const HASH_TOKENS = ['android', 'ios', 'network', 'generic', 'l1', 'l2', 'r', 'p', 'deprecated', 'unused'];
 
   // Utility: case-insensitive includes on HTML/text
   function cellIncludes(htmlOrText, token) {
@@ -183,6 +183,9 @@
       control: findIncludes(['control / mastg test']) ?? findExact('control'),
       platform: findExact('platform'),
       status: findExact('status'),
+      used_in: findAnyEquals(['used in']),
+      masvs_v2_id: findAnyEquals(['masvs v2 id', 'masvs-v2-id']),
+      category: findExact('category'),
       L1: findExact('l1'),
       L2: findExact('l2'),
       R: findExact('r'),
@@ -315,6 +318,7 @@
           // Determine which groups to show (auto if not configured)
           const show = {
             status: !!cols.status,
+            used_in: !!cols.used_in,
             platform: !!cols.platform,
             profile: !!(cols.L1 || cols.L2 || cols.R || cols.P),
             search: true
@@ -324,7 +328,7 @@
           }
 
           // If nothing applicable, skip this table
-          if (!show.status && !show.platform && !show.profile && !show.search) return;
+          if (!show.status && !show.used_in && !show.platform && !show.profile && !show.search) return;
 
           // Remove default search box next to this table only
           const wrapper = $table.closest('.dataTables_wrapper');
@@ -361,6 +365,7 @@
           // Active state per table
           const state = {
             showDeprecated: false,
+            showUnused: false,
             platforms: [], // values: android, ios, network, generic
             profiles: [], // values: L1,L2,R,P
             search: ''
@@ -369,14 +374,34 @@
           // Status group (Show Deprecated)
           if (show.status) {
             const { groupContainer } = createGroup('Status:');
-            const { toggleLabel, checkbox } = createCheckbox(`mas-filter-${tIndex}-status-deprecated`, 'Show Deprecated', {
+            
+            // Show Deprecated checkbox
+            const { toggleLabel: deprecatedLabel, checkbox: deprecatedCheckbox } = createCheckbox(`mas-filter-${tIndex}-status-deprecated`, 'Show Deprecated', {
               type: 'status', token: 'deprecated'
             });
-            checkbox.addEventListener('change', () => {
-              state.showDeprecated = checkbox.checked;
+            deprecatedCheckbox.addEventListener('change', () => {
+              state.showDeprecated = deprecatedCheckbox.checked;
               applyFilters();
             });
-            groupContainer.appendChild(toggleLabel);
+            groupContainer.appendChild(deprecatedLabel);
+            
+            row.appendChild(groupContainer);
+          }
+
+          // Used In group (Show Unused)
+          if (show.used_in) {
+            const { groupContainer } = createGroup('Used In:');
+            
+            // Show Unused checkbox
+            const { toggleLabel: unusedLabel, checkbox: unusedCheckbox } = createCheckbox(`mas-filter-${tIndex}-used_in-unused`, 'Show Unused', {
+              type: 'used_in', token: 'unused'
+            });
+            unusedCheckbox.addEventListener('change', () => {
+              state.showUnused = unusedCheckbox.checked;
+              applyFilters();
+            });
+            groupContainer.appendChild(unusedLabel);
+            
             row.appendChild(groupContainer);
           }
 
@@ -508,6 +533,7 @@
             container.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = false; cb.dispatchEvent(new Event('change')); });
             if (searchInput) searchInput.value = '';
             state.showDeprecated = false;
+            state.showUnused = false;
             state.platforms = [];
             state.profiles = [];
             state.search = '';
@@ -535,6 +561,12 @@
             if (cols.status != null && !state.showDeprecated) {
               const statusHtml = (rowData[cols.status] || '').toString().toLowerCase();
               if (statusHtml.includes('status:deprecated')) return false;
+            }
+
+            // Status: hide unused unless explicitly shown (for tools page)
+            if (cols.used_in != null && !state.showUnused) {
+              const usedInHtml = (rowData[cols.used_in] || '').toString().toLowerCase();
+              if (usedInHtml.includes('unused')) return false;
             }
 
             // Platform filter
@@ -566,12 +598,28 @@
             }
 
             // Search across common columns
+            // Multi-ID Search Feature:
+            // Supports both substring search and comma-separated ID list search.
+            // Format: "#q:mastg-tech-0001,mastg-tech-0002,mastg-test-0100"
+            // Behavior: Matches if ANY of the comma-separated IDs is found in ANY candidate field
+            // (ID, Title, Control, MASVS ID, MASTG-TEST-ID, MASVS v2 ID, or Category columns)
             if (state.search && state.search.length > 0) {
-              const candidates = [cols.id, cols.title, cols.control, cols.masvs, cols.mastgTestId]
+              const searchTerm = state.search.trim();
+              const candidates = [cols.id, cols.title, cols.control, cols.masvs, cols.mastgTestId, cols.masvs_v2_id, cols.category]
                 .filter(idx => idx != null)
                 .map(idx => (rowData[idx] || '').toString().toLowerCase());
-              const ok = candidates.some(text => text.includes(state.search));
-              if (!ok) return false;
+              
+              // Check if search contains commas (multi-ID search)
+              if (searchTerm.includes(',')) {
+                // Split by comma and check if any ID matches
+                const ids = searchTerm.split(',').map(id => id.trim()).filter(id => id.length > 0);
+                const ok = ids.some(searchId => candidates.some(text => text.includes(searchId)));
+                if (!ok) return false;
+              } else {
+                // Regular substring search
+                const ok = candidates.some(text => text.includes(searchTerm));
+                if (!ok) return false;
+              }
             }
 
             return true;
@@ -594,6 +642,7 @@
             // Update hash
             const tokens = [];
             if (state.showDeprecated) tokens.push('deprecated');
+            if (state.showUnused) tokens.push('unused');
             state.platforms.forEach(p => tokens.push(p));
             state.profiles.forEach(p => tokens.push(p.toLowerCase()));
             updateHash(tokens, state.search);
@@ -604,6 +653,7 @@
           // Apply initial hash tokens
           if (initialTokens.length) {
             if (show.status && initialTokens.includes('deprecated')) state.showDeprecated = true;
+            if (show.used_in && initialTokens.includes('unused')) state.showUnused = true;
             if (show.platform) state.platforms = initialTokens.filter(t => ['android', 'ios', 'network', 'generic'].includes(t));
             if (show.profile) state.profiles = initialTokens.filter(t => ['l1', 'l2', 'r', 'p'].includes(t)).map(s => s.toUpperCase());
           }
