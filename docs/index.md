@@ -95,6 +95,9 @@ The OWASP MASVS and MASTG are trusted by the following platform providers and st
 <a href="MASTG/0x02c-Acknowledgements/#our-mas-advocates">
 <img src="assets/guardsquare-logo.png" style="width: 250px; border-radius: 5px;" />
 </a>
+<a href="MASTG/0x02c-Acknowledgements/#our-mas-advocates">
+<img src="assets/vulnit-logo.png" style="width: 250px; border-radius: 5px;" />
+</a>
 </div>
 
 </div>
