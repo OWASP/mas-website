@@ -63,4 +63,4 @@ On behalf of the full OWASP MAS project community, we congratulate vulnit on ach
 
 ---
 
-*Want to learn more about the MAS Advocate program or get involved? See our [contribution guidelines for MAS Advocates](https://mas.owasp.org/MASTG/0x02c-Acknowledgements/#mas-advocates) or reach out to the project leaders.*
+_Want to learn more about the MAS Advocate program or get involved? See our [contribution guidelines for MAS Advocates](https://mas.owasp.org/MASTG/0x02c-Acknowledgements/#mas-advocates) or reach out to the project leaders._
