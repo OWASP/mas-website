@@ -51,13 +51,12 @@ def get_mastg_v1_coverage(meta, config):
     if mappings:
         mastg_v1_tests_metadata, mastg_v1_mapping = config["v1_tests_data"]
 
-        masvs_v1_id = mappings.get('masvs-v1', '')
-        if len(masvs_v1_id) > 1:
-            raise ValueError(f"More than one MASVS v1 ID found: {masvs_v1_id}")
-        masvs_v1_id = masvs_v1_id[0] if masvs_v1_id else ""
-        mastg_v1_tests_map = mastg_v1_mapping.get(masvs_v1_id, [])
+        masvs_v1_ids = mappings.get('masvs-v1', []) or []
+        mastg_v1_tests_map = []
+        for masvs_v1_id in masvs_v1_ids:
+            mastg_v1_tests_map.extend(mastg_v1_mapping.get(masvs_v1_id, []))
 
-        mastg_v1_tests_map_list = [f"{test.split(']')[0].split('[')[1]}" for test in mastg_v1_tests_map]
+        mastg_v1_tests_map_list = list(dict.fromkeys(f"{test.split(']')[0].split('[')[1]}" for test in mastg_v1_tests_map))
         mappings['mastg-v1'] = mastg_v1_tests_map_list
 
         mastg_v1_tests = "\n".join([f"    - [{test} - {mastg_v1_tests_metadata[test]['title']} ({mastg_v1_tests_metadata[test]['platform']})]({mastg_v1_tests_metadata[test]['link']})" for test in mastg_v1_tests_map_list])
@@ -77,10 +76,13 @@ def get_maswe_placeholder_banner(meta, config):
 
     placeholder_info = meta.get('draft', None)
 
-    description = placeholder_info.get('description', None)
+    description = placeholder_info.get('description', '')
+    description = "\n".join(
+        f"    {line}" if line else "    " for line in description.splitlines()
+    )
 
     if placeholder_info.get('note', None):
-        description += "\n\n" + "    > Note: " + placeholder_info.get('note', None) + "\n"
+        description += "\n\n    > Note: " + placeholder_info.get('note', None) + "\n"
 
     topics = placeholder_info.get('topics', None)
     topics_section = ""
@@ -100,7 +102,7 @@ def get_maswe_placeholder_banner(meta, config):
 
     ## Initial Description or Hints
 
-    {description}
+{description}
 
 {topics_section}
 
@@ -399,6 +401,28 @@ def get_techniques_deprecated_banner(meta):
 """
     return banner
 
+def get_maswe_requirement_banner(meta):
+    requirement = meta.get('requirement', '')
+
+    banner = f"""
+!!! success "MAS Requirement"
+
+    {requirement}
+"""
+    return banner
+
+def get_maswe_beta_coverage_banner(meta):
+    beta_coverage = meta.get('mappings', {}).get('maswe-beta', [])
+
+    ids = ", ".join(beta_coverage)
+
+    banner = f"""
+!!! info "Beta Coverage"
+
+    If you were using the current beta note that we've updated the MASWE IDs. This MASWE now covers for the previous: {ids}.
+"""
+    return banner
+
 def get_maswe_deprecated_banner(meta, config):
     id = meta.get('id')
     deprecation_note = meta.get('deprecation_note', "The weakness is no longer relevant or was replaced by other weaknesses.")
@@ -428,6 +452,12 @@ def on_page_markdown(markdown, page, config, **kwargs):
     path = page.file.src_uri
 
     banners = []
+
+    if "MASWE/" in path:
+        if page.meta.get('requirement'):
+            banners.append(get_maswe_requirement_banner(page.meta))
+        if page.meta.get('mappings', {}).get('maswe-beta'):
+            banners.append(get_maswe_beta_coverage_banner(page.meta))
 
     if any(substring in path for substring in ["MASWE/"]):
         banners.append(beta_banner)
