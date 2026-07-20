@@ -2,10 +2,37 @@ import logging
 import yaml
 import mkdocs.plugins
 import glob
+from io import BytesIO
 from collections import defaultdict
+from zipfile import BadZipFile, ZipFile
 import github_api
+import requests
 from html import escape
+from lxml import etree
 log = logging.getLogger('mkdocs')
+
+CWE_CATALOG_URL = 'https://cwe.mitre.org/data/xml/cwec_latest.xml.zip'
+
+def get_cwe_titles():
+    try:
+        response = requests.get(CWE_CATALOG_URL, timeout=30)
+        response.raise_for_status()
+        with ZipFile(BytesIO(response.content)) as archive:
+            catalog_file = next(
+                name for name in archive.namelist() if name.endswith('.xml')
+            )
+            root = etree.fromstring(archive.read(catalog_file))
+    except (requests.RequestException, BadZipFile, StopIteration, etree.XMLSyntaxError) as error:
+        log.warning('Unable to retrieve the CWE catalog: %s', error)
+        return {}
+
+    return {
+        weakness.get('ID'): weakness.get('Name')
+        for weakness in root.iter()
+        if weakness.tag.rsplit('}', 1)[-1] == 'Weakness'
+        and weakness.get('ID')
+        and weakness.get('Name')
+    }
 
 def get_v1_tests_data():
 
@@ -411,16 +438,49 @@ def get_maswe_requirement_banner(meta):
 """
     return banner
 
-def get_maswe_beta_coverage_banner(meta):
-    beta_coverage = meta.get('mappings', {}).get('maswe-beta', [])
+def get_cwe_display_name(value, cwe_titles):
+    cwe_title = cwe_titles.get(str(value))
+    if cwe_title:
+        return f'CWE-{value}: {cwe_title}'
+    return f'CWE-{value}'
 
-    ids = ", ".join(beta_coverage)
+def get_maswe_mappings_banner(meta, config):
+    mappings = meta.get('mappings', {})
+    cwe_titles = config.get('cwe_titles', {})
+    mapping_labels = {
+        'masvs-v1': 'MASVS V1',
+        'masvs-v2': 'MASVS V2',
+        'cwe': 'CWE',
+        'android-risks': 'Android Risks',
+        'android-core-app-quality': 'Android Core Quality',
+    }
+    mapping_urls = {
+        'masvs-v2': 'https://mas.owasp.org/MASVS/controls/{value}/',
+        'cwe': 'https://cwe.mitre.org/data/definitions/{value}.html',
+        'android-risks': 'https://developer.android.com/privacy-and-security/risks/{value}',
+        'android-core-app-quality': 'https://developer.android.com/docs/quality-guidelines/core-app-quality#{value}',
+    }
+    mapping_sections = []
 
-    banner = f"""
-!!! info "Beta Coverage"
+    for mapping_type in ['masvs-v1', *mapping_urls]:
+        values = mappings.get(mapping_type, [])
+        if not values:
+            continue
 
-    If you were using the current beta note that we've updated the MASWE IDs. This MASWE now covers for the previous: {ids}.
-"""
+        if mapping_type == 'masvs-v1':
+            rendered_values = ', '.join(str(value) for value in values)
+        else:
+            rendered_values = ', '.join(
+                f'[{get_cwe_display_name(value, cwe_titles) if mapping_type == "cwe" else value}]({mapping_urls[mapping_type].format(value=value)})'
+                for value in values
+            )
+        mapping_sections.append(f'    **{mapping_labels[mapping_type]}:** {rendered_values}')
+
+    banner = f'''\
+??? info "Mappings"
+
+{'\n\n'.join(mapping_sections)}
+'''
     return banner
 
 def get_maswe_deprecated_banner(meta, config):
@@ -456,8 +516,17 @@ def on_page_markdown(markdown, page, config, **kwargs):
     if "MASWE/" in path:
         if page.meta.get('requirement'):
             banners.append(get_maswe_requirement_banner(page.meta))
-        if page.meta.get('mappings', {}).get('maswe-beta'):
-            banners.append(get_maswe_beta_coverage_banner(page.meta))
+        if any(
+            page.meta.get('mappings', {}).get(mapping_type)
+            for mapping_type in [
+                'masvs-v1',
+                'masvs-v2',
+                'cwe',
+                'android-risks',
+                'android-core-app-quality',
+            ]
+        ):
+            banners.append(get_maswe_mappings_banner(page.meta, config))
 
     if any(substring in path for substring in ["MASWE/"]):
         banners.append(beta_banner)
@@ -519,5 +588,6 @@ def on_config(config):
 
     config["issue_mapping"] = github_api.get_issues_for_test_refactors()
     config["v1_tests_data"] = get_v1_tests_data()
+    config["cwe_titles"] = get_cwe_titles()
 
     return config
