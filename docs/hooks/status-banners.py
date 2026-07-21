@@ -476,11 +476,13 @@ def get_maswe_mappings_banner(meta, config):
             )
         mapping_sections.append(f'    **{mapping_labels[mapping_type]}:** {rendered_values}')
 
-    banner = f'''\
-??? info "Mappings"
+    mapping_content = "\n\n".join(mapping_sections)
 
-{'\n\n'.join(mapping_sections)}
-'''
+    banner = f'''\
+    ??? info "Mappings"
+
+    {mapping_content}
+    '''
     return banner
 
 def get_maswe_deprecated_banner(meta, config):
