@@ -47,6 +47,7 @@ beta_banner = """
 
 def get_mastg_v1_coverage(meta, config):
     mappings = meta.get('mappings', '')
+    mastg_v1_tests = ""
 
     if mappings:
         mastg_v1_tests_metadata, mastg_v1_mapping = config["v1_tests_data"]
