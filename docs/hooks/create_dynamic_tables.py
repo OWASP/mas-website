@@ -74,9 +74,25 @@ def get_masvs_category_chip(masvs_category):
     
     return f'<span class="md-tag" style="background-color: {color}; color: white;">{masvs_category}</span><span style="display: none;">{masvs_category.lower()}</span>'
 
+def get_maswe_test_counts():
+    test_counts = {}
+
+    for file in glob.glob("docs/MASTG/tests/**/*.md", recursive=True):
+        if "index.md" in file:
+            continue
+
+        with open(file, 'r') as f:
+            frontmatter = next(yaml.load_all(f, Loader=yaml.FullLoader))
+            weakness = frontmatter.get('weakness')
+            if weakness:
+                test_counts[weakness] = test_counts.get(weakness, 0) + 1
+
+    return test_counts
+
 def get_all_weaknessess():
 
     weaknesses = []
+    test_counts = get_maswe_test_counts()
 
     for file in glob.glob("docs/MASWE/**/MASWE-*.md", recursive=True):
         with open(file, 'r') as f:
@@ -97,6 +113,7 @@ def get_all_weaknessess():
             frontmatter['L2'] = get_level_icon('L2', "L2" in frontmatter['profiles'])
             frontmatter['R'] = get_level_icon('R', "R" in frontmatter['profiles'])
             frontmatter['P'] = get_level_icon('P', "P" in frontmatter['profiles'])
+            frontmatter['tests'] = test_counts.get(weaknesses_id, 0)
             frontmatter['status'] = frontmatter.get('status', 'current')
             status = frontmatter['status']
             if status == 'new':
@@ -599,7 +616,7 @@ def on_page_markdown(markdown, page, config, **kwargs):
     elif path.endswith("MASWE/index.md"):
         # weaknesses/index.md
 
-        column_titles = {'id': 'ID', 'title': 'Title', 'platform': "Platform", 'masvs_v2_id': "MASVS v2 ID", 'L1': 'L1', 'L2': 'L2', 'R': 'R', 'P': 'P', 'status': 'Status'}
+        column_titles = {'id': 'ID', 'title': 'Title', 'platform': "Platform", 'masvs_v2_id': "MASVS v2 ID", 'L1': 'L1', 'L2': 'L2', 'R': 'R', 'P': 'P', 'tests': 'Tests', 'status': 'Status'}
 
         weaknesses = get_all_weaknessess()
         weaknesses_columns_reordered = [reorder_dict_keys(weakness, column_titles.keys()) for weakness in weaknesses]
