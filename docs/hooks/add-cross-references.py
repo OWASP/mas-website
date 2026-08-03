@@ -84,13 +84,14 @@ def generate_cross_references():
         test_title = test_meta.get("title")
         test_platform = test_meta.get("platform")
         best_practices_ids = test_meta.get("best-practices")
+        knowledge_ids = test_meta.get("knowledge")
 
-        # Create cross-references for weaknesses listing all tests and best practices that reference each weakness ID
+        # Create cross-references for weaknesses listing all tests, best practices and knowledge articles that reference each weakness ID
         if weakness_id:
             if weakness_id not in cross_references["weaknesses"]:
-                cross_references["weaknesses"][weakness_id] = {"tests": [], "best_practices": {}}
+                cross_references["weaknesses"][weakness_id] = {"tests": [], "best_practices": {}, "knowledge": {}}
             cross_references["weaknesses"][weakness_id]["tests"].append({"id": test_id, "path": test_path, "title": test_title, "platform": test_platform})
-            
+
             # Collect best-practices from tests that reference each weakness
             if best_practices_ids:
                 for best_practice_id in best_practices_ids:
@@ -105,6 +106,22 @@ def generate_cross_references():
                             "path": best_practice_path,
                             "title": best_practice_title,
                             "platform": best_practice_platform
+                        }
+
+            # Collect knowledge articles from tests that reference each weakness
+            if knowledge_ids:
+                for knowledge_id in knowledge_ids:
+                    if knowledge_id not in cross_references["weaknesses"][weakness_id]["knowledge"]:
+                        # Get the knowledge article metadata if available
+                        knowledge_meta = knowledge.get(knowledge_id, {})
+                        knowledge_path = knowledge_meta.get("path", f"MASTG/knowledge/{knowledge_id}.md")
+                        knowledge_title = knowledge_meta.get("title", knowledge_id)
+                        knowledge_platform = knowledge_meta.get("platform", test_platform)
+                        cross_references["weaknesses"][weakness_id]["knowledge"][knowledge_id] = {
+                            "id": knowledge_id,
+                            "path": knowledge_path,
+                            "title": knowledge_title,
+                            "platform": knowledge_platform
                         }
 
         # Create cross-references for best_practices listing all tests that reference each best_practice ID
@@ -310,6 +327,15 @@ def on_page_markdown(markdown, page, config, **kwargs):
         # ORIGIN: Cross-references from this script
 
         weakness_refs = cross_references["weaknesses"].get(weakness_id, {})
+
+        knowledge_refs = weakness_refs.get("knowledge", {})
+        meta['knowledge'] = list(knowledge_refs.values())
+        if knowledge_refs:
+            knowledge_section = "## Knowledge\n\n"
+            for knowledge_item in knowledge_refs.values():
+                relPath = os.path.relpath(knowledge_item['path'], os.path.dirname(path))
+                knowledge_section += f"[{get_platform_icon(knowledge_item['platform'])} {knowledge_item['id']}: {knowledge_item['title']}]({relPath}){{: .mas-know-button}} "
+            markdown += f"\n\n{knowledge_section}"
 
         tests = weakness_refs.get("tests", [])
         meta['tests'] = tests
