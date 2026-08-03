@@ -24,6 +24,13 @@ MASVS_CATEGORY_COLORS = {
     'MASVS-RESILIENCE': 'var(--tag-color-masvs-resilience)',
     'MASVS-PRIVACY': 'var(--tag-color-masvs-privacy)'
 }
+def natural_id_sort_key(component_id):
+    """Sort IDs like MASWE-0006 / MASTG-TEST-0052 numerically on their trailing number."""
+    match = re.search(r'(\d+)$', component_id or "")
+    if match:
+        return (component_id[:match.start()], int(match.group(1)))
+    return (component_id or "", 0)
+
 def is_v1_test(test_identifier):
     """Check if a test is v1 (MASTG-TEST-0000 to MASTG-TEST-0199)"""
     match = re.search(r'MASTG-TEST-(\d+)', test_identifier)
@@ -127,6 +134,7 @@ def get_all_weaknessess():
             frontmatter['platform'] = "".join([get_platform_icon(platform) for platform in frontmatter['platform']])
             weaknesses.append(frontmatter)
 
+    weaknesses.sort(key=lambda weakness: natural_id_sort_key(weakness['id']))
     return weaknesses
 
 def get_platform(input_file: str) -> str:
@@ -375,6 +383,7 @@ def get_mastg_components_dict(name):
                         frontmatter['category'] = get_masvs_category_chip(frontmatter['masvs_category'])
 
                     components.append(frontmatter)
+        components.sort(key=lambda component: natural_id_sort_key(component['id']))
         return components
 
 
@@ -406,6 +415,7 @@ def get_all_demos_beta():
                 frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--deprecated">deprecated</span><span style="display: none;">status:deprecated</span>'
 
             demos.append(frontmatter)
+    demos.sort(key=lambda demo: natural_id_sort_key(demo['id']))
     return demos
 
 def get_all_mitigations_beta():
@@ -435,6 +445,7 @@ def get_all_mitigations_beta():
                     frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--deprecated">deprecated</span><span style="display: none;">status:deprecated</span>'
 
                 mitigations.append(frontmatter)
+        mitigations.sort(key=lambda mitigation: natural_id_sort_key(mitigation['id']))
         return mitigations
 
 def reorder_dict_keys(original_dict, key_order):
