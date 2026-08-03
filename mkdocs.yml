@@ -111,38 +111,38 @@ nav:
         - MASTG/tests/index.md
         - Android:
           - MASVS-STORAGE:
-            - ... | flat | MASTG/tests/android/MASVS-STORAGE/*.md
+            - ... | flat | MASTG/tests/android/MASVS-STORAGE/**/MASTG-TEST-*.md
           - MASVS-CRYPTO:
-            - ... | flat | MASTG/tests/android/MASVS-CRYPTO/*.md
+            - ... | flat | MASTG/tests/android/MASVS-CRYPTO/**/MASTG-TEST-*.md
           - MASVS-AUTH:
-            - ... | flat | MASTG/tests/android/MASVS-AUTH/*.md
+            - ... | flat | MASTG/tests/android/MASVS-AUTH/**/MASTG-TEST-*.md
           - MASVS-NETWORK:
-            - ... | flat | MASTG/tests/android/MASVS-NETWORK/*.md
+            - ... | flat | MASTG/tests/android/MASVS-NETWORK/**/MASTG-TEST-*.md
           - MASVS-PLATFORM:
-            - ... | flat | MASTG/tests/android/MASVS-PLATFORM/*.md
+            - ... | flat | MASTG/tests/android/MASVS-PLATFORM/**/MASTG-TEST-*.md
           - MASVS-CODE:
-            - ... | flat | MASTG/tests/android/MASVS-CODE/*.md
+            - ... | flat | MASTG/tests/android/MASVS-CODE/**/MASTG-TEST-*.md
           - MASVS-RESILIENCE:
-            - ... | flat | MASTG/tests/android/MASVS-RESILIENCE/*.md
+            - ... | flat | MASTG/tests/android/MASVS-RESILIENCE/**/MASTG-TEST-*.md
           - MASVS-PRIVACY:
-            - ... | flat | MASTG/tests/android/MASVS-PRIVACY/*.md
+            - ... | flat | MASTG/tests/android/MASVS-PRIVACY/**/MASTG-TEST-*.md
         - iOS:
           - MASVS-STORAGE:
-            - ... | flat | MASTG/tests/ios/MASVS-STORAGE/*.md
+            - ... | flat | MASTG/tests/ios/MASVS-STORAGE/**/MASTG-TEST-*.md
           - MASVS-CRYPTO:
-            - ... | flat | MASTG/tests/ios/MASVS-CRYPTO/*.md
+            - ... | flat | MASTG/tests/ios/MASVS-CRYPTO/**/MASTG-TEST-*.md
           - MASVS-AUTH:
-            - ... | flat | MASTG/tests/ios/MASVS-AUTH/*.md
+            - ... | flat | MASTG/tests/ios/MASVS-AUTH/**/MASTG-TEST-*.md
           - MASVS-NETWORK:
-            - ... | flat | MASTG/tests/ios/MASVS-NETWORK/*.md
+            - ... | flat | MASTG/tests/ios/MASVS-NETWORK/**/MASTG-TEST-*.md
           - MASVS-PLATFORM:
-            - ... | flat | MASTG/tests/ios/MASVS-PLATFORM/*.md
+            - ... | flat | MASTG/tests/ios/MASVS-PLATFORM/**/MASTG-TEST-*.md
           - MASVS-CODE:
-            - ... | flat | MASTG/tests/ios/MASVS-CODE/*.md
+            - ... | flat | MASTG/tests/ios/MASVS-CODE/**/MASTG-TEST-*.md
           - MASVS-RESILIENCE:
-            - ... | flat | MASTG/tests/ios/MASVS-RESILIENCE/*.md
+            - ... | flat | MASTG/tests/ios/MASVS-RESILIENCE/**/MASTG-TEST-*.md
           - MASVS-PRIVACY:
-            - ... | flat | MASTG/tests/ios/MASVS-PRIVACY/*.md
+            - ... | flat | MASTG/tests/ios/MASVS-PRIVACY/**/MASTG-TEST-*.md
       - Demos:
         - MASTG/demos/index.md
         - Android:
@@ -386,6 +386,9 @@ hooks:
 
   # Adding demo buttons at -30 before replace_snippets at -40
   - docs/hooks/add-demo-buttons.py
+
+  # Priority -35 for injecting test methods
+  - docs/hooks/inject-test-methods.py
 
   # Priority -40 for adding content
   - docs/hooks/add-tool-gh-preview.py

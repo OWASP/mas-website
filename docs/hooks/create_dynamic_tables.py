@@ -151,7 +151,7 @@ def get_mastg_tests_dict():
     mastg_tests = {}
 
     for file in glob.glob("docs/MASTG/tests/**/*.md", recursive=True):
-        if "index.md" not in file:
+        if "MASTG-TEST-" in os.path.basename(file):
             with open(file, 'r') as f:
                 current_masvs_id = ""
                 content = f.read()
@@ -327,7 +327,7 @@ def get_mastg_components_dict(name):
         components = []
 
         for file in glob.glob(f"{name}/**/*.md", recursive=True):
-            if "index.md" not in file:
+            if "MASTG-" in os.path.basename(file):
                 with open(file, 'r') as f:
                     content = f.read()
 
