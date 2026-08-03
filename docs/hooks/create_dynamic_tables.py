@@ -24,6 +24,13 @@ MASVS_CATEGORY_COLORS = {
     'MASVS-RESILIENCE': 'var(--tag-color-masvs-resilience)',
     'MASVS-PRIVACY': 'var(--tag-color-masvs-privacy)'
 }
+def natural_id_sort_key(component_id):
+    """Sort IDs like MASWE-0006 / MASTG-TEST-0052 numerically on their trailing number."""
+    match = re.search(r'(\d+)$', component_id or "")
+    if match:
+        return (component_id[:match.start()], int(match.group(1)))
+    return (component_id or "", 0)
+
 def is_v1_test(test_identifier):
     """Check if a test is v1 (MASTG-TEST-0000 to MASTG-TEST-0199)"""
     match = re.search(r'MASTG-TEST-(\d+)', test_identifier)
@@ -74,9 +81,25 @@ def get_masvs_category_chip(masvs_category):
     
     return f'<span class="md-tag" style="background-color: {color}; color: white;">{masvs_category}</span><span style="display: none;">{masvs_category.lower()}</span>'
 
+def get_maswe_test_counts():
+    test_counts = {}
+
+    for file in glob.glob("docs/MASTG/tests/**/*.md", recursive=True):
+        if "index.md" in file:
+            continue
+
+        with open(file, 'r') as f:
+            frontmatter = next(yaml.load_all(f, Loader=yaml.FullLoader))
+            weakness = frontmatter.get('weakness')
+            if weakness:
+                test_counts[weakness] = test_counts.get(weakness, 0) + 1
+
+    return test_counts
+
 def get_all_weaknessess():
 
     weaknesses = []
+    test_counts = get_maswe_test_counts()
 
     for file in glob.glob("docs/MASWE/**/MASWE-*.md", recursive=True):
         with open(file, 'r') as f:
@@ -97,6 +120,7 @@ def get_all_weaknessess():
             frontmatter['L2'] = get_level_icon('L2', "L2" in frontmatter['profiles'])
             frontmatter['R'] = get_level_icon('R', "R" in frontmatter['profiles'])
             frontmatter['P'] = get_level_icon('P', "P" in frontmatter['profiles'])
+            frontmatter['tests'] = test_counts.get(weaknesses_id, 0)
             frontmatter['status'] = frontmatter.get('status', 'current')
             status = frontmatter['status']
             if status == 'new':
@@ -110,6 +134,7 @@ def get_all_weaknessess():
             frontmatter['platform'] = "".join([get_platform_icon(platform) for platform in frontmatter['platform']])
             weaknesses.append(frontmatter)
 
+    weaknesses.sort(key=lambda weakness: natural_id_sort_key(weakness['id']))
     return weaknesses
 
 def get_platform(input_file: str) -> str:
@@ -358,6 +383,7 @@ def get_mastg_components_dict(name):
                         frontmatter['category'] = get_masvs_category_chip(frontmatter['masvs_category'])
 
                     components.append(frontmatter)
+        components.sort(key=lambda component: natural_id_sort_key(component['id']))
         return components
 
 
@@ -389,6 +415,7 @@ def get_all_demos_beta():
                 frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--deprecated">deprecated</span><span style="display: none;">status:deprecated</span>'
 
             demos.append(frontmatter)
+    demos.sort(key=lambda demo: natural_id_sort_key(demo['id']))
     return demos
 
 def get_all_mitigations_beta():
@@ -418,6 +445,7 @@ def get_all_mitigations_beta():
                     frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--deprecated">deprecated</span><span style="display: none;">status:deprecated</span>'
 
                 mitigations.append(frontmatter)
+        mitigations.sort(key=lambda mitigation: natural_id_sort_key(mitigation['id']))
         return mitigations
 
 def reorder_dict_keys(original_dict, key_order):
@@ -599,7 +627,7 @@ def on_page_markdown(markdown, page, config, **kwargs):
     elif path.endswith("MASWE/index.md"):
         # weaknesses/index.md
 
-        column_titles = {'id': 'ID', 'title': 'Title', 'platform': "Platform", 'masvs_v2_id': "MASVS v2 ID", 'L1': 'L1', 'L2': 'L2', 'R': 'R', 'P': 'P', 'status': 'Status'}
+        column_titles = {'id': 'ID', 'title': 'Title', 'platform': "Platform", 'masvs_v2_id': "MASVS v2 ID", 'L1': 'L1', 'L2': 'L2', 'R': 'R', 'P': 'P', 'tests': 'Tests', 'status': 'Status'}
 
         weaknesses = get_all_weaknessess()
         weaknesses_columns_reordered = [reorder_dict_keys(weakness, column_titles.keys()) for weakness in weaknesses]

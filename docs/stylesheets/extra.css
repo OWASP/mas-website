@@ -354,7 +354,8 @@ img.dark-img {
 .mas-test-button,
 .mas-demo-button,
 .mas-best-button,
-.mas-tech-button {
+.mas-tech-button,
+.mas-know-button {
   background-color: var(--mas-blue); /* Adjust this value for .mas-demo-button if needed */
   color: white !important;
   line-height: 1em !important;
@@ -380,8 +381,12 @@ img.dark-img {
   background-color: #e67e22; /* Orange color for techniques */
 }
 
+.mas-know-button {
+  background-color: var(--tag-color-know);
+}
+
 .mas-test-button:hover {
-  background-color: #2e7fd5; 
+  background-color: #2e7fd5;
 }
 
 .mas-demo-button:hover {
@@ -394,6 +399,10 @@ img.dark-img {
 
 .mas-tech-button:hover {
   background-color: #d35400;
+}
+
+.mas-know-button:hover {
+  background-color: #0d1f8f;
 }
 
 /* Default DataTables styling for light mode */

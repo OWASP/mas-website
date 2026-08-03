@@ -135,7 +135,7 @@
   const PAGE_CONFIG = Object.assign({}, DEFAULT_PAGE_CONFIG, GLOBAL.MAS_TABLE_FILTERS || {});
 
   // Tokens supported in URL hash, applied across pages
-  const HASH_TOKENS = ['android', 'ios', 'network', 'generic', 'l1', 'l2', 'r', 'p', 'deprecated', 'unused'];
+  const HASH_TOKENS = ['android', 'ios', 'network', 'generic', 'l1', 'l2', 'r', 'p', 'deprecated', 'hideunused'];
 
   // Utility: case-insensitive includes on HTML/text
   function cellIncludes(htmlOrText, token) {
@@ -365,7 +365,7 @@
           // Active state per table
           const state = {
             showDeprecated: false,
-            showUnused: false,
+            hideUnused: false,
             platforms: [], // values: android, ios, network, generic
             profiles: [], // values: L1,L2,R,P
             search: ''
@@ -388,16 +388,16 @@
             row.appendChild(groupContainer);
           }
 
-          // Used In group (Show Unused)
+          // Used In group (Hide Unused)
           if (show.used_in) {
             const { groupContainer } = createGroup('Used In:');
-            
-            // Show Unused checkbox
-            const { toggleLabel: unusedLabel, checkbox: unusedCheckbox } = createCheckbox(`mas-filter-${tIndex}-used_in-unused`, 'Show Unused', {
-              type: 'used_in', token: 'unused'
+
+            // Hide Unused checkbox
+            const { toggleLabel: unusedLabel, checkbox: unusedCheckbox } = createCheckbox(`mas-filter-${tIndex}-used_in-unused`, 'Hide Unused', {
+              type: 'used_in', token: 'hideunused'
             });
             unusedCheckbox.addEventListener('change', () => {
-              state.showUnused = unusedCheckbox.checked;
+              state.hideUnused = unusedCheckbox.checked;
               applyFilters();
             });
             groupContainer.appendChild(unusedLabel);
@@ -533,7 +533,7 @@
             container.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = false; cb.dispatchEvent(new Event('change')); });
             if (searchInput) searchInput.value = '';
             state.showDeprecated = false;
-            state.showUnused = false;
+            state.hideUnused = false;
             state.platforms = [];
             state.profiles = [];
             state.search = '';
@@ -563,8 +563,8 @@
               if (statusHtml.includes('status:deprecated')) return false;
             }
 
-            // Status: hide unused unless explicitly shown (for tools page)
-            if (cols.used_in != null && !state.showUnused) {
+            // Status: hide unused when explicitly requested (for tools page)
+            if (cols.used_in != null && state.hideUnused) {
               const usedInHtml = (rowData[cols.used_in] || '').toString().toLowerCase();
               if (usedInHtml.includes('unused')) return false;
             }
@@ -642,7 +642,7 @@
             // Update hash
             const tokens = [];
             if (state.showDeprecated) tokens.push('deprecated');
-            if (state.showUnused) tokens.push('unused');
+            if (state.hideUnused) tokens.push('hideunused');
             state.platforms.forEach(p => tokens.push(p));
             state.profiles.forEach(p => tokens.push(p.toLowerCase()));
             updateHash(tokens, state.search);
@@ -653,7 +653,7 @@
           // Apply initial hash tokens
           if (initialTokens.length) {
             if (show.status && initialTokens.includes('deprecated')) state.showDeprecated = true;
-            if (show.used_in && initialTokens.includes('unused')) state.showUnused = true;
+            if (show.used_in && initialTokens.includes('hideunused')) state.hideUnused = true;
             if (show.platform) state.platforms = initialTokens.filter(t => ['android', 'ios', 'network', 'generic'].includes(t));
             if (show.profile) state.profiles = initialTokens.filter(t => ['l1', 'l2', 'r', 'p'].includes(t)).map(s => s.toUpperCase());
           }
