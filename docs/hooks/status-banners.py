@@ -65,13 +65,6 @@ def get_v1_tests_data():
     return masvs_v1_tests_metadata, masvs_v1_mapping
 
 
-beta_banner = """
-??? example "Content in BETA"
-    This content is in **beta** and still under active development, so it is subject to change any time (e.g. structure, IDs, content, URLs, etc.).
-
-    [:fontawesome-regular-paper-plane: Send Feedback](https://github.com/OWASP/mastg/discussions/categories/maswe-mastg-v2-beta-feedback)
-"""
-
 def get_mastg_v1_coverage(meta, config):
     mappings = meta.get('mappings', '')
 
@@ -529,9 +522,6 @@ def on_page_markdown(markdown, page, config, **kwargs):
             ]
         ):
             banners.append(get_maswe_mappings_banner(page.meta, config))
-
-    if any(substring in path for substring in ["MASWE/"]):
-        banners.append(beta_banner)
 
     if "MASWE/" in path:
         if page.meta.get('status') == 'deprecated':

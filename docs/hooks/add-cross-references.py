@@ -309,26 +309,31 @@ def on_page_markdown(markdown, page, config, **kwargs):
         # Add Tests and Best Practices sections to weaknesses as buttons
         # ORIGIN: Cross-references from this script
 
-        if weakness_id in cross_references["weaknesses"]:
-            weakness_refs = cross_references["weaknesses"][weakness_id]
-            
-            tests = weakness_refs.get("tests", [])
-            meta['tests'] = tests
-            if tests:
-                tests_section =  "## Tests\n\n"
-                for test in tests:
-                    relPath = os.path.relpath(test['path'], os.path.dirname(path))
-                    tests_section += f"[{get_platform_icon(test['platform'])} {test['id']}: {test['title']}]({relPath}){{: .mas-test-button}} "
-                markdown += f"\n\n{tests_section}"
-            
-            best_practices = weakness_refs.get("best_practices", {})
-            meta['best-practices'] = list(best_practices.values())
-            if best_practices:
-                best_practices_section = "## Best Practices\n\n"
-                for best_practice_id, best_practice in best_practices.items():
-                    relPath = os.path.relpath(best_practice['path'], os.path.dirname(path))
-                    best_practices_section += f"[{get_platform_icon(best_practice['platform'])} {best_practice['id']}: {best_practice['title']}]({relPath}){{: .mas-best-button}} "
-                markdown += f"\n\n{best_practices_section}"
+        weakness_refs = cross_references["weaknesses"].get(weakness_id, {})
+
+        tests = weakness_refs.get("tests", [])
+        meta['tests'] = tests
+        tests_section = "## Tests\n\n"
+        if tests:
+            for test in tests:
+                relPath = os.path.relpath(test['path'], os.path.dirname(path))
+                tests_section += f"[{get_platform_icon(test['platform'])} {test['id']}: {test['title']}]({relPath}){{: .mas-test-button}} "
+        else:
+            tests_section += (
+                '!!! info "No Tests Yet"\n\n'
+                "    The MASTG doesn't contain any tests for this weakness yet. If you have proposals or would like to work on some, "
+                f"please open an issue in <https://github.com/OWASP/mastg/issues> indicating the {weakness_id} mapping, the test titles and a summary of the tests.\n"
+            )
+        markdown += f"\n\n{tests_section}"
+
+        best_practices = weakness_refs.get("best_practices", {})
+        meta['best-practices'] = list(best_practices.values())
+        if best_practices:
+            best_practices_section = "## Best Practices\n\n"
+            for best_practice_id, best_practice in best_practices.items():
+                relPath = os.path.relpath(best_practice['path'], os.path.dirname(path))
+                best_practices_section += f"[{get_platform_icon(best_practice['platform'])} {best_practice['id']}: {best_practice['title']}]({relPath}){{: .mas-best-button}} "
+            markdown += f"\n\n{best_practices_section}"
 
     if "MASTG-TEST-" in filename:
 
