@@ -40,6 +40,13 @@ def on_pre_build(config):
     for key, value in mapping.items():
         redirects_dict[key] = f"MASVS/{value}"
 
+    # The MAS Checklist pages were removed with MASTG v2. Send their URLs to the news
+    # post explaining the change instead of leaving them as 404s.
+    checklists_removal_post = "https://mas.owasp.org/news/2026/07/14/checklists-removal/"
+    redirects_dict["checklists/index.md"] = checklists_removal_post
+    for key in mapping:
+        redirects_dict[f"checklists/{key}"] = checklists_removal_post
+
     # Ensure the 'redirects' plugin is present
     plugin = config['plugins'].get("redirects")
     if plugin:
