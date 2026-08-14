@@ -11,8 +11,6 @@ import logging
 import requests
 log = logging.getLogger('mkdocs')
 
-MASVS = None
-
 # MASVS category to CSS color variable mapping
 MASVS_CATEGORY_COLORS = {
     'MASVS-STORAGE': 'var(--tag-color-masvs-storage)',
@@ -137,62 +135,7 @@ def get_all_weaknessess():
     weaknesses.sort(key=lambda weakness: natural_id_sort_key(weakness['id']))
     return weaknesses
 
-def get_platform(input_file: str) -> str:
-    if "/android/" in input_file:
-        return "android"
-    elif "/ios/" in input_file:
-        return "ios"
-
-def get_mastg_tests_dict():
-
-    weaknesses = get_all_weaknessess()
-    MASWE = {weakness['id']: weakness for weakness in weaknesses}
-
-    mastg_tests = {}
-
-    for file in glob.glob("docs/MASTG/tests/**/*.md", recursive=True):
-        if "index.md" not in file:
-            with open(file, 'r') as f:
-                current_masvs_id = ""
-                content = f.read()
-                platform = get_platform(file)
-                MASTG_TEST_ID = re.compile(r".*(MASTG-TEST-\d*).md$").match(file).group(1)
-                frontmatter = next(yaml.load_all(content, Loader=yaml.FullLoader))
-                frontmatter['path'] = os.path.relpath(file, "docs/MASTG")
-                
-                if is_v1_test(MASTG_TEST_ID):
-                    # it's a v1 test
-                    frontmatter['id'] = MASTG_TEST_ID
-                    if not frontmatter.get('masvs_v2_id'):
-                        log.warning(f"No MASVS v2 coverage for: {frontmatter['title']} (was {frontmatter.get('masvs_v1_id'), 'N/A'})")
-                        continue
-                
-                else:
-                    # it's a v2 test
-                    frontmatter['masvs_v2_id'] = []
-                    if frontmatter['weakness'] in MASWE:
-                        frontmatter['masvs_v2_id'].append(MASWE[frontmatter['weakness']]['masvs_v2_id'])
-                    else:
-                        log.warning(f"Weakness {frontmatter['weakness']} not found in MASWE")
-                    
-                masvs_v2_id = frontmatter['masvs_v2_id']
-                
-                try:
-                    current_masvs_id = masvs_v2_id[0]
-                except Exception as e:
-                    log.warning(f"Error getting masvs_v2_id for test {frontmatter.get('id', 'unknown')}: {e}")
-                    continue
-                if current_masvs_id not in mastg_tests:
-                    mastg_tests[current_masvs_id] = {}
-                if platform not in mastg_tests[current_masvs_id]:
-                    mastg_tests[current_masvs_id][platform] = []
-
-                mastg_tests[current_masvs_id][platform].append(frontmatter)
-
-    return mastg_tests
-
 def retrieve_masvs(version="latest"):
-    global MASVS
     try:
         url = f"https://github.com/OWASP/masvs/releases/{version}/download/OWASP_MASVS.yaml"
         response = requests.get(url)
@@ -205,109 +148,16 @@ def retrieve_masvs(version="latest"):
             content = masvs_yaml_file.read_text()
         else:
             raise Exception("ERROR Failed reading OWASP_MASVS.yaml from file")
-    MASVS = yaml.safe_load(content)
-    return MASVS
+    return yaml.safe_load(content)
 
 def get_masvs_groups():
+    masvs = retrieve_masvs()
     groups = {}
-    for group in MASVS['groups']:
+    for group in masvs['groups']:
         group_id = group['id']
         groups[group_id] = {'id': group_id, 'title': group['title']}
         groups[group_id]['controls'] = [{"id" : control["id"], "statement": control["statement"]} for control in group["controls"]]
     return groups
-
-def add_control_row(checklist, control):
-    checklist_row = {}
-    checklist_row['MASVS-ID'] = control['id']
-    checklist_row['path'] = f"./MASVS/controls/{os.path.basename(control['id'])}"
-    checklist_row['Platform'] = ""
-    checklist_row['Control / MASTG Test'] = control['statement']
-    checklist_row['MASTG-TEST-ID'] = ""
-    checklist_row['L1'] = ""
-    checklist_row['L2'] = ""
-    checklist_row['R'] = ""
-    checklist_row['P'] = ""
-    checklist_row['Status'] = ""
-    checklist.append(checklist_row)
-
-def add_test_rows(checklist, platform, control):
-    if platform in control['tests']:
-        for test in control['tests'][platform]:
-            levels = test['profiles']
-            checklist_row = {}
-            checklist_row['MASVS-ID'] = "" # test['masvs_v2_id'][0] if test['masvs_v2_id'] else ""
-            # checklist_row['Weakness'] = test.get('weakness', "")
-            checklist_row['path'] = f"/MASTG/{os.path.splitext(test['path'])[0]}"
-            checklist_row['Platform'] = test['platform']
-            checklist_row['Control / MASTG Test'] = test['title']
-            checklist_row['MASTG-TEST-ID'] = test["id"]
-            checklist_row['L1'] = "L1" in levels
-            checklist_row['L2'] = "L2" in levels
-            checklist_row['R'] = "R" in levels
-            checklist_row['P'] = "P" in levels
-            if is_v1_test(test['id']):
-                checklist_row['Status'] = test.get('status', 'update-pending')
-            elif is_v2_test(test['id']):
-                status = test.get('status', 'current')
-                if status == 'new':
-                    status = 'current'
-                checklist_row['Status'] = status
-            checklist.append(checklist_row)
-
-def get_checklist_dict():
-    masvs_v2 = retrieve_masvs()
-
-    mastg_tests = get_mastg_tests_dict()
-
-    checklist_dict = {}
-
-    for group in masvs_v2['groups']:
-
-        checklist_per_group = []
-
-        for control in group['controls']:
-            add_control_row(checklist_per_group, control)
-            control_id = control['id']
-            if control_id in mastg_tests:
-                control['tests'] = mastg_tests[control_id]
-                add_test_rows(checklist_per_group, "android", control)
-                add_test_rows(checklist_per_group, "ios", control)
-
-        checklist_dict[group['id']] = checklist_per_group
-    return checklist_dict
-
-def set_icons_for_web(checklist):
-
-    for row in checklist:
-        # if it's a control row, make the MASVS-ID and Control bold
-        if row['Platform'] == "":
-            relPath = os.path.relpath(row['path'], './checklists/') + ".md"
-            row['MASVS-ID'] = f"**[{row['MASVS-ID']}]({relPath})**"
-            row['Control / MASTG Test'] = f"**{row['Control / MASTG Test']}**"
-
-        # if it's a test row, set the icons for platform and levels
-        else:
-            row['Platform'] = get_platform_icon(row['Platform'])
-            row['Control / MASTG Test'] = f"@{row['MASTG-TEST-ID']}"
-            row['L1'] = get_level_icon('L1', row['L1'])
-            row['L2'] = get_level_icon('L2', row['L2'])
-            row['R'] = get_level_icon('R', row['R'])
-            row['P'] = get_level_icon('P', row['P'])
-
-            test_id = row['MASTG-TEST-ID']
-
-            # Process status field for test rows
-            status = row.get('Status')
-            if status == 'new':
-                status = 'current'
-            if status == 'current':
-                row['Status'] = '<span class="md-tag md-tag-icon md-tag--current">current</span><span style="display: none;">status:current</span>'
-            elif status == 'placeholder':
-                row['Status'] = f'<a href="https://github.com/OWASP/mastg/issues?q=is%3Aopen+in%3Atitle+%22{test_id}%22" target="_blank"><span class="md-tag md-tag-icon md-tag--placeholder" style="min-width: 4em;">placeholder</span></a><span style="display: none;">status:placeholder</span>'
-            elif status == 'deprecated':
-                row['Status'] = '<span class="md-tag md-tag-icon md-tag--deprecated">deprecated</span><span style="display: none;">status:deprecated</span>'
-            elif status == 'update-pending':
-                row['Status'] = f'<a href="https://github.com/OWASP/mastg/issues?q=is%3Aopen+in%3Atitle+%22{test_id}%22" target="_blank"><span class="md-tag md-tag-icon md-tag--update-pending" style="min-width: 4em;">update-pending</span></a><span style="display: none;">status:update-pending</span>'
 
 def list_of_dicts_to_md_table(data, column_titles=None, column_align=None):
 
@@ -647,30 +497,6 @@ def on_page_markdown(markdown, page, config, **kwargs):
 
         return append_to_page(markdown, list_of_dicts_to_md_table(data))
 
-    elif path and re.compile(r"^checklists/MASVS-\w*\.md$").match(path):
-        # checklists.md
-
-        column_titles = {'MASVS-ID': 'MASVS-ID', 'MASTG-TEST-ID': 'MASTG-TEST-ID', 'Control / MASTG Test': 'Control / MASTG Test',  'Platform': "Platform", 'L1': 'L1', 'L2': 'L2', 'R': 'R', 'P': 'P', 'Status': 'Status'}
-        column_align = ("left", "center", "left", "center", "left", "center", "center", "center", "center")
-
-        ID = re.compile(r"^checklists/(MASVS-\w*)\.md$").match(path).group(1)
-        checklist = config["dynamic_tables_checklist_dict"].get(ID)
-
-        set_icons_for_web(checklist)
-
-        cleaned_checklist = []
-        for check in checklist:
-            cleaned_check = dict(check)
-
-            del cleaned_check['path']
-            cleaned_checklist.append(cleaned_check)
-
-        cleaned_checklist = [reorder_dict_keys(check, column_titles.keys()) for check in cleaned_checklist]
-
-        content = list_of_dicts_to_md_table(cleaned_checklist, column_titles, column_align) + "\n\n<br><br>"
-
-        return append_to_page(markdown, content)
-
     elif match := re.compile(r"MASVS/\d{2}-(MASVS-.*)\.md").match(path):
 
         column_titles = {'id': 'ID', 'title': 'Control'}
@@ -691,5 +517,4 @@ def on_page_markdown(markdown, page, config, **kwargs):
 def on_pre_build(config):
     config["mitigations_beta"] = get_all_mitigations_beta()
     config["demos_beta"] = get_all_demos_beta()
-    config["dynamic_tables_checklist_dict"] = get_checklist_dict()
     config["masvs_groups"] = get_masvs_groups()

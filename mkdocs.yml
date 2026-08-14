@@ -203,16 +203,6 @@ nav:
           - ... | flat | MASTG/apps/android/*.md
         - iOS:
           - ... | flat | MASTG/apps/ios/*.md
-  - "MAS Checklist":
-     - checklists/index.md
-     - MASVS-STORAGE: checklists/MASVS-STORAGE.md
-     - MASVS-CRYPTO: checklists/MASVS-CRYPTO.md
-     - MASVS-AUTH: checklists/MASVS-AUTH.md
-     - MASVS-NETWORK: checklists/MASVS-NETWORK.md
-     - MASVS-PLATFORM: checklists/MASVS-PLATFORM.md
-     - MASVS-CODE: checklists/MASVS-CODE.md
-     - MASVS-RESILIENCE: checklists/MASVS-RESILIENCE.md
-     - MASVS-PRIVACY: checklists/MASVS-PRIVACY.md
   - "MAS Crackmes":
       - crackmes/index.md
       - ... | flat | crackmes/*.md
@@ -389,7 +379,6 @@ hooks:
 
   # Priority -40 for adding content
   - docs/hooks/add-tool-gh-preview.py
-  - docs/hooks/add-checklists-banner.py
   - docs/hooks/add-cross-references.py
   - docs/hooks/replace_snippets.py
   - docs/hooks/status-banners.py

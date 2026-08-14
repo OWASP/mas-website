@@ -5,7 +5,7 @@
  * -------
  * This script adds a consistent, configurable filter bar above the dynamic
  * index tables rendered across the site (Tests, MASWE, Knowledge, Techniques,
- * Tools, Demos, Apps, Best Practices, Checklists). It replaces the built-in
+ * Tools, Demos, Apps, Best Practices). It replaces the built-in
  * DataTables search box with a richer UI that supports:
  *   - Status: Show Deprecated
  *   - Platform: Android, iOS, Network, Generic
@@ -24,7 +24,6 @@
  *   - /MASTG/demos/
  *   - /MASTG/apps/
  *   - /MASTG/best-practices/
- *   - /checklists/
  *
  * You can override/extend this mapping at runtime by defining
  * window.MAS_TABLE_FILTERS before this script loads, e.g.:
@@ -111,7 +110,7 @@
  *   related variants.
  */
 
-// Generic, auto-detecting filters for all dynamic tables (tests, weaknesses, techniques, tools, demos, apps, best practices, knowledge, checklists)
+// Generic, auto-detecting filters for all dynamic tables (tests, weaknesses, techniques, tools, demos, apps, best practices, knowledge)
 // Works with MkDocs Material navigation (document$) and jQuery DataTables.
 
 (function () {
@@ -127,8 +126,7 @@
     '/MASTG/techniques/': ['status', 'used_in', 'platform', 'search'],
     '/MASTG/demos/': ['status', 'platform', 'search'],
     '/MASTG/best-practices/': ['status', 'platform', 'search'],
-    '/MASTG/apps/': ['status', 'platform', 'search'],
-    '/checklists/': ['status', 'platform', 'profile', 'search']
+    '/MASTG/apps/': ['status', 'platform', 'search']
   };
 
   // Allow runtime overrides via window.MAS_TABLE_FILTERS = { pathSubstring: ['group', ...] }
