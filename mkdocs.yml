@@ -37,7 +37,7 @@ nav:
       - ... | flat | MASVS/controls/MASVS-RESILIENCE*.md
       - MASVS-PRIVACY: MASVS/12-MASVS-PRIVACY.md
       - ... | flat | MASVS/controls/MASVS-PRIVACY*.md
-  - "MASWE (Beta)":
+  - MASWE:
     - MASWE/index.md
     - MASVS-STORAGE:
       - ... | flat | MASWE/MASVS-STORAGE/*.md
