@@ -15,7 +15,7 @@ This one was a genuine team effort. The OWASP MAS Task Force pulled the whole ca
 
 ## Where We Came From
 
-When we [announced MASWE in July 2024](https://mas.owasp.org/news/2024/07/30/new-maswe/), the goal was to fill the gap between high-level MASVS controls and low-level MASTG tests. A MASVS control like "The app employs current strong cryptography and uses it according to industry best practices" is abstract by design. A MASTG test is specific to one platform, one API, one observable outcome. MASWE is the layer in between: the platform-agnostic weakness that explains *why* the listed tests exist.
+When we [announced MASWE in July 2024](https://mas.owasp.org/news/2024/07/30/new-maswe/), the goal was to fill the gap between high-level [MASVS controls](https://mas.owasp.org/MASVS) and low-level [MASTG tests](https://mas.owasp.org/MASTG/tests). A MASVS control like "The app employs current strong cryptography and uses it according to industry best practices" is abstract by design. A MASTG test is specific to one platform, one API, one observable outcome. MASWE is the layer in between: the platform-agnostic weakness that explains *why* the listed tests exist.
 
 <center style="margin: 30px 0;">
 <img style="width: 60%; border-radius: 5px" src="/assets/news/mas_traceability_chain.png"/>
@@ -27,7 +27,7 @@ MASVS control → MASWE weakness → MASTG test → MASTG demo.
 
 But the beta catalogue itself was not finished. It had **119 entries, and 89 of them were still placeholders**: a title, some metadata, and draft content with notes to ourselves about what the page should eventually say.
 
-There was also drift: the 30 entries that *were* fully written had been authored over two years by different people with different instincts, and the result was inconsistent in both structure and scope. Some put *Impact* before *Modes of Introduction*. Some wrote *Impact* as a paragraph, others as a list. Some described consequences under *Modes of Introduction*, and testable causes under *Impact*. Some were narrowly scoped to a single API, others spanned half a MASVS category. Several described the same underlying issue from different angles.
+There was also drift: the 30 entries that *were* fully written had been authored over two years by different people with different instincts, and the result was inconsistent in both structure and scope. Some put *Impact* before *Modes of Introduction*. Some wrote *Impact* as a paragraph, others as a list. Some described consequences under *Modes of Introduction*, and testable causes under *Impact*. Some were narrowly scoped to a single API, others spanned half a [MASVS category](https://mas.owasp.org/MASVS). Several described the same underlying issue from different angles.
 
 That is acceptable for a beta version, but not for something the industry expects to reference by ID.
 
@@ -85,11 +85,11 @@ Every page now follows the same four sections, in the same order, with the same 
 3. **Impact** — *only* consequences.
 4. **Mitigations** — imperative, actionable instructions addressed to a developer.
 
-Each bullet in *Modes of Introduction* and *Mitigations* starts with a **bold short label**, which makes them addressable in review and, as we will see, maps cleanly onto MASTG content.
+Each bullet in *Modes of Introduction* and *Mitigations* starts with a **bold short label**, which makes them addressable in review and, as we will see, maps cleanly onto [MASTG](https://mas.owasp.org/MASTG) content.
 
 The discipline that took the most effort was keeping causes and consequences apart. A bullet like *"Hardcoded Keys: Including cryptographic keys directly in the application code, making them susceptible to extraction through decompilation"* has a cause and a consequence welded together. In v1, the cause stays in *Modes of Introduction* and the consequence moves to *Impact*, where it belongs. It sounds pedantic, but it is the difference between a section you can turn into tests and a section you cannot.
 
-We also enforced platform-agnosticism, with a deliberate exception for clarity. It is fine to mention the Android KeyStore and the iOS Keychain as examples of platform-provided key storage, or `SharedPreferences` and `UserDefaults` as examples of general-purpose key-value storage that offers no protection beyond the app sandbox. Those are the clearest way to make the point. It is not fine to name `WebView` and `WKWebView` separately when "WebView" says the same thing. Any mobile platform specifics belong in the MASTG.
+We also enforced platform-agnosticism, with a deliberate exception for clarity. It is fine to mention the Android KeyStore and the iOS Keychain as examples of platform-provided key storage, or `SharedPreferences` and `UserDefaults` as examples of general-purpose key-value storage that offers no protection beyond the app sandbox. Those are the clearest way to make the point. It is not fine to name `WebView` and `WKWebView` separately when "WebView" says the same thing. Any mobile platform specifics belong in the [MASTG](https://mas.owasp.org/MASTG).
 
 ### 4. A canonical vocabulary for impact
 
@@ -113,20 +113,20 @@ This gives every weakness a directly usable requirement statement for policies, 
 
 We also added mappings to help further understand the weaknesses beyond MASWE, including:
 
-- All **24 MASVS v2 controls**
-  - were re-verified for all 78 weaknesses against the actual control definitions, not just carried over from the rename.
-  - are covered by at least one weakness.
+- All **24 [MASVS v2 controls](https://mas.owasp.org/MASVS)**
+    - were re-verified for all 78 weaknesses against the actual control definitions, not just carried over from the rename.
+    - are covered by at least one weakness.
 - All **44 risks** documented on [Android's Security & Privacy risks page](https://developer.android.com/privacy-and-security/risks)
-  - were reviewed against Android's risk documentation.
-  - map to at least one weakness.
+    - were reviewed against Android's risk documentation.
+    - map to at least one weakness.
 - Every item in the "Privacy and security" section of the [Android Core App Quality checklist](https://developer.android.com/docs/quality-guidelines/core-app-quality)
-  - were linked to 25 Android-relevant weaknesses using the new named IDs (`Network_Security_Traffic`, `Minimize_Permissions`, `Cryptographic_Algorithms`, …)
-  - map to at least one weakness.
+    - were linked to 25 Android-relevant weaknesses using the new named IDs (`Network_Security_Traffic`, `Minimize_Permissions`, `Cryptographic_Algorithms`, …)
+    - map to at least one weakness.
 - **93 distinct CWEs** are referenced, keeping MASWE anchored to the broader software security ecosystem.
 
 ## Why This Matters
 
-**Mobile app security requirements are increasingly written into regulation and certification, not just into pentest reports.** The MASVS and MASTG are already referenced by [Google's MASA program](https://appdefensealliance.dev/masa) via the App Defense Alliance, by [CREST OVS](https://www.crest-approved.org/membership/crest-ovs-programme/), by NIST SP 800-163r1 and SP 800-218, by BSI TR-03161 for eHealth apps, by the ioXt Alliance, and by government bodies like Singapore or India. When a standard is cited in a certification scheme, ambiguity in that standard becomes ambiguity in someone's compliance obligation.
+**Mobile app security requirements are increasingly written into regulation and certification, not just into pentest reports.** The [MASVS](https://mas.owasp.org/MASVS) and [MASTG](https://mas.owasp.org/MASTG) are already referenced by [Google's MASA program](https://appdefensealliance.dev/masa) via the App Defense Alliance, by [CREST OVS](https://www.crest-approved.org/membership/crest-ovs-programme/), by NIST SP 800-163r1 and SP 800-218, by BSI TR-03161 for eHealth apps, by the ioXt Alliance, and by government bodies like Singapore or India. When a standard is cited in a certification scheme, ambiguity in that standard becomes ambiguity in someone's compliance obligation.
 
 A weakness enumeration is the layer where that ambiguity gets resolved, because it is the level people actually cite. "The app failed MASVS-STORAGE-2" is not a finding anyone can act on. "The app failed `MASWE-0005`, mode of introduction: verbose logging in production" is.
 
@@ -138,9 +138,9 @@ Here is the part we find most interesting: the MASWE authoring standard says a M
 <img style="width: 90%; border-radius: 5px" src="/assets/news/mastg_maswe_test_demo_example.png"/>
 </center>
 
-**Every *Mode of Introduction* should have a test:** A mode of introduction is, by construction, a developer-introduced condition that is testable — that rule was enforced across all 78 pages. So each one is a MASTG-TEST candidate, usually one per platform.
+**Every *Mode of Introduction* should have a test:** A mode of introduction is, by construction, a developer-introduced condition that is testable — that rule was enforced across all 78 pages. So each one is a [MASTG-TEST](https://mas.owasp.org/MASTG/tests) candidate, usually one per platform.
 
-**Every *Mitigation* should have a best practice:** A mitigation is, by construction, an actionable instruction to a developer. That is precisely what a MASTG-BEST is.
+**Every *Mitigation* should have a best practice:** A mitigation is, by construction, an actionable instruction to a developer. That is precisely what a [MASTG-BEST](https://mas.owasp.org/MASTG/best-practices) is.
 
 **36 of the 78 weaknesses have no MASTG test at all yet.** Among them:
 
@@ -153,7 +153,7 @@ Here is the part we find most interesting: the MASWE authoring standard says a M
 
 ... and most of MASVS-PRIVACY.
 
-That is not a complaint about MASTG v2. It is the first time we have been able to state the remaining work as a finite, enumerated list instead of a feeling that there is more to do.
+That is not a complaint about [MASTG v2](https://mas.owasp.org/MASTG). It is the first time we have been able to state the remaining work as a finite, enumerated list instead of a feeling that there is more to do.
 
 If you have ever wanted to contribute to the MAS project but did not know where to start: pick a weakness with no tests, pick one of its modes of introduction, and write the test that detects it. The MASWE page already tells you what the test has to prove.
 
