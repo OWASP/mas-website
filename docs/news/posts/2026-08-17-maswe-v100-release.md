@@ -5,7 +5,7 @@ authors: [carlos, sven, jeroen]
 slug: maswe-v100-release
 ---
 
-We just released **MASWE v1.0.0**, the first stable release of the [Mobile Application Security Weakness Enumeration](https://mas.owasp.org/MASWE/). Two years after we [introduced the beta](https://mas.owasp.org/news/2024/07/30/new-maswe/), every weakness is now fully written, consistently structured and stably numbered.
+We just released [MASWE v1.0.0](https://github.com/OWASP/maswe/releases/tag/v1.0.0), the first stable release of the [Mobile Application Security Weakness Enumeration](https://mas.owasp.org/MASWE/). Two years after we [introduced the beta](https://mas.owasp.org/news/2024/07/30/new-maswe/), every weakness is now fully written, consistently structured and stably numbered.
 
 <center style="margin: 30px 0;">
 <img style="width: 40%; border-radius: 5px" src="/assets/maswe_cover.png"/>
@@ -74,7 +74,7 @@ IDs are now **consecutive and grouped by category**, `MASWE-0001` through `MASWE
 
 This means the renumbering was a one-time event, done deliberately before v1.0.0. **From here on, IDs are stable.** New weaknesses get the next free number and will not necessarily be consecutive within their category, but no existing ID will ever move or be recycled, only deprecated and removed if needed.
 
-We want to be mindful of the people and organizations that are already using the MASWE beta, so we are providing a one-time mapping from the beta to the v1.0.0 IDs. This mapping is only available with the v1.0.0 release and is provided in machine-readable format. The beta mappings will be temporarily included in each MASWE metadata, but they will be removed in an upcoming release.
+We want to be mindful of the people and organizations that are already using the MASWE beta, so we are providing a one-time mapping from the beta to the v1.0.0 IDs. This mapping is [only available with the v1.0.0 release](https://github.com/OWASP/maswe/releases/download/v1.0.0/OWASP_MASWE.yaml) and is provided in machine-readable format. The beta mappings will be temporarily included in each MASWE metadata, but they will be removed in an upcoming release.
 
 ### 3. A fixed anatomy for every weakness
 
@@ -189,6 +189,6 @@ MASWE v1.0.0 is live:
 - :simple-github: [OWASP/maswe on GitHub](https://github.com/OWASP/maswe)
 - 📄 [The v1.0.0 pull request](https://github.com/OWASP/maswe/pull/182), including the full beta → v1.0.0 mapping
 
-If you have used the beta MASWE IDs, you can consult the mappings to v1.0.0 from here: \<LINK\>
+If you have used the beta MASWE IDs, you can consult the mappings to v1.0.0 from here: <https://github.com/OWASP/maswe/releases/download/v1.0.0/OWASP_MASWE.yaml>
 
 And if you want to contribute, [come and talk to us](https://mas.owasp.org/contact/) or jump straight into the [GitHub discussions](https://github.com/OWASP/mastg/discussions). There has never been a clearer map of what is left to build.
