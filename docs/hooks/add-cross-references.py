@@ -103,6 +103,9 @@ def generate_cross_references():
                 "title": weakness_meta["title"]
             })
 
+    for masvs_weaknesses in cross_references["masvs"].values():
+        masvs_weaknesses.sort(key=lambda weakness: int(weakness["id"].rsplit("-", 1)[1]))
+
     for test_id, test_meta in tests.items():
         weakness_id = test_meta.get("weakness")
         test_path = test_meta.get("path")
