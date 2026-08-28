@@ -53,6 +53,21 @@ def gather_metadata(directory, id_key, component_type):
             raise Exception(f"Missing frontmatter in {file}: {e}")
     return metadata
 
+def gather_weakness_metadata():
+    metadata = {}
+    for file in glob.glob("./docs/MASWE/**/*.md", recursive=True):
+        if file.endswith("index.md"):
+            continue
+
+        try:
+            with open(file, 'r') as f:
+                frontmatter = next(yaml.load_all(f.read(), Loader=yaml.FullLoader))
+                frontmatter["path"] = os.path.relpath(file, "./docs")
+                metadata[frontmatter["id"]] = frontmatter
+        except Exception as e:
+            raise Exception(f"Missing frontmatter in {file}: {e}")
+    return metadata
+
 def gather_tool_references_from_content(content, file_path):
     """Extract all @MASTG-TOOL-XXXX references from file content"""
     tool_pattern = r'@(MASTG-TOOL-\d+)'
@@ -69,14 +84,27 @@ def generate_cross_references():
     best_practices_metadata = gather_metadata("MASTG/best-practices", "id", "BEST")
     techniques = gather_metadata("MASTG/techniques", "id", "TECH")
     knowledge = gather_metadata("MASTG/knowledge", "id", "KNOW")
+    weaknesses = gather_weakness_metadata()
 
     cross_references = {
         "weaknesses": {},
+        "masvs": {},
         "tests": {},
         "best-practices": {},
         "tools": {},  # Tools cross-references
         "techniques": {}  # Techniques cross-references
     }
+
+    for weakness_id, weakness_meta in weaknesses.items():
+        for masvs_id in weakness_meta.get("mappings", {}).get("masvs-v2", []):
+            cross_references["masvs"].setdefault(masvs_id, []).append({
+                "id": weakness_id,
+                "path": weakness_meta["path"],
+                "title": weakness_meta["title"]
+            })
+
+    for masvs_weaknesses in cross_references["masvs"].values():
+        masvs_weaknesses.sort(key=lambda weakness: int(weakness["id"].rsplit("-", 1)[1]))
 
     for test_id, test_meta in tests.items():
         weakness_id = test_meta.get("weakness")
@@ -360,6 +388,17 @@ def on_page_markdown(markdown, page, config, **kwargs):
                 relPath = os.path.relpath(best_practice['path'], os.path.dirname(path))
                 best_practices_section += f"[{get_platform_icon(best_practice['platform'])} {best_practice['id']}: {best_practice['title']}]({relPath}){{: .mas-best-button}} "
             markdown += f"\n\n{best_practices_section}"
+
+    if path.startswith("MASVS/controls/"):
+        masvs_id = os.path.splitext(filename)[0]
+        weaknesses = cross_references["masvs"].get(masvs_id, [])
+        meta["weaknesses"] = weaknesses
+        if weaknesses:
+            weaknesses_section = "## Related Weaknesses\n\n"
+            for weakness in weaknesses:
+                relPath = os.path.relpath(weakness["path"], os.path.dirname(path))
+                weaknesses_section += f"[{weakness['id']}: {weakness['title']}]({relPath}){{: .mas-maswe-button}} "
+            markdown += f"\n\n{weaknesses_section}"
 
     if "MASTG-TEST-" in filename:
 
