@@ -370,6 +370,21 @@ img.dark-img {
   cursor: pointer; /* Add this line to show the pointer cursor */
 }
 
+/* Inline code inherits its link's color (mkdocs-material sets `.md-typeset a code`
+   to `color: currentcolor`). Since these buttons force white link text, nested
+   inline code became white-on-light-grey in light mode (unreadable), while dark
+   mode happened to work because its code background is dark. Restore the themed
+   code colors so contrast stays correct in both color schemes. */
+.md-typeset .mas-test-button code,
+.md-typeset .mas-demo-button code,
+.md-typeset .mas-best-button code,
+.md-typeset .mas-tech-button code,
+.md-typeset .mas-know-button code,
+.md-typeset .mas-maswe-button code {
+  color: var(--md-code-fg-color);
+  background-color: var(--md-code-bg-color);
+}
+
 .mas-demo-button {
   background-color: #9900ff; /* Adjusted to match the hex value format */
 }
