@@ -22,7 +22,7 @@ git clone https://github.com/OWASP/mas-website.git
 
 **Note 1:** Any local changes in the mastg, masvs, or maswe repositories will be reflected in the website when it is built locally, including errors.
 
-**Note 2:** By default, interactions with the Github API are disabled, which means some dynamically retrieved content will not be available. If you want to enable the Github API, [create a personal access token](https://github.com/settings/personal-access-tokens) and export it as an environment variable (e.g., in your .zshrc file). Make sure to export this token in your shell before running the website:
+**Note 2:** By default, interactions with the GitHub API are disabled, which means some dynamically retrieved content will not be available. If you want to enable the GitHub API, [create a personal access token](https://github.com/settings/personal-access-tokens) and export it as an environment variable (e.g., in your .zshrc file). Make sure to export this token in your shell before running the website:
 
 ```bash
 export GITHUB_TOKEN=<TOKEN>
@@ -61,14 +61,13 @@ It is highly recommended to use a virtual environment (venv) to manage dependenc
 Use vscode's [`Command Palette`](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) (Press `⌘+Shift+P` on macOS or `Ctrl+Shift+P` on Windows/Linux)
 
 1. Create a venv:
-    - Press `⌘+Shift+P` -> `Python: Create Environment`
-    - Select `"Quick Create"`
-2. Select the venv as the Python interpreter:
-    - Press `⌘+Shift+P` -> `Python: Select Interpreter`
-    - Choose the venv you just created.
-3. Install the dependencies
-   - Press `⌘+j` to open the terminal
-   - Run `pip install -r src/scripts/requirements.txt`
+   1. Press `⌘+Shift+P` -> `Python: Create Environment`
+   2. Select `"Venv"`
+   3. Select a desired Python (for min version consult the [prerequisites](#prerequisites))
+   4. Select `requirements.txt`
+2. Install the dependencies
+   1. Press `⌘+j` to open the terminal
+   2. Run `pip install -r requirements.txt`
 
 ### Step 3: Run the Website
 
