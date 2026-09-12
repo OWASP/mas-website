@@ -6,9 +6,6 @@
 
   "workspaceFolder": "/workspace/mas-website",
   "workspaceMount": "source=${localWorkspaceFolder},target=${containerWorkspaceFolder},type=bind,consistency=cached",
-  "containerEnv": {
-    "WORKSPACE_FOLDER": "${containerWorkspaceFolder}"
-  },
 
   "mounts": [
     "source=masvs,target=/workspace/masvs,type=volume",

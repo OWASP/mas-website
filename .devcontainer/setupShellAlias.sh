@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ALIAS_CMD="alias runMasWebsite=\"${WORKSPACE_FOLDER}/.devcontainer/runMasWebsite.sh\""
+ALIAS_CMD="alias runMasWebsite=\"/workspace/mas-website/.devcontainer/runMasWebsite.sh\""
 MESSAGE_CMD='echo "In case the development server is not running, run '"'"'runMasWebsite'"'"'."'
 
 for rcfile in "$HOME/.bashrc" "$HOME/.zshrc"; do
