@@ -17,15 +17,18 @@
   ],
 
   "remoteUser": "vscode",
-  "postCreateCommand": "sudo chown -R vscode:vscode /workspace/* && .devcontainer/setupShellAlias.sh && .devcontainer/fetchMasProject.sh mastg maswe masvs",
+  "postCreateCommand": "sudo chown -R vscode:vscode /workspace/* && /workspace/mas-website/.devcontainer/setupShellAlias.sh && /workspace/mas-website/.devcontainer/fetchMasProject.sh mastg maswe masvs",
   "postStartCommand": ".devcontainer/runMasWebsite.sh",
 
   "customizations": {
     "vscode": {
+      // Set *default* container specific settings.json values on container create.
       "settings": {
         "terminal.integrated.shell.linux": "/bin/bash",
         "debug.javascript.usePreview": false
       },
+
+      // Add the IDs of extensions you want installed when the container is created.
       "extensions": [
         "yzhang.markdown-all-in-one",
         "redhat.vscode-yaml",
@@ -41,5 +44,6 @@
     }
   },
 
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [8000]
 }
