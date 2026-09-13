@@ -27,7 +27,7 @@ def get_edit_url(src_path, edit_url_mastg, edit_url_masvs, edit_url_maswe):
     elif src_path.startswith("MASWE"):
         edit_url = f"{edit_url_maswe}{src_path}"
         edit_url = edit_url.replace("main/MASWE/", "main/weaknesses/")
-    elif src_path.startswith(("contributing", "donate")):
+    elif src_path.startswith(("contributing", "donate", "Profiles")):
         edit_url = f"{edit_url_mastg}{src_path}"
         edit_url = edit_url.replace("master/", "master/docs/")
     else:
@@ -45,7 +45,7 @@ def on_pre_page(page, config, files):
 
     src_path = page.file.src_path
 
-    if src_path.startswith(("MASTG", "MASVS", "MASWE", "contributing", "donate")):
+    if src_path.startswith(("MASTG", "MASVS", "MASWE", "contributing", "donate", "Profiles")):
         edit_url = get_edit_url(src_path, edit_url_mastg, edit_url_masvs, edit_url_maswe)
         if edit_url.endswith("/index.md"):
             page.edit_url = ""
