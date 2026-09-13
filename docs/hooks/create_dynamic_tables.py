@@ -22,6 +22,15 @@ MASVS_CATEGORY_COLORS = {
     'MASVS-RESILIENCE': 'var(--tag-color-masvs-resilience)',
     'MASVS-PRIVACY': 'var(--tag-color-masvs-privacy)'
 }
+
+# MAS-Profiles page (docs relative path) -> the MAS profile it covers.
+# Used to build the "## Requirements" table of relevant MASWEs on each page.
+PROFILE_PAGES = {
+    "MAS-Profiles/MAS-L1.md": "L1",
+    "MAS-Profiles/MAS-L2.md": "L2",
+    "MAS-Profiles/MAS-R.md": "R",
+    "MAS-Profiles/MAS-P.md": "P",
+}
 def natural_id_sort_key(component_id):
     """Sort IDs like MASWE-0006 / MASTG-TEST-0052 numerically on their trailing number."""
     match = re.search(r'(\d+)$', component_id or "")
@@ -130,6 +139,54 @@ def get_all_weaknessess():
                 frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--deprecated">deprecated</span><span style="display: none;">status:deprecated</span>'
             frontmatter['platform'] = "".join([get_platform_icon(platform) for platform in frontmatter['platform']])
             weaknesses.append(frontmatter)
+
+    weaknesses.sort(key=lambda weakness: natural_id_sort_key(weakness['id']))
+    return weaknesses
+
+def format_maswe_status(status, weakness_id):
+    """Render a MASWE status value as the same status chip used elsewhere on the site."""
+    if status == 'new':
+        status = 'current'
+    if status == 'current':
+        return '<span class="md-tag md-tag-icon md-tag--current">current</span><span style="display: none;">status:current</span>'
+    elif status == 'placeholder':
+        return f'<a href="https://github.com/OWASP/maswe/issues?q=is%3Aopen+in%3Atitle+%22{weakness_id}%22" target="_blank"><span class="md-tag md-tag-icon md-tag--placeholder" style="min-width: 4em">placeholder</span></a><span style="display: none;">status:placeholder</span>'
+    elif status == 'deprecated':
+        return '<span class="md-tag md-tag-icon md-tag--deprecated">deprecated</span><span style="display: none;">status:deprecated</span>'
+    return status
+
+def get_weaknesses_for_profile(profile):
+    """Return the MASWEs relevant to a given MAS profile (L1, L2, R, P), formatted
+    as rows for the "## Requirements" table on each MAS-Profiles/*.md page."""
+
+    weaknesses = []
+    test_counts = get_maswe_test_counts()
+
+    for file in glob.glob("docs/MASWE/**/MASWE-*.md", recursive=True):
+        with open(file, 'r') as f:
+            content = f.read()
+
+        frontmatter = next(yaml.load_all(content, Loader=yaml.FullLoader))
+
+        if profile not in (frontmatter.get('profiles') or []):
+            continue
+
+        weakness_id = frontmatter['id']
+        weakness_path = f"/MASWE/{os.path.splitext(os.path.relpath(file, 'docs/MASWE'))[0]}"
+
+        masvs_id = frontmatter['mappings']['masvs-v2'][0]
+        masvs_category = masvs_id[:masvs_id.rfind('-')]
+        color = MASVS_CATEGORY_COLORS.get(masvs_category, '#999999')
+
+        weaknesses.append({
+            'id': weakness_id,
+            'requirement': frontmatter.get('requirement', ''),
+            'maswe_id': f'[{weakness_id}: {frontmatter["title"]}]({weakness_path})',
+            'platform': "".join([get_platform_icon(platform) for platform in (frontmatter.get('platform') or [])]),
+            'masvs_id': f'<span class="md-tag" style="background-color: {color}; color: white;">{masvs_id}</span><span style="display: none;">{masvs_id.lower()}</span>',
+            'tests': test_counts.get(weakness_id, 0),
+            'status': format_maswe_status(frontmatter.get('status', 'current'), weakness_id),
+        })
 
     weaknesses.sort(key=lambda weakness: natural_id_sort_key(weakness['id']))
     return weaknesses
@@ -482,6 +539,17 @@ def on_page_markdown(markdown, page, config, **kwargs):
         weaknesses_columns_reordered = [reorder_dict_keys(weakness, column_titles.keys()) for weakness in weaknesses]
 
         return append_to_page(markdown, list_of_dicts_to_md_table(weaknesses_columns_reordered, column_titles) )
+
+    elif path in PROFILE_PAGES:
+        # MAS-Profiles/MAS-L1.md, MAS-L2.md, MAS-R.md, MAS-P.md
+
+        column_titles = {'requirement': 'Requirement', 'maswe_id': 'MASWE ID', 'platform': 'Platform', 'masvs_id': 'MASVS ID', 'tests': 'Tests', 'status': 'Status'}
+        header = "## Requirements\n\n"
+
+        weaknesses = get_weaknesses_for_profile(PROFILE_PAGES[path])
+        if weaknesses:
+            weaknesses_of_profile = [reorder_dict_keys(weakness, column_titles.keys()) for weakness in weaknesses]
+            return append_to_page(markdown, header + list_of_dicts_to_md_table(weaknesses_of_profile, column_titles))
 
     elif path.endswith("talks.md"):
         # talks.md
