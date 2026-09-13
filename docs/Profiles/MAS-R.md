@@ -16,6 +16,6 @@ MAS-R is recommended for
 
 - apps that have a strong need to safeguard their own **business assets and logic**.
 
-Note that the absence of any MAS-R measures does not inherently introduce vulnerabilities. Rather, these measures offer additional, threat-specific protection to applications. However, this is provided that these apps also meet the rest of the OWASP MASVS security controls appropriate to their specific threat models. Crucially, **MAS-R is meant to augment and not replace MAS-L1 and MAS-L2.** It should not be used standalone but as an extra layer of defense, supplementing the base security controls in a defense-in-depth strategy.
+Note that the absence of any MAS-R measures does not inherently introduce vulnerabilities. Rather, these measures offer additional, threat-specific protection to applications. However, this is provided that these apps also meet the rest of the OWASP MASVS security controls appropriate to their specific threat models. Crucially, **MAS-R is meant to augment and not replace [MAS-L1](MAS-L1.md) and [MAS-L2](MAS-L2.md).** It should not be used standalone but as an extra layer of defense, supplementing the base security controls in a defense-in-depth strategy.
 
 Note that these measures cannot assure a 100% effectiveness, as the reverse engineer will always have full access to the device and will therefore end up succeeding given enough time and resources.

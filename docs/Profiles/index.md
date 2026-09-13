@@ -27,7 +27,7 @@ Each profile is described in detail on its own page:
 - [MAS-L1 - Essential Security](MAS-L1.md)
 - [MAS-L2 - Advanced Security](MAS-L2.md)
 - [MAS-R - Resilient Security](MAS-R.md)
-- [MAS-P - Baseline Privacy profile](MAS-P.md)
+- [MAS-P - Baseline Privacy](MAS-P.md)
 
 While these defaults offer a solid foundation and can be effective for teams with limited time or resources, they may not cover unique or advanced threats. For the highest level of assurance, a custom profile based on a detailed threat model remains the recommended approach.
 
