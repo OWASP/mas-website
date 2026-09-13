@@ -88,8 +88,7 @@ def get_maswe_test_counts():
 
         with open(file, 'r') as f:
             frontmatter = next(yaml.load_all(f, Loader=yaml.FullLoader))
-            weakness = frontmatter.get('weakness')
-            if weakness:
+            for weakness in frontmatter.get('maswe') or []:
                 test_counts[weakness] = test_counts.get(weakness, 0) + 1
 
     return test_counts

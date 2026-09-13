@@ -27,10 +27,11 @@ def _on_page_markdown_2(markdown, page, **kwargs):
         tags.append("placeholder-tag-test")
     tags.append(page.meta.get("component_type", "").lower())
 
-    # If there is a weakness, add the place holder. This is then picked up by the tag builder and styled correctly
-    # The placeholder is swapped to the correct value later
-    if page.meta.get("weakness"):
-        tags.append("placeholder-tag-maswe")
+    # If there are weaknesses (maswe: [...]), add a place holder per weakness.
+    # These are then picked up by the tag builder and styled correctly.
+    # The placeholders are swapped to the correct values later.
+    for weakness_index, _ in enumerate(page.meta.get("maswe") or []):
+        tags.append(f"placeholder-tag-maswe-{weakness_index}")
 
     # TODO - This is only for the MASTG v1 tests; remove this once all pages have been updated to use mappings
     tags += page.meta.get("masvs_v1_id", [])
@@ -57,8 +58,10 @@ def _on_page_markdown_1(markdown, page, **kwargs):
 
     tags = page.meta.get('tags', [])
 
-    if weakness := page.meta.get("weakness"):
-        tags.remove("placeholder-tag-maswe")
+    for weakness_index, weakness in enumerate(page.meta.get("maswe") or []):
+        placeholder = f"placeholder-tag-maswe-{weakness_index}"
+        if placeholder in tags:
+            tags.remove(placeholder)
         tags.append(weakness)
 
     if test := page.meta.get("test"):
@@ -75,9 +78,9 @@ on_page_markdown = mkdocs.plugins.CombinedEvent(_on_page_markdown_1, _on_page_ma
 @mkdocs.plugins.event_priority(-51)
 def on_post_page(output, page, config):
 
-    # Replace maswe placeholder with actual value
-    if weakness := page.meta.get("weakness"):
-        output = output.replace("placeholder-tag-maswe", weakness)
+    # Replace maswe placeholders with their actual values
+    for weakness_index, weakness in enumerate(page.meta.get("maswe") or []):
+        output = output.replace(f"placeholder-tag-maswe-{weakness_index}", weakness)
 
     if test := page.meta.get("test"):
         output = output.replace("placeholder-tag-test", test)
@@ -107,7 +110,7 @@ def on_post_page(output, page, config):
     # output = re.sub(r'/tags/#tag:ios"', '/MASTG/tests/#ios"' , output)
 
     # A final switch for things like the main tags page or other places where tags were collected
-    output = output.replace("placeholder-tag-maswe", "MASWE")
+    output = re.sub(r"placeholder-tag-maswe-\d+", "MASWE", output)
     output = output.replace("placeholder-tag-test", "TEST")
 
     return output
