@@ -50,8 +50,8 @@ def on_pre_build(config):
     # MAS Testing Profiles used to be a single page nested under
     # MASTG > General Concepts. It has been split into an intro/examples
     # page, a usage-guidance page, and one page per profile (L1, L2, R, P),
-    # and now lives in its own top-level "MAS Profiles" navigation section.
-    redirects_dict["MASTG/0x03b-Testing-Profiles.md"] = "MAS-Profiles/index.md"
+    # and now lives in its own top-level "MAS Profiles" navigation section (docs/Profiles).
+    redirects_dict["MASTG/0x03b-Testing-Profiles.md"] = "Profiles/index.md"
 
     # Ensure the 'redirects' plugin is present
     plugin = config['plugins'].get("redirects")

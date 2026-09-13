@@ -203,12 +203,12 @@ nav:
         - iOS:
           - ... | flat | MASTG/apps/ios/*.md
   - "MAS Profiles":
-      - MAS-Profiles/index.md
-      - MAS-Profiles/Using-MAS-Profiles.md
-      - MAS-Profiles/MAS-L1.md
-      - MAS-Profiles/MAS-L2.md
-      - MAS-Profiles/MAS-R.md
-      - MAS-Profiles/MAS-P.md
+      - Profiles/index.md
+      - Profiles/Using-MAS-Profiles.md
+      - Profiles/MAS-L1.md
+      - Profiles/MAS-L2.md
+      - Profiles/MAS-R.md
+      - Profiles/MAS-P.md
   - "MAS Crackmes":
       - crackmes/index.md
       - ... | flat | crackmes/*.md

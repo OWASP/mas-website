@@ -23,13 +23,13 @@ MASVS_CATEGORY_COLORS = {
     'MASVS-PRIVACY': 'var(--tag-color-masvs-privacy)'
 }
 
-# MAS-Profiles page (docs relative path) -> the MAS profile it covers.
+# Profiles page (docs relative path) -> the MAS profile it covers.
 # Used to build the "## Requirements" table of relevant MASWEs on each page.
 PROFILE_PAGES = {
-    "MAS-Profiles/MAS-L1.md": "L1",
-    "MAS-Profiles/MAS-L2.md": "L2",
-    "MAS-Profiles/MAS-R.md": "R",
-    "MAS-Profiles/MAS-P.md": "P",
+    "Profiles/MAS-L1.md": "L1",
+    "Profiles/MAS-L2.md": "L2",
+    "Profiles/MAS-R.md": "R",
+    "Profiles/MAS-P.md": "P",
 }
 def natural_id_sort_key(component_id):
     """Sort IDs like MASWE-0006 / MASTG-TEST-0052 numerically on their trailing number."""
@@ -157,7 +157,7 @@ def format_maswe_status(status, weakness_id):
 
 def get_weaknesses_for_profile(profile):
     """Return the MASWEs relevant to a given MAS profile (L1, L2, R, P), formatted
-    as rows for the "## Requirements" table on each MAS-Profiles/*.md page."""
+    as rows for the "## Requirements" table on each Profiles/*.md page."""
 
     weaknesses = []
     test_counts = get_maswe_test_counts()
@@ -541,7 +541,7 @@ def on_page_markdown(markdown, page, config, **kwargs):
         return append_to_page(markdown, list_of_dicts_to_md_table(weaknesses_columns_reordered, column_titles) )
 
     elif path in PROFILE_PAGES:
-        # MAS-Profiles/MAS-L1.md, MAS-L2.md, MAS-R.md, MAS-P.md
+        # Profiles/MAS-L1.md, MAS-L2.md, MAS-R.md, MAS-P.md
 
         column_titles = {'requirement': 'Requirement', 'maswe_id': 'MASWE ID', 'platform': 'Platform', 'masvs_id': 'MASVS ID', 'tests': 'Tests', 'status': 'Status'}
         header = "## Requirements\n\n"
