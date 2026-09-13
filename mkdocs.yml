@@ -63,7 +63,6 @@ nav:
         - ... | flat | MASTG/0x09*.md
       - General Concepts:
         - ... | flat | MASTG/0x04*.md
-        - MASTG/0x03b-Testing-Profiles.md
       - Android Security Testing:
         - ... | flat | MASTG/0x05*.md
       - iOS Security Testing:
@@ -203,6 +202,13 @@ nav:
           - ... | flat | MASTG/apps/android/*.md
         - iOS:
           - ... | flat | MASTG/apps/ios/*.md
+  - "MAS Profiles":
+      - MAS-Profiles/index.md
+      - MAS-Profiles/Using-MAS-Profiles.md
+      - MAS-Profiles/MAS-L1.md
+      - MAS-Profiles/MAS-L2.md
+      - MAS-Profiles/MAS-R.md
+      - MAS-Profiles/MAS-P.md
   - "MAS Crackmes":
       - crackmes/index.md
       - ... | flat | crackmes/*.md
