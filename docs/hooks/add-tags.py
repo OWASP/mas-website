@@ -7,7 +7,7 @@ log = logging.getLogger('mkdocs')
 # https://www.mkdocs.org/dev-guide/plugins/#on_page_markdown
 # mkdocs/tags runs at -50 so this has to be called before -50
 @mkdocs.plugins.event_priority(-49)
-def _on_page_markdown_2(markdown, page, **kwargs):
+def _on_page_markdown_2(markdown, page, config, **kwargs):
 
     tags = page.meta.get('tags', [])
 
@@ -27,11 +27,18 @@ def _on_page_markdown_2(markdown, page, **kwargs):
         tags.append("placeholder-tag-test")
     tags.append(page.meta.get("component_type", "").lower())
 
-    # If there are weaknesses (maswe: [...]), add a place holder per weakness.
-    # These are then picked up by the tag builder and styled correctly.
-    # The placeholders are swapped to the correct values later.
+    # If there are weaknesses (maswe: [...]), add one placeholder per weakness,
+    # indexed so multiple weaknesses on the same test each get their own
+    # distinct placeholder (needed since a tag's text appears more than once
+    # in its rendered chip - e.g. the href fragment and the visible label - so
+    # a shared placeholder can't be told apart and swapped correctly later).
+    # Registering the type in config.extra.tags here (instead of listing a
+    # fixed number of indices in mkdocs.yml) means this scales automatically
+    # to however many weaknesses a test actually declares.
     for weakness_index, _ in enumerate(page.meta.get("maswe") or []):
-        tags.append(f"placeholder-tag-maswe-{weakness_index}")
+        placeholder = f"placeholder-tag-maswe-{weakness_index}"
+        tags.append(placeholder)
+        config.extra["tags"].setdefault(placeholder, "maswe")
 
     # TODO - This is only for the MASTG v1 tests; remove this once all pages have been updated to use mappings
     tags += page.meta.get("masvs_v1_id", [])
