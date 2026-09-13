@@ -1,4 +1,7 @@
-# MAS-R - Resilient Security
+---
+hide: toc
+title: "MAS-R - Resilient Security"
+---
 
 MAS-R tries to prevent an attacker from extracting intellectual property, bypassing security controls (e.g., license checks, DRM, authentication) or negatively impacting the ecosystem (e.g. cheating at a game, unlocking paid features for free, …). It incorporates a range of security measures aimed at enhancing resilience against **reverse engineering and tampering (client-side) threats**, such as repackaging or extraction of sensitive data, IP theft (e.g., proprietary algorithms), piracy.
 

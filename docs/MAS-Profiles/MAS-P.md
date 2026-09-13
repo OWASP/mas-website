@@ -1,4 +1,7 @@
-# MAS-P - Baseline Privacy profile
+---
+hide: toc
+title: "MAS-P - Baseline Privacy"
+---
 
 MAS-P provides a baseline for **user privacy protection**.
 

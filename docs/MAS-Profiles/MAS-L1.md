@@ -1,4 +1,7 @@
-# MAS-L1 - Essential Security
+---
+hide: toc
+title: "MAS-L1 - Essential Security"
+---
 
 MAS-L1 provides a baseline for the most fundamental security requirements and best practices that every mobile app should meet to protect against **common threats**.
 

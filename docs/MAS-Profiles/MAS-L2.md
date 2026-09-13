@@ -1,4 +1,7 @@
-# MAS-L2 - Advanced Security
+---
+hide: toc
+title: "MAS-L2 - Advanced Security"
+---
 
 MAS-L2 extends MAS-L1, introducing additional security measures and best practices for mobile apps to address **advanced threats** requiring more rigorous threat modeling and testing strategies.
 
