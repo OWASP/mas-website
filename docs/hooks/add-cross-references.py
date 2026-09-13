@@ -107,7 +107,7 @@ def generate_cross_references():
         masvs_weaknesses.sort(key=lambda weakness: int(weakness["id"].rsplit("-", 1)[1]))
 
     for test_id, test_meta in tests.items():
-        weakness_id = test_meta.get("weakness")
+        weakness_ids = test_meta.get("maswe") or []
         test_path = test_meta.get("path")
         test_title = test_meta.get("title")
         test_platform = test_meta.get("platform")
@@ -115,7 +115,7 @@ def generate_cross_references():
         knowledge_ids = test_meta.get("knowledge")
 
         # Create cross-references for weaknesses listing all tests, best practices and knowledge articles that reference each weakness ID
-        if weakness_id:
+        for weakness_id in weakness_ids:
             if weakness_id not in cross_references["weaknesses"]:
                 cross_references["weaknesses"][weakness_id] = {"tests": [], "best_practices": {}, "knowledge": {}}
             cross_references["weaknesses"][weakness_id]["tests"].append({"id": test_id, "path": test_path, "title": test_title, "platform": test_platform})

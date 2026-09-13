@@ -137,7 +137,12 @@ def get_maswe_placeholder_banner(meta, config):
 def get_tests_placeholder_banner(meta):
     id = meta.get('id')
     note = meta.get('note', None)
-    weakness = meta.get('weakness', None)
+    weaknesses = meta.get('maswe') or []
+    weaknesses_line = ""
+    if weaknesses:
+        refs = ", ".join(f"@{weakness}" for weakness in weaknesses)
+        label = "weakness" if len(weaknesses) == 1 else "weaknesses"
+        weaknesses_line = f"For more details, check the associated {label}: {refs}\n"
 
     banner = f"""
 !!! warning "Placeholder MASTG-TEST"
@@ -153,8 +158,7 @@ def get_tests_placeholder_banner(meta):
 
 {note}
 
-For more details, check the associated weakness: @{weakness}
-
+{weaknesses_line}
 """
     return banner
 

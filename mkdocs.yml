@@ -429,7 +429,6 @@ extra:
     demo: demo
     tech: tech
     maswe: maswe
-    placeholder-tag-maswe: maswe
     placeholder-tag-test: test
     placeholder-tag-tech: tech
     placeholder-tag-demo: demo
