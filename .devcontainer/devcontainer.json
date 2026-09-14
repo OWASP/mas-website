@@ -1,9 +1,22 @@
 {
-  "name": "MkDocs-VSCode",
+  "name": "mas-website",
   "build": {
-    "context": "..",
-    "dockerfile": "../Dockerfile"
+    "dockerfile": "Dockerfile"
   },
+
+  "workspaceFolder": "/workspace/mas-website",
+  "workspaceMount": "source=${localWorkspaceFolder},target=${containerWorkspaceFolder},type=bind,consistency=cached",
+
+  "mounts": [
+    "source=masvs,target=/workspace/masvs,type=volume",
+    "source=maswe,target=/workspace/maswe,type=volume",
+    "source=mastg,target=/workspace/mastg,type=volume"
+  ],
+
+  "remoteUser": "vscode",
+  "postCreateCommand": "sudo chown -R vscode:vscode /workspace/* && /workspace/mas-website/.devcontainer/setupShellAlias.sh && /workspace/mas-website/.devcontainer/fetchMasProject.sh mastg maswe masvs",
+  "postStartCommand": ".devcontainer/runMasWebsite.sh",
+
   "customizations": {
     "vscode": {
       // Set *default* container specific settings.json values on container create.
@@ -11,6 +24,7 @@
         "terminal.integrated.shell.linux": "/bin/bash",
         "debug.javascript.usePreview": false
       },
+
       // Add the IDs of extensions you want installed when the container is created.
       "extensions": [
         "yzhang.markdown-all-in-one",
@@ -26,10 +40,7 @@
       ]
     }
   },
+
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  "forwardPorts": [
-    8000
-  ]
-  // Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
-  //"remoteUser": "vscode"
+  "forwardPorts": [8000]
 }
