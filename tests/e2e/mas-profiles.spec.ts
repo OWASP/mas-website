@@ -45,6 +45,28 @@ test.describe('MAS Profiles Index Page', () => {
     const img = page.locator('img[src*="example_apps_profiles"]');
     await expect(img).toBeVisible();
   });
+
+  test('should show the attacker capabilities summary table', async ({ page }) => {
+    await page.goto('/Profiles/');
+
+    await expect(page.locator('h3', { hasText: 'Attacker capabilities at a glance' })).toBeVisible();
+
+    const summaryTable = page.locator('table').filter({ hasText: 'Brief attacker model' }).first();
+    await expect(summaryTable).toBeVisible();
+
+    for (const expectedText of [
+      'MAS-L1',
+      'Other applications installed on the device are adversaries.',
+      'MAS-L2',
+      'The operating system cannot be trusted, and attackers may have physical access to the device.',
+      'MAS-R',
+      'The user of the device is an attacker, including reverse engineers and cheaters.',
+      'MAS-P',
+      "Not attacker-centric; focuses on protecting users' personal data and responsible data handling.",
+    ]) {
+      await expect(summaryTable).toContainText(expectedText);
+    }
+  });
 });
 
 test.describe('Using MAS Profiles Page', () => {
