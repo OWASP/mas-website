@@ -22,6 +22,15 @@ The profiles are divided into **two groups**, reflecting the distinct but comple
 - **Security profiles (L1, L2, R)**: address technical threats and adversarial behavior.
 - **Privacy profile (P)**: focuses on protecting users' personal data and ensuring responsible data handling.
 
+### Attacker capabilities at a glance
+
+| Profile | Brief attacker model |
+| --- | --- |
+| **MAS-L1** | Other applications installed on the device are adversaries. |
+| **MAS-L2** | The operating system cannot be trusted, and attackers may have physical access to the device. |
+| **MAS-R** | The user of the device is an attacker, including reverse engineers and cheaters. |
+| **MAS-P** | Not attacker-centric; focuses on protecting users' personal data and responsible data handling. |
+
 Each profile is described in detail on its own page:
 
 - [MAS-L1 - Essential Security](MAS-L1.md)
