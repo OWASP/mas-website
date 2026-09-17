@@ -21,6 +21,7 @@
   --tag-color-l2:                #99CC00;
   --tag-color-r:                 #FF9900;
   --tag-color-p:                 #9933CC;
+  --tag-color-eudiw:             #FFCC00;
 
   --tag-color-test:              #499fffff;
   --tag-color-tech:              #ff44aad5;
@@ -88,6 +89,7 @@ img.dark-img {
 .md-tag--l2,              .masvs-link--l2              { background-color: var(--tag-color-l2) !important; color: white !important; }
 .md-tag--r,               .masvs-link--r               { background-color: var(--tag-color-r) !important; color: white !important; }
 .md-tag--p,               .masvs-link--p               { background-color: var(--tag-color-p) !important; color: white !important; }
+.md-tag--eudiw,           .masvs-link--eudiw           { background-color: var(--tag-color-eudiw) !important; color: white !important; }
 
 
 

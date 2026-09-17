@@ -6,11 +6,11 @@ log = logging.getLogger('mkdocs')
 
 # Canonical display/sort order for MAS profiles - keep in sync with
 # create_dynamic_tables.py's PROFILE_ORDER.
-PROFILE_ORDER = ["L1", "L2", "R", "P"]
+PROFILE_ORDER = ["L1", "L2", "R", "P", "EUDIW"]
 
 def get_profiles_from_maswe(maswe_ids, maswe_profiles_map):
     """Union of the `profiles` of the given MASWE ids, deduplicated and
-    ordered L1, L2, R, P."""
+    ordered L1, L2, R, P, EUDIW."""
     profiles = set()
     for maswe_id in maswe_ids or []:
         profiles.update(maswe_profiles_map.get(maswe_id, []))

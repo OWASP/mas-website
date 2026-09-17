@@ -259,6 +259,7 @@ theme:
       l1: material/circle
       l2: material/circle-multiple-outline
       r: material/circle-double
+      eudiw: material/wallet-bifold
       placeholder: material/pencil-plus
       update-pending: material/information-outline
       deprecated: octicons/circle-slash-16
@@ -425,6 +426,7 @@ extra:
     L1: l1
     L2: l2
     R: r
+    EUDIW: eudiw
     placeholder: placeholder
     update-pending: update-pending
     deprecated: deprecated
