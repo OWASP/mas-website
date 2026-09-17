@@ -30,6 +30,7 @@ PROFILE_PAGES = {
     "Profiles/MAS-L2.md": "L2",
     "Profiles/MAS-R.md": "R",
     "Profiles/MAS-P.md": "P",
+    "Profiles/MAS-EUDIW.md": "EUDIW",
 }
 def natural_id_sort_key(component_id):
     """Sort IDs like MASWE-0006 / MASTG-TEST-0052 numerically on their trailing number."""
@@ -69,6 +70,8 @@ def get_level_icon(level, value):
         return '<span class="mas-dot-orange"></span><span style="display: none;">profile:R</span>'
     elif level == "P" and value == True:
         return '<span class="mas-dot-purple"></span><span style="display: none;">profile:P</span>'
+    elif level == "EUDIW" and value == True:
+        return '<span class="mas-dot-gold"></span><span style="display: none;">profile:EUDIW</span>'
 
 def get_platform_icon(platform):
     if platform == "android":
@@ -126,6 +129,7 @@ def get_all_weaknessess():
             frontmatter['L2'] = get_level_icon('L2', "L2" in frontmatter['profiles'])
             frontmatter['R'] = get_level_icon('R', "R" in frontmatter['profiles'])
             frontmatter['P'] = get_level_icon('P', "P" in frontmatter['profiles'])
+            frontmatter['EUDIW'] = get_level_icon('EUDIW', "EUDIW" in frontmatter['profiles'])
             frontmatter['tests'] = test_counts.get(weaknesses_id, 0)
             frontmatter['status'] = frontmatter.get('status', 'current')
             status = frontmatter['status']
@@ -533,7 +537,7 @@ def on_page_markdown(markdown, page, config, **kwargs):
     elif path.endswith("MASWE/index.md"):
         # weaknesses/index.md
 
-        column_titles = {'id': 'ID', 'title': 'Title', 'platform': "Platform", 'masvs_v2_id': "MASVS v2 ID", 'L1': 'L1', 'L2': 'L2', 'R': 'R', 'P': 'P', 'tests': 'Tests', 'status': 'Status'}
+        column_titles = {'id': 'ID', 'title': 'Title', 'platform': "Platform", 'masvs_v2_id': "MASVS v2 ID", 'L1': 'L1', 'L2': 'L2', 'R': 'R', 'P': 'P', 'EUDIW': 'EUDIW', 'tests': 'Tests', 'status': 'Status'}
 
         weaknesses = get_all_weaknessess()
         weaknesses_columns_reordered = [reorder_dict_keys(weakness, column_titles.keys()) for weakness in weaknesses]

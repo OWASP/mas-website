@@ -253,6 +253,14 @@ img.dark-img {
   display: inline-block;
 }
 
+.mas-dot-gold {
+  height: 1.5em;
+  width: 1.5em;
+  background-color: #FFCC00;
+  border-radius: 50%;
+  display: inline-block;
+}
+
 .md-footer__inner:not([hidden]){
   display: none;
 }
