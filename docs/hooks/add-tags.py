@@ -4,6 +4,18 @@ import re
 
 log = logging.getLogger('mkdocs')
 
+# Canonical display/sort order for MAS profiles - keep in sync with
+# create_dynamic_tables.py's PROFILE_ORDER.
+PROFILE_ORDER = ["L1", "L2", "R", "P"]
+
+def get_profiles_from_maswe(maswe_ids, maswe_profiles_map):
+    """Union of the `profiles` of the given MASWE ids, deduplicated and
+    ordered L1, L2, R, P."""
+    profiles = set()
+    for maswe_id in maswe_ids or []:
+        profiles.update(maswe_profiles_map.get(maswe_id, []))
+    return [profile for profile in PROFILE_ORDER if profile in profiles]
+
 # https://www.mkdocs.org/dev-guide/plugins/#on_page_markdown
 # mkdocs/tags runs at -50 so this has to be called before -50
 @mkdocs.plugins.event_priority(-49)
@@ -18,7 +30,14 @@ def _on_page_markdown_2(markdown, page, config, **kwargs):
             for platform in meta_platform:
                 tags.append(platform)
 
-    for profile in page.meta.get('profiles', []):
+    # Profile applicability lives on the MASWE only. A MASWE page still
+    # declares its own `profiles`; a MASTG-TEST page no longer does, so it
+    # inherits the union of the profiles of the MASWE(s) it maps to.
+    profiles = page.meta.get('profiles')
+    if profiles is None:
+        maswe_profiles_map = config.get("maswe_profiles", {})
+        profiles = get_profiles_from_maswe(page.meta.get('maswe'), maswe_profiles_map)
+    for profile in profiles or []:
         tags.append(profile)
 
     # If any of these tags don't exist, they will be stripped automatically at the end of the function

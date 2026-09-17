@@ -73,6 +73,43 @@ def get_level_icon(level, value):
     elif level == "EUDIW" and value == True:
         return '<span class="mas-dot-gold"></span><span style="display: none;">profile:EUDIW</span>'
 
+# Canonical display/sort order for MAS profiles
+PROFILE_ORDER = ["L1", "L2", "R", "P"]
+
+_maswe_profiles_cache = None
+
+def get_maswe_profiles_map():
+    """Map each MASWE id to its `profiles` list, read directly from the MASWE
+    frontmatter - the single source of truth for profile applicability.
+    Cached for the duration of the build since MASWE files don't change
+    mid-build."""
+    global _maswe_profiles_cache
+    if _maswe_profiles_cache is not None:
+        return _maswe_profiles_cache
+
+    profiles_map = {}
+    for file in glob.glob("docs/MASWE/**/MASWE-*.md", recursive=True):
+        with open(file, 'r') as f:
+            content = f.read()
+        frontmatter = next(yaml.load_all(content, Loader=yaml.FullLoader))
+        profiles_map[frontmatter['id']] = frontmatter.get('profiles') or []
+
+    _maswe_profiles_cache = profiles_map
+    return profiles_map
+
+def get_profiles_from_maswe(maswe_ids, maswe_profiles_map=None):
+    """MASTG-TESTs don't declare their own `profiles` - a test inherits the
+    union of the profiles of the MASWE(s) it maps to. Returns a deduplicated
+    list ordered L1, L2, R, P."""
+    if maswe_profiles_map is None:
+        maswe_profiles_map = get_maswe_profiles_map()
+
+    profiles = set()
+    for maswe_id in maswe_ids or []:
+        profiles.update(maswe_profiles_map.get(maswe_id, []))
+
+    return [profile for profile in PROFILE_ORDER if profile in profiles]
+
 def get_platform_icon(platform):
     if platform == "android":
         return '<span style="font-size: x-large; color: #54b259;" title="Android"> :material-android: </span><span style="display: none;">platform:android</span>'
@@ -251,7 +288,14 @@ def get_mastg_components_dict(name):
                     else:
                         frontmatter['platform'] = get_platform_icon(frontmatter.get('platform'))
 
-                    profiles = frontmatter.get('profiles', [])
+                    # MASTG-TESTs no longer carry their own `profiles`; they
+                    # inherit the (deduplicated) union of the profiles of the
+                    # MASWE(s) they map to. Other component types never had a
+                    # `profiles` field of their own, so this is a no-op for them.
+                    profiles = frontmatter.get('profiles')
+                    if profiles is None:
+                        profiles = get_profiles_from_maswe(frontmatter.get('maswe'))
+                    frontmatter['profiles'] = profiles
                     frontmatter['L1'] = get_level_icon('L1', "L1" in profiles)
                     frontmatter['L2'] = get_level_icon('L2', "L2" in profiles)
                     frontmatter['R'] = get_level_icon('R', "R" in profiles)
@@ -589,3 +633,7 @@ def on_pre_build(config):
     config["mitigations_beta"] = get_all_mitigations_beta()
     config["demos_beta"] = get_all_demos_beta()
     config["masvs_groups"] = get_masvs_groups()
+    # MASWE id -> profiles, so other hooks (e.g. add-tags.py) can make a
+    # MASTG-TEST inherit its profiles from the MASWE(s) it maps to, without
+    # each having to re-read/parse every MASWE file.
+    config["maswe_profiles"] = get_maswe_profiles_map()
