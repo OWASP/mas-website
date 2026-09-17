@@ -38,6 +38,12 @@ Each profile is described in detail on its own page:
 - [MAS-R - Resilient Security](MAS-R.md)
 - [MAS-P - Baseline Privacy](MAS-P.md)
 
+### Specialized Profiles
+
+In addition to the default L1, L2, R and P profiles, OWASP MAS also provides specialized profiles tailored to a specific type of application or regulatory context.
+
+- [MAS-EUDIW - EU Digital Identity Wallet](MAS-EUDIW.md): developed together with the Dutch EUDI-program, MinBZK (NL), CCB (BE) and TRAFICOM (FI), this profile translates the applicable EU regulatory requirements for the EU Digital Identity Wallet (EUDIW) into a set of testable, MAS-aligned security requirements.
+
 While these defaults offer a solid foundation and can be effective for teams with limited time or resources, they may not cover unique or advanced threats. For the highest level of assurance, a custom profile based on a detailed threat model remains the recommended approach.
 
 ### Examples

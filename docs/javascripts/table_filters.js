@@ -9,7 +9,7 @@
  * DataTables search box with a richer UI that supports:
  *   - Status: Show Deprecated
  *   - Platform: Android, iOS, Network, Generic
- *   - Profile: L1, L2, R, P
+ *   - Profile: L1, L2, R, P, EUDIW
  *   - Search: free-text search across ID/Title (+ a few optional columns)
  *
  * Pages targeted
@@ -36,10 +36,10 @@
  * -----------------------------------------------
  * The script relies on invisible tokens inserted into table cells:
  *   - Platform icons include a hidden <span> with e.g. 'platform:android'
- *   - Profile dots (L1/L2/R/P) include a hidden <span> with e.g. 'profile:L1'
+ *   - Profile dots (L1/L2/R/P/EUDIW) include a hidden <span> with e.g. 'profile:L1'
  *     and visible colored dot classes:
  *       L1 -> mas-dot-blue, L2 -> mas-dot-green, R -> mas-dot-orange,
- *       P -> mas-dot-purple
+ *       P -> mas-dot-purple, EUDIW -> mas-dot-gold
  *   - Status cells include hidden markers like 'status:deprecated'
  * These are produced by helpers in docs/hooks/create_dynamic_tables.py.
  *
@@ -47,7 +47,7 @@
  * ---------------------
  * The script detects relevant columns by reading table headers (thead th):
  *   - ID (id), Title/Name (title/name), Platform (platform), Status (status)
- *   - Profile columns: exact headers 'L1', 'L2', 'R', 'P'
+ *   - Profile columns: exact headers 'L1', 'L2', 'R', 'P', 'EUDIW'
  *   - Optional: masvs id, mastg-test-id (to widen search coverage)
  * Only filter groups whose columns are present on a page are shown.
  *
@@ -55,7 +55,7 @@
  * -------------------------------
  * Selected filters are encoded in the hash and restored on load:
  *   - Platforms: android;ios;network;generic
- *   - Profiles: l1;l2;r;p
+ *   - Profiles: l1;l2;r;p;eudiw
  *   - Status: deprecated
  *   - Search: q:your+query (URL encoded)
  * Examples:
@@ -133,7 +133,7 @@
   const PAGE_CONFIG = Object.assign({}, DEFAULT_PAGE_CONFIG, GLOBAL.MAS_TABLE_FILTERS || {});
 
   // Tokens supported in URL hash, applied across pages
-  const HASH_TOKENS = ['android', 'ios', 'network', 'generic', 'l1', 'l2', 'r', 'p', 'deprecated', 'hideunused'];
+  const HASH_TOKENS = ['android', 'ios', 'network', 'generic', 'l1', 'l2', 'r', 'p', 'eudiw', 'deprecated', 'hideunused'];
 
   // Utility: case-insensitive includes on HTML/text
   function cellIncludes(htmlOrText, token) {
@@ -188,6 +188,7 @@
       L2: findExact('l2'),
       R: findExact('r'),
       P: findExact('p'),
+      EUDIW: findExact('eudiw'),
       masvs: findAnyEquals(['masvs v2 id', 'masvs-id']) ?? findIncludes(['masvs']),
       mastgTestId: findAnyEquals(['mastg-test-id']) ?? findIncludes(['mastg test id']),
     };
@@ -318,7 +319,7 @@
             status: !!cols.status,
             used_in: !!cols.used_in,
             platform: !!cols.platform,
-            profile: !!(cols.L1 || cols.L2 || cols.R || cols.P),
+            profile: !!(cols.L1 || cols.L2 || cols.R || cols.P || cols.EUDIW),
             search: true
           };
           if (pageGroups) {
@@ -365,7 +366,7 @@
             showDeprecated: false,
             hideUnused: false,
             platforms: [], // values: android, ios, network, generic
-            profiles: [], // values: L1,L2,R,P
+            profiles: [], // values: L1,L2,R,P,EUDIW
             search: ''
           };
 
@@ -442,6 +443,7 @@
               cols.L2 != null ? 'L2' : null,
               cols.R != null ? 'R' : null,
               cols.P != null ? 'P' : null,
+              cols.EUDIW != null ? 'EUDIW' : null,
             ].filter(Boolean);
             profiles.forEach(p => {
               const { toggleLabel, checkbox } = createCheckbox(`mas-filter-${tIndex}-profile-${p.toLowerCase()}`, p, {
@@ -576,11 +578,11 @@
 
             // Profiles filter
             if (state.profiles.length > 0) {
-              const colIndexByProfile = { L1: cols.L1, L2: cols.L2, R: cols.R, P: cols.P };
+              const colIndexByProfile = { L1: cols.L1, L2: cols.L2, R: cols.R, P: cols.P, EUDIW: cols.EUDIW };
               // If none of the profile columns are present, don't filter by profile
               const anyProfileCol = Object.values(colIndexByProfile).some(v => v != null);
               if (!anyProfileCol) return true;
-              const colorByProfile = { L1: 'blue', L2: 'green', R: 'orange', P: 'purple' };
+              const colorByProfile = { L1: 'blue', L2: 'green', R: 'orange', P: 'purple', EUDIW: 'gold' };
               const matched = state.profiles.some(level => {
                 const idx = colIndexByProfile[level];
                 const token = `profile:${level.toLowerCase()}`;
@@ -653,7 +655,7 @@
             if (show.status && initialTokens.includes('deprecated')) state.showDeprecated = true;
             if (show.used_in && initialTokens.includes('hideunused')) state.hideUnused = true;
             if (show.platform) state.platforms = initialTokens.filter(t => ['android', 'ios', 'network', 'generic'].includes(t));
-            if (show.profile) state.profiles = initialTokens.filter(t => ['l1', 'l2', 'r', 'p'].includes(t)).map(s => s.toUpperCase());
+            if (show.profile) state.profiles = initialTokens.filter(t => ['l1', 'l2', 'r', 'p', 'eudiw'].includes(t)).map(s => s.toUpperCase());
           }
           if (show.search && initialQuery) {
             state.search = initialQuery.toLowerCase();

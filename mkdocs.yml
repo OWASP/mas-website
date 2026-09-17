@@ -209,6 +209,7 @@ nav:
       - Profiles/MAS-L2.md
       - Profiles/MAS-R.md
       - Profiles/MAS-P.md
+      - Profiles/MAS-EUDIW.md
   - "MAS Crackmes":
       - crackmes/index.md
       - ... | flat | crackmes/*.md
