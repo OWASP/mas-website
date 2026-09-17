@@ -6,11 +6,11 @@ log = logging.getLogger('mkdocs')
 
 # Canonical display/sort order for MAS profiles - keep in sync with
 # create_dynamic_tables.py's PROFILE_ORDER.
-PROFILE_ORDER = ["L1", "L2", "R", "P"]
+PROFILE_ORDER = ["L1", "L2", "R", "P", "EUDIW"]
 
 def get_profiles_from_maswe(maswe_ids, maswe_profiles_map):
     """Union of the `profiles` of the given MASWE ids, deduplicated and
-    ordered L1, L2, R, P."""
+    ordered L1, L2, R, P, EUDIW."""
     profiles = set()
     for maswe_id in maswe_ids or []:
         profiles.update(maswe_profiles_map.get(maswe_id, []))
@@ -124,10 +124,10 @@ def on_post_page(output, page, config):
     output = re.sub(r'/tags/#tag:best"', '/MASTG/best-practices/"' , output)
     output = re.sub(r'/tags/#tag:tech"', '/MASTG/techniques/"' , output)
     output = re.sub(r'/tags/#tag:network"', '/MASTG/tests/#network"' , output)
-    output = re.sub(r'/tags/#tag:l1"', '/MASTG/tests/#l1"' , output)
-    output = re.sub(r'/tags/#tag:l2"', '/MASTG/tests/#l2"' , output)
-    output = re.sub(r'/tags/#tag:r"', '/MASTG/tests/#r"' , output)
-    output = re.sub(r'/tags/#tag:p"', '/MASTG/tests/#p"' , output)
+
+    for profile in PROFILE_ORDER:
+        output = re.sub(rf'/tags/#tag:{profile.lower()}"', f'/Profiles/MAS-{profile}/"', output)
+
     output = re.sub(r'/tags/#tag:(MASTG-TEST-\d+)"', lambda x: f'/{x.group(1).upper()}"', output)
     output = re.sub(r'/tags/#tag:(masvs-[^"]*)"', lambda x: f'/{x.group(1).upper()}"' , output)
 

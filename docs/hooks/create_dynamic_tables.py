@@ -74,7 +74,7 @@ def get_level_icon(level, value):
         return '<span class="mas-dot-gold"></span><span style="display: none;">profile:EUDIW</span>'
 
 # Canonical display/sort order for MAS profiles
-PROFILE_ORDER = ["L1", "L2", "R", "P"]
+PROFILE_ORDER = ["L1", "L2", "R", "P", "EUDIW"]
 
 _maswe_profiles_cache = None
 
@@ -100,7 +100,7 @@ def get_maswe_profiles_map():
 def get_profiles_from_maswe(maswe_ids, maswe_profiles_map=None):
     """MASTG-TESTs don't declare their own `profiles` - a test inherits the
     union of the profiles of the MASWE(s) it maps to. Returns a deduplicated
-    list ordered L1, L2, R, P."""
+    list ordered L1, L2, R, P, EUDIW."""
     if maswe_profiles_map is None:
         maswe_profiles_map = get_maswe_profiles_map()
 
