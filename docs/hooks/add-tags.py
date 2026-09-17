@@ -124,10 +124,10 @@ def on_post_page(output, page, config):
     output = re.sub(r'/tags/#tag:best"', '/MASTG/best-practices/"' , output)
     output = re.sub(r'/tags/#tag:tech"', '/MASTG/techniques/"' , output)
     output = re.sub(r'/tags/#tag:network"', '/MASTG/tests/#network"' , output)
-    output = re.sub(r'/tags/#tag:l1"', '/MASTG/tests/#l1"' , output)
-    output = re.sub(r'/tags/#tag:l2"', '/MASTG/tests/#l2"' , output)
-    output = re.sub(r'/tags/#tag:r"', '/MASTG/tests/#r"' , output)
-    output = re.sub(r'/tags/#tag:p"', '/MASTG/tests/#p"' , output)
+
+    for profile in PROFILE_ORDER:
+        output = re.sub(rf'/tags/#tag:{profile.lower()}"', f'/Profiles/MAS-{profile}/"', output)
+
     output = re.sub(r'/tags/#tag:(MASTG-TEST-\d+)"', lambda x: f'/{x.group(1).upper()}"', output)
     output = re.sub(r'/tags/#tag:(masvs-[^"]*)"', lambda x: f'/{x.group(1).upper()}"' , output)
 
