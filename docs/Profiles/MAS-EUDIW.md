@@ -35,5 +35,5 @@ MAS-EUDIW is recommended for:
 
 ## Documents
 
-- [OWASP MAS EUDI Wallet Profile Requirements Catalogue](#): the full list of requirements the EUDI Wallet Instance should comply with, mapped to the Risk Register for European Digital Identity Wallets and to OWASP MASWE.
-- [OWASP MAS EUDI Wallet Profile Practical Guidelines](#): a companion guide with practical guidance on applying the requirements and the OWASP MAS framework to sensitive and EUDI wallets.
+- [OWASP MAS EUDI Wallet Profile Requirements Catalogue](https://docs.google.com/spreadsheets/d/1VQrZSr0ErR0RH1tl4QS42_K27sZH8Cad678l0BB3sFs/): the full list of requirements the EUDI Wallet Instance should comply with, mapped to the Risk Register for European Digital Identity Wallets and to OWASP MASWE.
+- [OWASP MAS EUDI Wallet Profile Practical Guidelines](https://drive.google.com/file/d/1cXAYSe6MsWJ03tiCmlwV_k8Rb30w6rdW/view): a companion guide with practical guidance on applying the requirements and the OWASP MAS framework to sensitive and EUDI wallets.
