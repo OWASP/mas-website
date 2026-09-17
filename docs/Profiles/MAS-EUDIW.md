@@ -24,13 +24,13 @@ Learn more about the EU Digital Identity Wallet:
 
 MAS-EUDIW draws on the large majority of the controls from all four existing MAS profiles and covers the assets unique to a digital identity system, such as **Wallet Instance Attestations (WIA)** and **Person Identification Data (PID)**.
 
-The profile's requirements are mapped to the [**Risk Register for European Digital Identity Wallets**](https://eur-lex.europa.eu/eli/reg_impl/2024/2981/oj/eng), linking each technical control to the high-level risks, system-related risks, technical threats, and wallet-specific threat scenarios it is designed to mitigate, as well as to the corresponding [OWASP MASWE](../MASWE/index.md) weakness. This provides a bridge between high-level regulatory requirements (such as eIDAS) and low-level technical tests.
+The profile's requirements are mapped to the [Risk Register for European Digital Identity Wallets](https://eur-lex.europa.eu/eli/reg_impl/2024/2981/oj/eng), linking each technical control to the high-level risks, system-related risks, technical threats, and wallet-specific threat scenarios it is designed to mitigate, as well as to the corresponding [OWASP MASWE](../MASWE/index.md) weakness. This provides a bridge between high-level regulatory requirements (such as eIDAS) and low-level technical tests.
 
 The profile is built around two supporting concepts, **Assets** and **Configurations**, which are applied generically across requirements. It is the responsibility of the profile's user (the developer, issuer, or auditor) to map the relevant assets (e.g. usage logs, PIN salt, WIA, critical private keys) to the appropriate requirements, and to set the applicable configuration values (e.g. approved cryptographic algorithms, minimum OS version) based on their risk tolerance and current technology standards.
 
 MAS-EUDIW is recommended for:
 
-- EUDI Wallet Instances that need to demonstrate resistance against attackers with a "high attack potential", a key regulatory requirement for Level of Assurance (LoA) High.
+- EUDI Wallet Instances that need to demonstrate resistance against attackers with "high attack potential", as set out in [Implementing Regulation (EU) 2015/1502](https://eur-lex.europa.eu/eli/reg_impl/2015/1502/oj/eng).
 - Other High Assurance (HA) apps that can benefit from applying a subset of, or extending, the same requirement set.
 
 ## Documents
