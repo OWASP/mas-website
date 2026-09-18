@@ -15,3 +15,8 @@ It assumes that:
 MAS-L2 is recommended for
 
 - apps that handle **high-risk sensitive data** and **contain sensitive functionality**
+
+For example:
+
+- **Health-care apps** that store personally identifiable information which could be used for identity theft, fraudulent claims, or other fraud schemes. In the US, relevant compliance considerations include the HIPAA Privacy, Security, Breach Notification, and Patient Safety Rules.
+- **Financial apps** that provide access to sensitive information such as credit card numbers or that let the user move funds. These apps warrant additional controls to prevent fraud and typically need to demonstrate compliance with standards and regulations such as PCI DSS, the Gramm-Leach-Bliley Act, and the Sarbanes-Oxley Act.
