@@ -1,15 +1,15 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('MASTG Techniques Index', () => {
-  test('should not auto-add #unused to URL on page load', async ({ page }) => {
+  test('should not auto-add #hideunused to URL on page load', async ({ page }) => {
     await page.goto('/MASTG/techniques/');
     await page.waitForLoadState('networkidle');
     // Wait a bit to ensure any JavaScript URL manipulation has occurred
     await page.waitForTimeout(500);
-    // Check that URL doesn't contain #unused
+    // Check that URL doesn't contain #hideunused
     const url = page.url();
-    expect(url).not.toContain('#unused');
-    expect(url).not.toContain('unused');
+    expect(url).not.toContain('#hideunused');
+    expect(url).not.toContain('hideunused');
   });
 
   test('should have Status column', async ({ page }) => {
@@ -32,14 +32,14 @@ test.describe('MASTG Techniques Index', () => {
     }
   });
 
-  test('should filter by platform and "Show Unused"', async ({ page }) => {
+  test('should filter by platform and "Hide Unused"', async ({ page }) => {
     await page.goto('/MASTG/techniques/');
     const iosCheckbox = page.locator('label:has-text("iOS") input').first();
     await iosCheckbox.check();
     await expect(page).toHaveURL(/ios/);
-    const unusedCheckbox = page.locator('label:has-text("Show Unused") input').first();
+    const unusedCheckbox = page.locator('label:has-text("Hide Unused") input').first();
     await unusedCheckbox.check();
-    await expect(page).toHaveURL(/unused/);
+    await expect(page).toHaveURL(/hideunused/);
   });
 
   test('should filter by status (Show Deprecated)', async ({ page }) => {
@@ -51,7 +51,7 @@ test.describe('MASTG Techniques Index', () => {
   });
 
   test('should clear all filters', async ({ page }) => {
-    await page.goto('/MASTG/techniques/#android;deprecated;unused');
+    await page.goto('/MASTG/techniques/#android;deprecated;hideunused');
     const clearButton = page.locator('button:has-text("Clear All Filters")');
     await clearButton.click();
     await expect(page).toHaveURL(/^[^#]*#?$/); // URL should not have hash parameters

@@ -11,8 +11,6 @@ import logging
 import requests
 log = logging.getLogger('mkdocs')
 
-MASVS = None
-
 # MASVS category to CSS color variable mapping
 MASVS_CATEGORY_COLORS = {
     'MASVS-STORAGE': 'var(--tag-color-masvs-storage)',
@@ -24,6 +22,23 @@ MASVS_CATEGORY_COLORS = {
     'MASVS-RESILIENCE': 'var(--tag-color-masvs-resilience)',
     'MASVS-PRIVACY': 'var(--tag-color-masvs-privacy)'
 }
+
+# Profiles page (docs relative path) -> the MAS profile it covers.
+# Used to build the "## Requirements" table of relevant MASWEs on each page.
+PROFILE_PAGES = {
+    "Profiles/MAS-L1.md": "L1",
+    "Profiles/MAS-L2.md": "L2",
+    "Profiles/MAS-R.md": "R",
+    "Profiles/MAS-P.md": "P",
+    "Profiles/MAS-EUDIW.md": "EUDIW",
+}
+def natural_id_sort_key(component_id):
+    """Sort IDs like MASWE-0006 / MASTG-TEST-0052 numerically on their trailing number."""
+    match = re.search(r'(\d+)$', component_id or "")
+    if match:
+        return (component_id[:match.start()], int(match.group(1)))
+    return (component_id or "", 0)
+
 def is_v1_test(test_identifier):
     """Check if a test is v1 (MASTG-TEST-0000 to MASTG-TEST-0199)"""
     match = re.search(r'MASTG-TEST-(\d+)', test_identifier)
@@ -55,6 +70,45 @@ def get_level_icon(level, value):
         return '<span class="mas-dot-orange"></span><span style="display: none;">profile:R</span>'
     elif level == "P" and value == True:
         return '<span class="mas-dot-purple"></span><span style="display: none;">profile:P</span>'
+    elif level == "EUDIW" and value == True:
+        return '<span class="mas-dot-gold"></span><span style="display: none;">profile:EUDIW</span>'
+
+# Canonical display/sort order for MAS profiles
+PROFILE_ORDER = ["L1", "L2", "R", "P", "EUDIW"]
+
+_maswe_profiles_cache = None
+
+def get_maswe_profiles_map():
+    """Map each MASWE id to its `profiles` list, read directly from the MASWE
+    frontmatter - the single source of truth for profile applicability.
+    Cached for the duration of the build since MASWE files don't change
+    mid-build."""
+    global _maswe_profiles_cache
+    if _maswe_profiles_cache is not None:
+        return _maswe_profiles_cache
+
+    profiles_map = {}
+    for file in glob.glob("docs/MASWE/**/MASWE-*.md", recursive=True):
+        with open(file, 'r') as f:
+            content = f.read()
+        frontmatter = next(yaml.load_all(content, Loader=yaml.FullLoader))
+        profiles_map[frontmatter['id']] = frontmatter.get('profiles') or []
+
+    _maswe_profiles_cache = profiles_map
+    return profiles_map
+
+def get_profiles_from_maswe(maswe_ids, maswe_profiles_map=None):
+    """MASTG-TESTs don't declare their own `profiles` - a test inherits the
+    union of the profiles of the MASWE(s) it maps to. Returns a deduplicated
+    list ordered L1, L2, R, P, EUDIW."""
+    if maswe_profiles_map is None:
+        maswe_profiles_map = get_maswe_profiles_map()
+
+    profiles = set()
+    for maswe_id in maswe_ids or []:
+        profiles.update(maswe_profiles_map.get(maswe_id, []))
+
+    return [profile for profile in PROFILE_ORDER if profile in profiles]
 
 def get_platform_icon(platform):
     if platform == "android":
@@ -74,9 +128,24 @@ def get_masvs_category_chip(masvs_category):
     
     return f'<span class="md-tag" style="background-color: {color}; color: white;">{masvs_category}</span><span style="display: none;">{masvs_category.lower()}</span>'
 
+def get_maswe_test_counts():
+    test_counts = {}
+
+    for file in glob.glob("docs/MASTG/tests/**/*.md", recursive=True):
+        if "MASTG-TEST-" not in os.path.basename(file):
+            continue
+
+        with open(file, 'r') as f:
+            frontmatter = next(yaml.load_all(f, Loader=yaml.FullLoader))
+            for weakness in frontmatter.get('maswe') or []:
+                test_counts[weakness] = test_counts.get(weakness, 0) + 1
+
+    return test_counts
+
 def get_all_weaknessess():
 
     weaknesses = []
+    test_counts = get_maswe_test_counts()
 
     for file in glob.glob("docs/MASWE/**/MASWE-*.md", recursive=True):
         with open(file, 'r') as f:
@@ -97,6 +166,8 @@ def get_all_weaknessess():
             frontmatter['L2'] = get_level_icon('L2', "L2" in frontmatter['profiles'])
             frontmatter['R'] = get_level_icon('R', "R" in frontmatter['profiles'])
             frontmatter['P'] = get_level_icon('P', "P" in frontmatter['profiles'])
+            frontmatter['EUDIW'] = get_level_icon('EUDIW', "EUDIW" in frontmatter['profiles'])
+            frontmatter['tests'] = test_counts.get(weaknesses_id, 0)
             frontmatter['status'] = frontmatter.get('status', 'current')
             status = frontmatter['status']
             if status == 'new':
@@ -110,64 +181,58 @@ def get_all_weaknessess():
             frontmatter['platform'] = "".join([get_platform_icon(platform) for platform in frontmatter['platform']])
             weaknesses.append(frontmatter)
 
+    weaknesses.sort(key=lambda weakness: natural_id_sort_key(weakness['id']))
     return weaknesses
 
-def get_platform(input_file: str) -> str:
-    if "/android/" in input_file:
-        return "android"
-    elif "/ios/" in input_file:
-        return "ios"
+def format_maswe_status(status, weakness_id):
+    """Render a MASWE status value as the same status chip used elsewhere on the site."""
+    if status == 'new':
+        status = 'current'
+    if status == 'current':
+        return '<span class="md-tag md-tag-icon md-tag--current">current</span><span style="display: none;">status:current</span>'
+    elif status == 'placeholder':
+        return f'<a href="https://github.com/OWASP/maswe/issues?q=is%3Aopen+in%3Atitle+%22{weakness_id}%22" target="_blank"><span class="md-tag md-tag-icon md-tag--placeholder" style="min-width: 4em">placeholder</span></a><span style="display: none;">status:placeholder</span>'
+    elif status == 'deprecated':
+        return '<span class="md-tag md-tag-icon md-tag--deprecated">deprecated</span><span style="display: none;">status:deprecated</span>'
+    return status
 
-def get_mastg_tests_dict():
+def get_weaknesses_for_profile(profile):
+    """Return the MASWEs relevant to a given MAS profile (L1, L2, R, P), formatted
+    as rows for the "## Requirements" table on each Profiles/*.md page."""
 
-    weaknesses = get_all_weaknessess()
-    MASWE = {weakness['id']: weakness for weakness in weaknesses}
+    weaknesses = []
+    test_counts = get_maswe_test_counts()
 
-    mastg_tests = {}
+    for file in glob.glob("docs/MASWE/**/MASWE-*.md", recursive=True):
+        with open(file, 'r') as f:
+            content = f.read()
 
-    for file in glob.glob("docs/MASTG/tests/**/*.md", recursive=True):
-        if "MASTG-TEST-" in os.path.basename(file):
-            with open(file, 'r') as f:
-                current_masvs_id = ""
-                content = f.read()
-                platform = get_platform(file)
-                MASTG_TEST_ID = re.compile(r".*(MASTG-TEST-\d*).md$").match(file).group(1)
-                frontmatter = next(yaml.load_all(content, Loader=yaml.FullLoader))
-                frontmatter['path'] = os.path.relpath(file, "docs/MASTG")
-                
-                if is_v1_test(MASTG_TEST_ID):
-                    # it's a v1 test
-                    frontmatter['id'] = MASTG_TEST_ID
-                    if not frontmatter.get('masvs_v2_id'):
-                        log.warning(f"No MASVS v2 coverage for: {frontmatter['title']} (was {frontmatter.get('masvs_v1_id'), 'N/A'})")
-                        continue
-                
-                else:
-                    # it's a v2 test
-                    frontmatter['masvs_v2_id'] = []
-                    if frontmatter['weakness'] in MASWE:
-                        frontmatter['masvs_v2_id'].append(MASWE[frontmatter['weakness']]['masvs_v2_id'])
-                    else:
-                        log.warning(f"Weakness {frontmatter['weakness']} not found in MASWE")
-                    
-                masvs_v2_id = frontmatter['masvs_v2_id']
-                
-                try:
-                    current_masvs_id = masvs_v2_id[0]
-                except Exception as e:
-                    log.warning(f"Error getting masvs_v2_id for test {frontmatter.get('id', 'unknown')}: {e}")
-                    continue
-                if current_masvs_id not in mastg_tests:
-                    mastg_tests[current_masvs_id] = {}
-                if platform not in mastg_tests[current_masvs_id]:
-                    mastg_tests[current_masvs_id][platform] = []
+        frontmatter = next(yaml.load_all(content, Loader=yaml.FullLoader))
 
-                mastg_tests[current_masvs_id][platform].append(frontmatter)
+        if profile not in (frontmatter.get('profiles') or []):
+            continue
 
-    return mastg_tests
+        weakness_id = frontmatter['id']
+        weakness_path = f"/MASWE/{os.path.splitext(os.path.relpath(file, 'docs/MASWE'))[0]}"
+
+        masvs_id = frontmatter['mappings']['masvs-v2'][0]
+        masvs_category = masvs_id[:masvs_id.rfind('-')]
+        color = MASVS_CATEGORY_COLORS.get(masvs_category, '#999999')
+
+        weaknesses.append({
+            'id': weakness_id,
+            'requirement': frontmatter.get('requirement', ''),
+            'maswe_id': f'[{weakness_id}: {frontmatter["title"]}]({weakness_path})',
+            'platform': "".join([get_platform_icon(platform) for platform in (frontmatter.get('platform') or [])]),
+            'masvs_id': f'<span class="md-tag" style="background-color: {color}; color: white;">{masvs_id}</span><span style="display: none;">{masvs_id.lower()}</span>',
+            'tests': test_counts.get(weakness_id, 0),
+            'status': format_maswe_status(frontmatter.get('status', 'current'), weakness_id),
+        })
+
+    weaknesses.sort(key=lambda weakness: natural_id_sort_key(weakness['id']))
+    return weaknesses
 
 def retrieve_masvs(version="latest"):
-    global MASVS
     try:
         url = f"https://github.com/OWASP/masvs/releases/{version}/download/OWASP_MASVS.yaml"
         response = requests.get(url)
@@ -180,109 +245,16 @@ def retrieve_masvs(version="latest"):
             content = masvs_yaml_file.read_text()
         else:
             raise Exception("ERROR Failed reading OWASP_MASVS.yaml from file")
-    MASVS = yaml.safe_load(content)
-    return MASVS
+    return yaml.safe_load(content)
 
 def get_masvs_groups():
+    masvs = retrieve_masvs()
     groups = {}
-    for group in MASVS['groups']:
+    for group in masvs['groups']:
         group_id = group['id']
         groups[group_id] = {'id': group_id, 'title': group['title']}
         groups[group_id]['controls'] = [{"id" : control["id"], "statement": control["statement"]} for control in group["controls"]]
     return groups
-
-def add_control_row(checklist, control):
-    checklist_row = {}
-    checklist_row['MASVS-ID'] = control['id']
-    checklist_row['path'] = f"./MASVS/controls/{os.path.basename(control['id'])}"
-    checklist_row['Platform'] = ""
-    checklist_row['Control / MASTG Test'] = control['statement']
-    checklist_row['MASTG-TEST-ID'] = ""
-    checklist_row['L1'] = ""
-    checklist_row['L2'] = ""
-    checklist_row['R'] = ""
-    checklist_row['P'] = ""
-    checklist_row['Status'] = ""
-    checklist.append(checklist_row)
-
-def add_test_rows(checklist, platform, control):
-    if platform in control['tests']:
-        for test in control['tests'][platform]:
-            levels = test['profiles']
-            checklist_row = {}
-            checklist_row['MASVS-ID'] = "" # test['masvs_v2_id'][0] if test['masvs_v2_id'] else ""
-            # checklist_row['Weakness'] = test.get('weakness', "")
-            checklist_row['path'] = f"/MASTG/{os.path.splitext(test['path'])[0]}"
-            checklist_row['Platform'] = test['platform']
-            checklist_row['Control / MASTG Test'] = test['title']
-            checklist_row['MASTG-TEST-ID'] = test["id"]
-            checklist_row['L1'] = "L1" in levels
-            checklist_row['L2'] = "L2" in levels
-            checklist_row['R'] = "R" in levels
-            checklist_row['P'] = "P" in levels
-            if is_v1_test(test['id']):
-                checklist_row['Status'] = test.get('status', 'update-pending')
-            elif is_v2_test(test['id']):
-                status = test.get('status', 'current')
-                if status == 'new':
-                    status = 'current'
-                checklist_row['Status'] = status
-            checklist.append(checklist_row)
-
-def get_checklist_dict():
-    masvs_v2 = retrieve_masvs()
-
-    mastg_tests = get_mastg_tests_dict()
-
-    checklist_dict = {}
-
-    for group in masvs_v2['groups']:
-
-        checklist_per_group = []
-
-        for control in group['controls']:
-            add_control_row(checklist_per_group, control)
-            control_id = control['id']
-            if control_id in mastg_tests:
-                control['tests'] = mastg_tests[control_id]
-                add_test_rows(checklist_per_group, "android", control)
-                add_test_rows(checklist_per_group, "ios", control)
-
-        checklist_dict[group['id']] = checklist_per_group
-    return checklist_dict
-
-def set_icons_for_web(checklist):
-
-    for row in checklist:
-        # if it's a control row, make the MASVS-ID and Control bold
-        if row['Platform'] == "":
-            relPath = os.path.relpath(row['path'], './checklists/') + ".md"
-            row['MASVS-ID'] = f"**[{row['MASVS-ID']}]({relPath})**"
-            row['Control / MASTG Test'] = f"**{row['Control / MASTG Test']}**"
-
-        # if it's a test row, set the icons for platform and levels
-        else:
-            row['Platform'] = get_platform_icon(row['Platform'])
-            row['Control / MASTG Test'] = f"@{row['MASTG-TEST-ID']}"
-            row['L1'] = get_level_icon('L1', row['L1'])
-            row['L2'] = get_level_icon('L2', row['L2'])
-            row['R'] = get_level_icon('R', row['R'])
-            row['P'] = get_level_icon('P', row['P'])
-
-            test_id = row['MASTG-TEST-ID']
-
-            # Process status field for test rows
-            status = row.get('Status')
-            if status == 'new':
-                status = 'current'
-            if status == 'current':
-                row['Status'] = '<span class="md-tag md-tag-icon md-tag--current">current</span><span style="display: none;">status:current</span>'
-            elif status == 'placeholder':
-                row['Status'] = f'<a href="https://github.com/OWASP/mastg/issues?q=is%3Aopen+in%3Atitle+%22{test_id}%22" target="_blank"><span class="md-tag md-tag-icon md-tag--placeholder" style="min-width: 4em;">placeholder</span></a><span style="display: none;">status:placeholder</span>'
-            elif status == 'deprecated':
-                row['Status'] = '<span class="md-tag md-tag-icon md-tag--deprecated">deprecated</span><span style="display: none;">status:deprecated</span>'
-            elif status == 'update-pending':
-                row['Status'] = f'<a href="https://github.com/OWASP/mastg/issues?q=is%3Aopen+in%3Atitle+%22{test_id}%22" target="_blank"><span class="md-tag md-tag-icon md-tag--update-pending" style="min-width: 4em;">update-pending</span></a><span style="display: none;">status:update-pending</span>'
 
 def list_of_dicts_to_md_table(data, column_titles=None, column_align=None):
 
@@ -316,7 +288,14 @@ def get_mastg_components_dict(name):
                     else:
                         frontmatter['platform'] = get_platform_icon(frontmatter.get('platform'))
 
-                    profiles = frontmatter.get('profiles', [])
+                    # MASTG-TESTs no longer carry their own `profiles`; they
+                    # inherit the (deduplicated) union of the profiles of the
+                    # MASWE(s) they map to. Other component types never had a
+                    # `profiles` field of their own, so this is a no-op for them.
+                    profiles = frontmatter.get('profiles')
+                    if profiles is None:
+                        profiles = get_profiles_from_maswe(frontmatter.get('maswe'))
+                    frontmatter['profiles'] = profiles
                     frontmatter['L1'] = get_level_icon('L1', "L1" in profiles)
                     frontmatter['L2'] = get_level_icon('L2', "L2" in profiles)
                     frontmatter['R'] = get_level_icon('R', "R" in profiles)
@@ -358,6 +337,7 @@ def get_mastg_components_dict(name):
                         frontmatter['category'] = get_masvs_category_chip(frontmatter['masvs_category'])
 
                     components.append(frontmatter)
+        components.sort(key=lambda component: natural_id_sort_key(component['id']))
         return components
 
 
@@ -389,6 +369,7 @@ def get_all_demos_beta():
                 frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--deprecated">deprecated</span><span style="display: none;">status:deprecated</span>'
 
             demos.append(frontmatter)
+    demos.sort(key=lambda demo: natural_id_sort_key(demo['id']))
     return demos
 
 def get_all_mitigations_beta():
@@ -418,6 +399,7 @@ def get_all_mitigations_beta():
                     frontmatter['status'] = '<span class="md-tag md-tag-icon md-tag--deprecated">deprecated</span><span style="display: none;">status:deprecated</span>'
 
                 mitigations.append(frontmatter)
+        mitigations.sort(key=lambda mitigation: natural_id_sort_key(mitigation['id']))
         return mitigations
 
 def reorder_dict_keys(original_dict, key_order):
@@ -599,12 +581,23 @@ def on_page_markdown(markdown, page, config, **kwargs):
     elif path.endswith("MASWE/index.md"):
         # weaknesses/index.md
 
-        column_titles = {'id': 'ID', 'title': 'Title', 'platform': "Platform", 'masvs_v2_id': "MASVS v2 ID", 'L1': 'L1', 'L2': 'L2', 'R': 'R', 'P': 'P', 'status': 'Status'}
+        column_titles = {'id': 'ID', 'title': 'Title', 'platform': "Platform", 'masvs_v2_id': "MASVS v2 ID", 'L1': 'L1', 'L2': 'L2', 'R': 'R', 'P': 'P', 'EUDIW': 'EUDIW', 'tests': 'Tests', 'status': 'Status'}
 
         weaknesses = get_all_weaknessess()
         weaknesses_columns_reordered = [reorder_dict_keys(weakness, column_titles.keys()) for weakness in weaknesses]
 
         return append_to_page(markdown, list_of_dicts_to_md_table(weaknesses_columns_reordered, column_titles) )
+
+    elif path in PROFILE_PAGES:
+        # Profiles/MAS-L1.md, MAS-L2.md, MAS-R.md, MAS-P.md
+
+        column_titles = {'requirement': 'Requirement', 'maswe_id': 'MASWE ID', 'platform': 'Platform', 'masvs_id': 'MASVS ID', 'tests': 'Tests', 'status': 'Status'}
+        header = "## Requirements\n\n"
+
+        weaknesses = get_weaknesses_for_profile(PROFILE_PAGES[path])
+        if weaknesses:
+            weaknesses_of_profile = [reorder_dict_keys(weakness, column_titles.keys()) for weakness in weaknesses]
+            return append_to_page(markdown, header + list_of_dicts_to_md_table(weaknesses_of_profile, column_titles))
 
     elif path.endswith("talks.md"):
         # talks.md
@@ -618,30 +611,6 @@ def on_page_markdown(markdown, page, config, **kwargs):
                 element['slides'] = f"[:material-file-presentation-box: Slides]({element['slides']})"
 
         return append_to_page(markdown, list_of_dicts_to_md_table(data))
-
-    elif path and re.compile(r"^checklists/MASVS-\w*\.md$").match(path):
-        # checklists.md
-
-        column_titles = {'MASVS-ID': 'MASVS-ID', 'MASTG-TEST-ID': 'MASTG-TEST-ID', 'Control / MASTG Test': 'Control / MASTG Test',  'Platform': "Platform", 'L1': 'L1', 'L2': 'L2', 'R': 'R', 'P': 'P', 'Status': 'Status'}
-        column_align = ("left", "center", "left", "center", "left", "center", "center", "center", "center")
-
-        ID = re.compile(r"^checklists/(MASVS-\w*)\.md$").match(path).group(1)
-        checklist = config["dynamic_tables_checklist_dict"].get(ID)
-
-        set_icons_for_web(checklist)
-
-        cleaned_checklist = []
-        for check in checklist:
-            cleaned_check = dict(check)
-
-            del cleaned_check['path']
-            cleaned_checklist.append(cleaned_check)
-
-        cleaned_checklist = [reorder_dict_keys(check, column_titles.keys()) for check in cleaned_checklist]
-
-        content = list_of_dicts_to_md_table(cleaned_checklist, column_titles, column_align) + "\n\n<br><br>"
-
-        return append_to_page(markdown, content)
 
     elif match := re.compile(r"MASVS/\d{2}-(MASVS-.*)\.md").match(path):
 
@@ -663,5 +632,8 @@ def on_page_markdown(markdown, page, config, **kwargs):
 def on_pre_build(config):
     config["mitigations_beta"] = get_all_mitigations_beta()
     config["demos_beta"] = get_all_demos_beta()
-    config["dynamic_tables_checklist_dict"] = get_checklist_dict()
     config["masvs_groups"] = get_masvs_groups()
+    # MASWE id -> profiles, so other hooks (e.g. add-tags.py) can make a
+    # MASTG-TEST inherit its profiles from the MASWE(s) it maps to, without
+    # each having to re-read/parse every MASWE file.
+    config["maswe_profiles"] = get_maswe_profiles_map()

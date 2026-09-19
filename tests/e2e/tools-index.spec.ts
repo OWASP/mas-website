@@ -23,11 +23,11 @@ test.describe('MASTG Tools Index', () => {
     await expect(deprecatedCheckbox).toBeChecked();
   });
 
-  test('should filter by "Show Unused"', async ({ page }) => {
+  test('should filter by "Hide Unused"', async ({ page }) => {
     await page.goto('/MASTG/tools/');
-    const unusedCheckbox = page.locator('label:has-text("Show Unused") input').first();
+    const unusedCheckbox = page.locator('label:has-text("Hide Unused") input').first();
     await unusedCheckbox.check();
-    await expect(page).toHaveURL(/unused/);
+    await expect(page).toHaveURL(/hideunused/);
     await expect(unusedCheckbox).toBeChecked();
   });
 

@@ -21,6 +21,7 @@
   --tag-color-l2:                #99CC00;
   --tag-color-r:                 #FF9900;
   --tag-color-p:                 #9933CC;
+  --tag-color-eudiw:             #FFCC00;
 
   --tag-color-test:              #499fffff;
   --tag-color-tech:              #ff44aad5;
@@ -88,6 +89,7 @@ img.dark-img {
 .md-tag--l2,              .masvs-link--l2              { background-color: var(--tag-color-l2) !important; color: white !important; }
 .md-tag--r,               .masvs-link--r               { background-color: var(--tag-color-r) !important; color: white !important; }
 .md-tag--p,               .masvs-link--p               { background-color: var(--tag-color-p) !important; color: white !important; }
+.md-tag--eudiw,           .masvs-link--eudiw           { background-color: var(--tag-color-eudiw) !important; color: white !important; }
 
 
 
@@ -253,6 +255,14 @@ img.dark-img {
   display: inline-block;
 }
 
+.mas-dot-gold {
+  height: 1.5em;
+  width: 1.5em;
+  background-color: #FFCC00;
+  border-radius: 50%;
+  display: inline-block;
+}
+
 .md-footer__inner:not([hidden]){
   display: none;
 }
@@ -354,7 +364,9 @@ img.dark-img {
 .mas-test-button,
 .mas-demo-button,
 .mas-best-button,
-.mas-tech-button {
+.mas-tech-button,
+.mas-know-button,
+.mas-maswe-button {
   background-color: var(--mas-blue); /* Adjust this value for .mas-demo-button if needed */
   color: white !important;
   line-height: 1em !important;
@@ -366,6 +378,21 @@ img.dark-img {
   min-width: 100%;
   text-align: left;
   cursor: pointer; /* Add this line to show the pointer cursor */
+}
+
+/* Inline code inherits its link's color (mkdocs-material sets `.md-typeset a code`
+   to `color: currentcolor`). Since these buttons force white link text, nested
+   inline code became white-on-light-grey in light mode (unreadable), while dark
+   mode happened to work because its code background is dark. Restore the themed
+   code colors so contrast stays correct in both color schemes. */
+.md-typeset .mas-test-button code,
+.md-typeset .mas-demo-button code,
+.md-typeset .mas-best-button code,
+.md-typeset .mas-tech-button code,
+.md-typeset .mas-know-button code,
+.md-typeset .mas-maswe-button code {
+  color: var(--md-code-fg-color);
+  background-color: var(--md-code-bg-color);
 }
 
 .mas-demo-button {
@@ -380,8 +407,16 @@ img.dark-img {
   background-color: #e67e22; /* Orange color for techniques */
 }
 
+.mas-know-button {
+  background-color: var(--tag-color-know);
+}
+
+.mas-maswe-button {
+  background: var(--tag-color-maswe);
+}
+
 .mas-test-button:hover {
-  background-color: #2e7fd5; 
+  background-color: #2e7fd5;
 }
 
 .mas-demo-button:hover {
@@ -394,6 +429,14 @@ img.dark-img {
 
 .mas-tech-button:hover {
   background-color: #d35400;
+}
+
+.mas-know-button:hover {
+  background-color: #0d1f8f;
+}
+
+.mas-maswe-button:hover {
+  background: #02d6a9;
 }
 
 /* Default DataTables styling for light mode */

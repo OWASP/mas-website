@@ -10,7 +10,7 @@ def on_page_markdown(markdown, page, config, **kwargs):
 
     if item_id := page.meta.get("id", None):
 
-        # For some files, the title == id (e.g. checklists pages)
+        # For some files, the title == id
         if not item_id == page.meta.get("title", None):
 
             page.meta['title'] = f"{item_id}: {page.meta.get('title', '')}"

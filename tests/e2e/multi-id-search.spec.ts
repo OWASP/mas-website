@@ -79,7 +79,7 @@ test.describe('Multi-ID Search Functionality', () => {
     ]);
     
     // Should navigate to techniques page with search query
-    // URL format is #[filters;]q:ids - filters like "unused" may be present
+    // URL format is #[filters;]q:ids - filters like "hideunused" may be present
     expect(page.url()).toContain('/MASTG/techniques/');
     expect(page.url()).toMatch(/[#;]q:/);
     

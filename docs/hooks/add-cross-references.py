@@ -53,6 +53,21 @@ def gather_metadata(directory, id_key, component_type):
             raise Exception(f"Missing frontmatter in {file}: {e}")
     return metadata
 
+def gather_weakness_metadata():
+    metadata = {}
+    for file in glob.glob("./docs/MASWE/**/*.md", recursive=True):
+        if file.endswith("index.md"):
+            continue
+
+        try:
+            with open(file, 'r') as f:
+                frontmatter = next(yaml.load_all(f.read(), Loader=yaml.FullLoader))
+                frontmatter["path"] = os.path.relpath(file, "./docs")
+                metadata[frontmatter["id"]] = frontmatter
+        except Exception as e:
+            raise Exception(f"Missing frontmatter in {file}: {e}")
+    return metadata
+
 def gather_tool_references_from_content(content, file_path):
     """Extract all @MASTG-TOOL-XXXX references from file content"""
     tool_pattern = r'@(MASTG-TOOL-\d+)'
@@ -69,28 +84,42 @@ def generate_cross_references():
     best_practices_metadata = gather_metadata("MASTG/best-practices", "id", "BEST")
     techniques = gather_metadata("MASTG/techniques", "id", "TECH")
     knowledge = gather_metadata("MASTG/knowledge", "id", "KNOW")
+    weaknesses = gather_weakness_metadata()
 
     cross_references = {
         "weaknesses": {},
+        "masvs": {},
         "tests": {},
         "best-practices": {},
         "tools": {},  # Tools cross-references
         "techniques": {}  # Techniques cross-references
     }
 
+    for weakness_id, weakness_meta in weaknesses.items():
+        for masvs_id in weakness_meta.get("mappings", {}).get("masvs-v2", []):
+            cross_references["masvs"].setdefault(masvs_id, []).append({
+                "id": weakness_id,
+                "path": weakness_meta["path"],
+                "title": weakness_meta["title"]
+            })
+
+    for masvs_weaknesses in cross_references["masvs"].values():
+        masvs_weaknesses.sort(key=lambda weakness: int(weakness["id"].rsplit("-", 1)[1]))
+
     for test_id, test_meta in tests.items():
-        weakness_id = test_meta.get("weakness")
+        weakness_ids = test_meta.get("maswe") or []
         test_path = test_meta.get("path")
         test_title = test_meta.get("title")
         test_platform = test_meta.get("platform")
         best_practices_ids = test_meta.get("best-practices")
+        knowledge_ids = test_meta.get("knowledge")
 
-        # Create cross-references for weaknesses listing all tests and best practices that reference each weakness ID
-        if weakness_id:
+        # Create cross-references for weaknesses listing all tests, best practices and knowledge articles that reference each weakness ID
+        for weakness_id in weakness_ids:
             if weakness_id not in cross_references["weaknesses"]:
-                cross_references["weaknesses"][weakness_id] = {"tests": [], "best_practices": {}}
+                cross_references["weaknesses"][weakness_id] = {"tests": [], "best_practices": {}, "knowledge": {}}
             cross_references["weaknesses"][weakness_id]["tests"].append({"id": test_id, "path": test_path, "title": test_title, "platform": test_platform})
-            
+
             # Collect best-practices from tests that reference each weakness
             if best_practices_ids:
                 for best_practice_id in best_practices_ids:
@@ -105,6 +134,22 @@ def generate_cross_references():
                             "path": best_practice_path,
                             "title": best_practice_title,
                             "platform": best_practice_platform
+                        }
+
+            # Collect knowledge articles from tests that reference each weakness
+            if knowledge_ids:
+                for knowledge_id in knowledge_ids:
+                    if knowledge_id not in cross_references["weaknesses"][weakness_id]["knowledge"]:
+                        # Get the knowledge article metadata if available
+                        knowledge_meta = knowledge.get(knowledge_id, {})
+                        knowledge_path = knowledge_meta.get("path", f"MASTG/knowledge/{knowledge_id}.md")
+                        knowledge_title = knowledge_meta.get("title", knowledge_id)
+                        knowledge_platform = knowledge_meta.get("platform", test_platform)
+                        cross_references["weaknesses"][weakness_id]["knowledge"][knowledge_id] = {
+                            "id": knowledge_id,
+                            "path": knowledge_path,
+                            "title": knowledge_title,
+                            "platform": knowledge_platform
                         }
 
         # Create cross-references for best_practices listing all tests that reference each best_practice ID
@@ -309,26 +354,51 @@ def on_page_markdown(markdown, page, config, **kwargs):
         # Add Tests and Best Practices sections to weaknesses as buttons
         # ORIGIN: Cross-references from this script
 
-        if weakness_id in cross_references["weaknesses"]:
-            weakness_refs = cross_references["weaknesses"][weakness_id]
-            
-            tests = weakness_refs.get("tests", [])
-            meta['tests'] = tests
-            if tests:
-                tests_section =  "## Tests\n\n"
-                for test in tests:
-                    relPath = os.path.relpath(test['path'], os.path.dirname(path))
-                    tests_section += f"[{get_platform_icon(test['platform'])} {test['id']}: {test['title']}]({relPath}){{: .mas-test-button}} "
-                markdown += f"\n\n{tests_section}"
-            
-            best_practices = weakness_refs.get("best_practices", {})
-            meta['best-practices'] = list(best_practices.values())
-            if best_practices:
-                best_practices_section = "## Best Practices\n\n"
-                for best_practice_id, best_practice in best_practices.items():
-                    relPath = os.path.relpath(best_practice['path'], os.path.dirname(path))
-                    best_practices_section += f"[{get_platform_icon(best_practice['platform'])} {best_practice['id']}: {best_practice['title']}]({relPath}){{: .mas-best-button}} "
-                markdown += f"\n\n{best_practices_section}"
+        weakness_refs = cross_references["weaknesses"].get(weakness_id, {})
+
+        knowledge_refs = weakness_refs.get("knowledge", {})
+        meta['knowledge'] = list(knowledge_refs.values())
+        if knowledge_refs:
+            knowledge_section = "## Knowledge\n\n"
+            for knowledge_item in knowledge_refs.values():
+                relPath = os.path.relpath(knowledge_item['path'], os.path.dirname(path))
+                knowledge_section += f"[{get_platform_icon(knowledge_item['platform'])} {knowledge_item['id']}: {knowledge_item['title']}]({relPath}){{: .mas-know-button}} "
+            markdown += f"\n\n{knowledge_section}"
+
+        tests = weakness_refs.get("tests", [])
+        meta['tests'] = tests
+        tests_section = "## Tests\n\n"
+        if tests:
+            for test in tests:
+                relPath = os.path.relpath(test['path'], os.path.dirname(path))
+                tests_section += f"[{get_platform_icon(test['platform'])} {test['id']}: {test['title']}]({relPath}){{: .mas-test-button}} "
+        else:
+            tests_section += (
+                '!!! info "No Tests Yet"\n\n'
+                "    The MASTG doesn't contain any tests for this weakness yet. If you have proposals or would like to work on some, "
+                f"please open an issue in <https://github.com/OWASP/mastg/issues> indicating the {weakness_id} mapping, the test titles and a summary of the tests.\n"
+            )
+        markdown += f"\n\n{tests_section}"
+
+        best_practices = weakness_refs.get("best_practices", {})
+        meta['best-practices'] = list(best_practices.values())
+        if best_practices:
+            best_practices_section = "## Best Practices\n\n"
+            for best_practice_id, best_practice in best_practices.items():
+                relPath = os.path.relpath(best_practice['path'], os.path.dirname(path))
+                best_practices_section += f"[{get_platform_icon(best_practice['platform'])} {best_practice['id']}: {best_practice['title']}]({relPath}){{: .mas-best-button}} "
+            markdown += f"\n\n{best_practices_section}"
+
+    if path.startswith("MASVS/controls/"):
+        masvs_id = os.path.splitext(filename)[0]
+        weaknesses = cross_references["masvs"].get(masvs_id, [])
+        meta["weaknesses"] = weaknesses
+        if weaknesses:
+            weaknesses_section = "## Related Weaknesses\n\n"
+            for weakness in weaknesses:
+                relPath = os.path.relpath(weakness["path"], os.path.dirname(path))
+                weaknesses_section += f"[{weakness['id']}: {weakness['title']}]({relPath}){{: .mas-maswe-button}} "
+            markdown += f"\n\n{weaknesses_section}"
 
     if "MASTG-TEST-" in filename:
 

@@ -1,6 +1,18 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('MASVS Pages', () => {
+  test('should display related MASWEs on mapped control pages', async ({ page }) => {
+    await page.goto('/MASVS/controls/MASVS-CRYPTO-2/');
+
+    const relatedWeaknesses = page.getByRole('heading', { name: 'Related Weaknesses' });
+    await expect(relatedWeaknesses).toBeVisible();
+
+    const weaknessLink = page.locator('.mas-maswe-button', {
+      hasText: 'MASWE-0014: Improper Cryptographic Key Derivation'
+    });
+    await expect(weaknessLink).toHaveAttribute('href', /MASWE\/MASVS-CRYPTO\/MASWE-0014/);
+  });
+
   test('should load MASVS index and category pages (if present)', async ({ page }) => {
     await page.goto('/MASVS/');
     const h1 = page.locator('h1').first();

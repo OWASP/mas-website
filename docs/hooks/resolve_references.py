@@ -82,6 +82,12 @@ def getFileContent(path):
 
 @lru_cache(maxsize=None)
 def getTargetForRef(id, path):
+    # MASVS category pages are numbered (e.g. MASVS/08-MASVS-NETWORK.md) and carry no
+    # frontmatter, so they can't be resolved by filename. /MASVS-NETWORK is redirected
+    # to the right page by add_redirects.py.
+    if re.fullmatch(r'MASVS-[A-Z]+', id):
+        return {"file": f"{id}.md", "title": id}
+
     searchFor = f'./docs/**/{id}.md'
 
     files = glob(searchFor, recursive=True)

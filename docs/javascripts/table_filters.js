@@ -5,11 +5,11 @@
  * -------
  * This script adds a consistent, configurable filter bar above the dynamic
  * index tables rendered across the site (Tests, MASWE, Knowledge, Techniques,
- * Tools, Demos, Apps, Best Practices, Checklists). It replaces the built-in
+ * Tools, Demos, Apps, Best Practices). It replaces the built-in
  * DataTables search box with a richer UI that supports:
  *   - Status: Show Deprecated
  *   - Platform: Android, iOS, Network, Generic
- *   - Profile: L1, L2, R, P
+ *   - Profile: L1, L2, R, P, EUDIW
  *   - Search: free-text search across ID/Title (+ a few optional columns)
  *
  * Pages targeted
@@ -24,7 +24,6 @@
  *   - /MASTG/demos/
  *   - /MASTG/apps/
  *   - /MASTG/best-practices/
- *   - /checklists/
  *
  * You can override/extend this mapping at runtime by defining
  * window.MAS_TABLE_FILTERS before this script loads, e.g.:
@@ -37,10 +36,10 @@
  * -----------------------------------------------
  * The script relies on invisible tokens inserted into table cells:
  *   - Platform icons include a hidden <span> with e.g. 'platform:android'
- *   - Profile dots (L1/L2/R/P) include a hidden <span> with e.g. 'profile:L1'
+ *   - Profile dots (L1/L2/R/P/EUDIW) include a hidden <span> with e.g. 'profile:L1'
  *     and visible colored dot classes:
  *       L1 -> mas-dot-blue, L2 -> mas-dot-green, R -> mas-dot-orange,
- *       P -> mas-dot-purple
+ *       P -> mas-dot-purple, EUDIW -> mas-dot-gold
  *   - Status cells include hidden markers like 'status:deprecated'
  * These are produced by helpers in docs/hooks/create_dynamic_tables.py.
  *
@@ -48,7 +47,7 @@
  * ---------------------
  * The script detects relevant columns by reading table headers (thead th):
  *   - ID (id), Title/Name (title/name), Platform (platform), Status (status)
- *   - Profile columns: exact headers 'L1', 'L2', 'R', 'P'
+ *   - Profile columns: exact headers 'L1', 'L2', 'R', 'P', 'EUDIW'
  *   - Optional: masvs id, mastg-test-id (to widen search coverage)
  * Only filter groups whose columns are present on a page are shown.
  *
@@ -56,7 +55,7 @@
  * -------------------------------
  * Selected filters are encoded in the hash and restored on load:
  *   - Platforms: android;ios;network;generic
- *   - Profiles: l1;l2;r;p
+ *   - Profiles: l1;l2;r;p;eudiw
  *   - Status: deprecated
  *   - Search: q:your+query (URL encoded)
  * Examples:
@@ -111,7 +110,7 @@
  *   related variants.
  */
 
-// Generic, auto-detecting filters for all dynamic tables (tests, weaknesses, techniques, tools, demos, apps, best practices, knowledge, checklists)
+// Generic, auto-detecting filters for all dynamic tables (tests, weaknesses, techniques, tools, demos, apps, best practices, knowledge)
 // Works with MkDocs Material navigation (document$) and jQuery DataTables.
 
 (function () {
@@ -127,15 +126,14 @@
     '/MASTG/techniques/': ['status', 'used_in', 'platform', 'search'],
     '/MASTG/demos/': ['status', 'platform', 'search'],
     '/MASTG/best-practices/': ['status', 'platform', 'search'],
-    '/MASTG/apps/': ['status', 'platform', 'search'],
-    '/checklists/': ['status', 'platform', 'profile', 'search']
+    '/MASTG/apps/': ['status', 'platform', 'search']
   };
 
   // Allow runtime overrides via window.MAS_TABLE_FILTERS = { pathSubstring: ['group', ...] }
   const PAGE_CONFIG = Object.assign({}, DEFAULT_PAGE_CONFIG, GLOBAL.MAS_TABLE_FILTERS || {});
 
   // Tokens supported in URL hash, applied across pages
-  const HASH_TOKENS = ['android', 'ios', 'network', 'generic', 'l1', 'l2', 'r', 'p', 'deprecated', 'unused'];
+  const HASH_TOKENS = ['android', 'ios', 'network', 'generic', 'l1', 'l2', 'r', 'p', 'eudiw', 'deprecated', 'hideunused'];
 
   // Utility: case-insensitive includes on HTML/text
   function cellIncludes(htmlOrText, token) {
@@ -190,6 +188,7 @@
       L2: findExact('l2'),
       R: findExact('r'),
       P: findExact('p'),
+      EUDIW: findExact('eudiw'),
       masvs: findAnyEquals(['masvs v2 id', 'masvs-id']) ?? findIncludes(['masvs']),
       mastgTestId: findAnyEquals(['mastg-test-id']) ?? findIncludes(['mastg test id']),
     };
@@ -206,7 +205,6 @@
     const groupLabel = document.createElement('span');
     groupLabel.textContent = labelText;
     groupLabel.style.fontWeight = 'bold';
-    groupLabel.style.minWidth = '70px';
     groupLabel.style.color = 'var(--md-default-fg-color, rgba(0, 0, 0, 0.87))';
     groupContainer.appendChild(groupLabel);
     return { groupContainer };
@@ -218,7 +216,6 @@
     toggleLabel.style.display = 'flex';
     toggleLabel.style.alignItems = 'center';
     toggleLabel.style.cursor = 'pointer';
-    toggleLabel.style.marginRight = '0.5rem';
     toggleLabel.style.padding = '0.25rem 0.5rem';
     toggleLabel.style.border = '1px solid var(--md-default-fg-color--lightest, rgba(0, 0, 0, 0.1))';
     toggleLabel.style.borderRadius = '4px';
@@ -320,7 +317,7 @@
             status: !!cols.status,
             used_in: !!cols.used_in,
             platform: !!cols.platform,
-            profile: !!(cols.L1 || cols.L2 || cols.R || cols.P),
+            profile: !!(cols.L1 || cols.L2 || cols.R || cols.P || cols.EUDIW),
             search: true
           };
           if (pageGroups) {
@@ -365,9 +362,9 @@
           // Active state per table
           const state = {
             showDeprecated: false,
-            showUnused: false,
+            hideUnused: false,
             platforms: [], // values: android, ios, network, generic
-            profiles: [], // values: L1,L2,R,P
+            profiles: [], // values: L1,L2,R,P,EUDIW
             search: ''
           };
 
@@ -388,16 +385,16 @@
             row.appendChild(groupContainer);
           }
 
-          // Used In group (Show Unused)
+          // Used In group (Hide Unused)
           if (show.used_in) {
             const { groupContainer } = createGroup('Used In:');
-            
-            // Show Unused checkbox
-            const { toggleLabel: unusedLabel, checkbox: unusedCheckbox } = createCheckbox(`mas-filter-${tIndex}-used_in-unused`, 'Show Unused', {
-              type: 'used_in', token: 'unused'
+
+            // Hide Unused checkbox
+            const { toggleLabel: unusedLabel, checkbox: unusedCheckbox } = createCheckbox(`mas-filter-${tIndex}-used_in-unused`, 'Hide Unused', {
+              type: 'used_in', token: 'hideunused'
             });
             unusedCheckbox.addEventListener('change', () => {
-              state.showUnused = unusedCheckbox.checked;
+              state.hideUnused = unusedCheckbox.checked;
               applyFilters();
             });
             groupContainer.appendChild(unusedLabel);
@@ -444,6 +441,7 @@
               cols.L2 != null ? 'L2' : null,
               cols.R != null ? 'R' : null,
               cols.P != null ? 'P' : null,
+              cols.EUDIW != null ? 'EUDIW' : null,
             ].filter(Boolean);
             profiles.forEach(p => {
               const { toggleLabel, checkbox } = createCheckbox(`mas-filter-${tIndex}-profile-${p.toLowerCase()}`, p, {
@@ -533,7 +531,7 @@
             container.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = false; cb.dispatchEvent(new Event('change')); });
             if (searchInput) searchInput.value = '';
             state.showDeprecated = false;
-            state.showUnused = false;
+            state.hideUnused = false;
             state.platforms = [];
             state.profiles = [];
             state.search = '';
@@ -563,8 +561,8 @@
               if (statusHtml.includes('status:deprecated')) return false;
             }
 
-            // Status: hide unused unless explicitly shown (for tools page)
-            if (cols.used_in != null && !state.showUnused) {
+            // Status: hide unused when explicitly requested (for tools page)
+            if (cols.used_in != null && state.hideUnused) {
               const usedInHtml = (rowData[cols.used_in] || '').toString().toLowerCase();
               if (usedInHtml.includes('unused')) return false;
             }
@@ -578,11 +576,11 @@
 
             // Profiles filter
             if (state.profiles.length > 0) {
-              const colIndexByProfile = { L1: cols.L1, L2: cols.L2, R: cols.R, P: cols.P };
+              const colIndexByProfile = { L1: cols.L1, L2: cols.L2, R: cols.R, P: cols.P, EUDIW: cols.EUDIW };
               // If none of the profile columns are present, don't filter by profile
               const anyProfileCol = Object.values(colIndexByProfile).some(v => v != null);
               if (!anyProfileCol) return true;
-              const colorByProfile = { L1: 'blue', L2: 'green', R: 'orange', P: 'purple' };
+              const colorByProfile = { L1: 'blue', L2: 'green', R: 'orange', P: 'purple', EUDIW: 'gold' };
               const matched = state.profiles.some(level => {
                 const idx = colIndexByProfile[level];
                 const token = `profile:${level.toLowerCase()}`;
@@ -642,7 +640,7 @@
             // Update hash
             const tokens = [];
             if (state.showDeprecated) tokens.push('deprecated');
-            if (state.showUnused) tokens.push('unused');
+            if (state.hideUnused) tokens.push('hideunused');
             state.platforms.forEach(p => tokens.push(p));
             state.profiles.forEach(p => tokens.push(p.toLowerCase()));
             updateHash(tokens, state.search);
@@ -653,9 +651,9 @@
           // Apply initial hash tokens
           if (initialTokens.length) {
             if (show.status && initialTokens.includes('deprecated')) state.showDeprecated = true;
-            if (show.used_in && initialTokens.includes('unused')) state.showUnused = true;
+            if (show.used_in && initialTokens.includes('hideunused')) state.hideUnused = true;
             if (show.platform) state.platforms = initialTokens.filter(t => ['android', 'ios', 'network', 'generic'].includes(t));
-            if (show.profile) state.profiles = initialTokens.filter(t => ['l1', 'l2', 'r', 'p'].includes(t)).map(s => s.toUpperCase());
+            if (show.profile) state.profiles = initialTokens.filter(t => ['l1', 'l2', 'r', 'p', 'eudiw'].includes(t)).map(s => s.toUpperCase());
           }
           if (show.search && initialQuery) {
             state.search = initialQuery.toLowerCase();

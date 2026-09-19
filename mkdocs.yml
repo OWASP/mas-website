@@ -37,7 +37,7 @@ nav:
       - ... | flat | MASVS/controls/MASVS-RESILIENCE*.md
       - MASVS-PRIVACY: MASVS/12-MASVS-PRIVACY.md
       - ... | flat | MASVS/controls/MASVS-PRIVACY*.md
-  - "MASWE (Beta)":
+  - MASWE:
     - MASWE/index.md
     - MASVS-STORAGE:
       - ... | flat | MASWE/MASVS-STORAGE/*.md
@@ -63,7 +63,6 @@ nav:
         - ... | flat | MASTG/0x09*.md
       - General Concepts:
         - ... | flat | MASTG/0x04*.md
-        - MASTG/0x03b-Testing-Profiles.md
       - Android Security Testing:
         - ... | flat | MASTG/0x05*.md
       - iOS Security Testing:
@@ -203,16 +202,14 @@ nav:
           - ... | flat | MASTG/apps/android/*.md
         - iOS:
           - ... | flat | MASTG/apps/ios/*.md
-  - "MAS Checklist":
-     - checklists/index.md
-     - MASVS-STORAGE: checklists/MASVS-STORAGE.md
-     - MASVS-CRYPTO: checklists/MASVS-CRYPTO.md
-     - MASVS-AUTH: checklists/MASVS-AUTH.md
-     - MASVS-NETWORK: checklists/MASVS-NETWORK.md
-     - MASVS-PLATFORM: checklists/MASVS-PLATFORM.md
-     - MASVS-CODE: checklists/MASVS-CODE.md
-     - MASVS-RESILIENCE: checklists/MASVS-RESILIENCE.md
-     - MASVS-PRIVACY: checklists/MASVS-PRIVACY.md
+  - "MAS Profiles":
+      - Profiles/index.md
+      - Profiles/Using-MAS-Profiles.md
+      - Profiles/MAS-L1.md
+      - Profiles/MAS-L2.md
+      - Profiles/MAS-R.md
+      - Profiles/MAS-P.md
+      - Profiles/MAS-EUDIW.md
   - "MAS Crackmes":
       - crackmes/index.md
       - ... | flat | crackmes/*.md
@@ -262,6 +259,7 @@ theme:
       l1: material/circle
       l2: material/circle-multiple-outline
       r: material/circle-double
+      eudiw: material/wallet-bifold
       placeholder: material/pencil-plus
       update-pending: material/information-outline
       deprecated: octicons/circle-slash-16
@@ -392,7 +390,6 @@ hooks:
 
   # Priority -40 for adding content
   - docs/hooks/add-tool-gh-preview.py
-  - docs/hooks/add-checklists-banner.py
   - docs/hooks/add-cross-references.py
   - docs/hooks/replace_snippets.py
   - docs/hooks/status-banners.py
@@ -432,6 +429,7 @@ extra:
     L1: l1
     L2: l2
     R: r
+    EUDIW: eudiw
     placeholder: placeholder
     update-pending: update-pending
     deprecated: deprecated
@@ -443,7 +441,6 @@ extra:
     demo: demo
     tech: tech
     maswe: maswe
-    placeholder-tag-maswe: maswe
     placeholder-tag-test: test
     placeholder-tag-tech: tech
     placeholder-tag-demo: demo
