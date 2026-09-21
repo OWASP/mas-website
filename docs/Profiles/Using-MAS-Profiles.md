@@ -14,9 +14,9 @@ Adding more security controls from higher MAS profiles can make an app more secu
 
 ### Security vs Cost
 
-MAS profiles should be applied where it makes sense from a risk vs. cost perspective, i.e. where the potential loss from a compromise of confidentiality or integrity is higher than the cost of the additional controls. The potential loss is the negative impact a breach would have on the app's users, data, functionality, reputation, or revenue; the cost is the time, money, and resources needed to implement and maintain the controls. Estimate how likely the app is to be attacked, how severe the consequences of a compromise would be, and how much value the app provides to its users and the business before deciding how far to go.
+MAS profiles should be applied where doing so makes sense from a risk-versus-cost perspective, i.e., where the potential impact resulting from a compromise of confidentiality or integrity exceeds the cost of implementing and maintaining the additional controls. Potential impact refers to the negative impact that a breach could have on the app's users, data, functionality, reputation, or revenue, while cost refers to the time, money, and resources required to implement and maintain those controls.
 
-For example, an app handling sensitive health data might justify [MAS-L2](MAS-L2.md) for strong encryption and authentication, since the potential loss in terms of user privacy, trust, and legal liability is high. An app that only displays public information, such as weather or news, usually doesn't need to go beyond [MAS-L1](MAS-L1.md), since the marginal security benefit wouldn't be worth the added cost.
+For example, an app handling sensitive health data might justify [MAS-L2](MAS-L2.md) for strong encryption and authentication, since the potential impact in terms of user privacy, trust, and legal liability is high. An app that only displays public information, such as weather or news, usually doesn't need to go beyond [MAS-L1](MAS-L1.md), since the marginal security benefit wouldn't be worth the added cost.
 
 ### Security vs Usability
 
@@ -24,7 +24,7 @@ Some security features make an app more difficult or inconvenient to use, which 
 
 ### Security vs Privacy
 
-Some security features require collecting or accessing user data, which can raise privacy concerns of its own. Using SMS as a multi-factor authentication factor, for example, improves security but also exposes a sensitive piece of personal data (the user's phone number). Balance the security and privacy needs of users, and make sure the trade-off complies with relevant privacy laws and regulations.
+Some security features require collecting or accessing user data, which can raise privacy concerns of their own. Using SMS as a multi-factor authentication factor, for example, improves security but also exposes a sensitive piece of personal data (the user's phone number). Balance the security and privacy needs of users, and make sure the trade-off complies with relevant privacy laws and regulations.
 
 ### Privacy vs Value
 
