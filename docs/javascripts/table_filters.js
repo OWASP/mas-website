@@ -205,7 +205,6 @@
     const groupLabel = document.createElement('span');
     groupLabel.textContent = labelText;
     groupLabel.style.fontWeight = 'bold';
-    groupLabel.style.minWidth = '70px';
     groupLabel.style.color = 'var(--md-default-fg-color, rgba(0, 0, 0, 0.87))';
     groupContainer.appendChild(groupLabel);
     return { groupContainer };
@@ -217,7 +216,6 @@
     toggleLabel.style.display = 'flex';
     toggleLabel.style.alignItems = 'center';
     toggleLabel.style.cursor = 'pointer';
-    toggleLabel.style.marginRight = '0.5rem';
     toggleLabel.style.padding = '0.25rem 0.5rem';
     toggleLabel.style.border = '1px solid var(--md-default-fg-color--lightest, rgba(0, 0, 0, 0.1))';
     toggleLabel.style.borderRadius = '4px';
