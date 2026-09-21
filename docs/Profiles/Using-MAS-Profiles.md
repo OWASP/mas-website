@@ -10,7 +10,7 @@ It's important to involve all stakeholders in determining the appropriate level 
 
 ## The Security Trade-offs
 
-Adding more security controls from higher MAS profiles can make an app more secure, but it may also increase development cost or affect the user experience negatively. These trade-offs are worth weighing explicitly when deciding how far up the profile stack to go.
+Adding more security controls from higher MAS profiles can make an app more secure, but it may also increase development cost, affect the user experience negatively, or prevent legitimate users from accessing the app or parts of it. These trade-offs are worth weighing explicitly when deciding how far up the profile stack to go.
 
 ### Security vs Cost
 
