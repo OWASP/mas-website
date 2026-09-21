@@ -9,6 +9,7 @@ import github_api
 import requests
 from html import escape
 from lxml import etree
+from create_dynamic_tables import PROFILE_PAGES
 log = logging.getLogger('mkdocs')
 
 CWE_CATALOG_URL = 'https://cwe.mitre.org/data/xml/cwec_latest.xml.zip'
@@ -425,6 +426,22 @@ def get_techniques_deprecated_banner(meta):
 """
     return banner
 
+def get_no_mastg_test_banner():
+    banner = """
+??? info "How to proceed when no MASTG TEST exists"
+
+    The MASTG does not yet provide dedicated tests for every MASWE. Defining a weakness and defining a reliable, reproducible way to test for it are different tasks, and some areas require extensive research, validation, or refinement before they can be captured as formal MASTG TESTs. The guide also evolves continuously as platforms, frameworks, and testing techniques change.
+
+    Even when no dedicated MASTG TEST exists, you can still assess the weakness.
+
+    1. **Start with the MASWE:** Review its "Modes of Introduction" to understand the concrete conditions that may introduce the weakness and what should be tested.
+
+    2. **Check related MASTG content:** Look at similar or related existing MASTG TESTs, as they can provide useful testing patterns, structure, and inspiration for designing a new test. Also consult relevant MASTG KNOW, TECH, and TOOL entries, together with the official mobile platform documentation, to understand the topic and identify suitable testing techniques.
+
+    3. **Contribute back:** If you develop a reliable testing procedure, consider [contributing](https://mas.owasp.org/contributing/) a new MASTG TEST and a MASTG DEMO so others can reuse it.
+"""
+    return banner
+
 def get_maswe_requirement_banner(meta):
     requirement = meta.get('requirement', '')
 
@@ -511,6 +528,9 @@ def on_page_markdown(markdown, page, config, **kwargs):
     path = page.file.src_uri
 
     banners = []
+
+    if path == "MASWE/index.md" or path in PROFILE_PAGES:
+        banners.append(get_no_mastg_test_banner())
 
     if "MASWE/" in path:
         if page.meta.get('requirement'):
