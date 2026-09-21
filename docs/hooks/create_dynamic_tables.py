@@ -132,7 +132,7 @@ def get_maswe_test_counts():
     test_counts = {}
 
     for file in glob.glob("docs/MASTG/tests/**/*.md", recursive=True):
-        if "index.md" in file:
+        if "MASTG-TEST-" not in os.path.basename(file):
             continue
 
         with open(file, 'r') as f:
@@ -274,7 +274,7 @@ def get_mastg_components_dict(name):
         components = []
 
         for file in glob.glob(f"{name}/**/*.md", recursive=True):
-            if "index.md" not in file:
+            if "MASTG-" in os.path.basename(file):
                 with open(file, 'r') as f:
                     content = f.read()
 
