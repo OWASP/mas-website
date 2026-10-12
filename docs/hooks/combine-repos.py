@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import filecmp
 import shutil
 import logging
 import os
@@ -11,9 +12,22 @@ def on_pre_build(config):
 
     docs_dir = Path("docs")
 
-    mastg_repo = structure_mastg(docs_dir)
-    maswe_repo = structure_maswe(docs_dir)
-    masvs_repo = structure_masvs(docs_dir)
+    # Assemble everything in a staging folder first and only sync real changes into docs/.
+    # Rewriting unchanged files would bump their mtime, which defeats `mkdocs serve --dirty`
+    # and re-triggers the file watcher on docs/contributing (endless rebuild loop).
+    staging_dir = Path(".cache") / "combine-repos"
+    if staging_dir.exists():
+        shutil.rmtree(staging_dir)
+
+    mastg_repo = structure_mastg(staging_dir)
+    maswe_repo = structure_maswe(staging_dir)
+    masvs_repo = structure_masvs(staging_dir)
+
+    for subdir in ["MASTG", "MASWE", "MASVS", "contributing/writing-content"]:
+        sync_tree(staging_dir / subdir, docs_dir / subdir, delete=True)
+
+    # The assets folders are shared with files tracked in this repo, so nothing is deleted there
+    sync_tree(staging_dir / "assets", docs_dir / "assets", delete=False)
 
     # Save the values so they can dynamically be watched for changes later
     config['extra']['mastg_repo'] = mastg_repo
@@ -218,6 +232,26 @@ def clean_and_copy(source, destination):
         return
     
     shutil.copytree(source, destination, dirs_exist_ok=True)
+
+def sync_tree(source, destination, delete):
+    # Copy only new or changed files so that unchanged files keep their mtime
+    source_files = {p.relative_to(source) for p in source.rglob("*") if p.is_file()} if source.exists() else set()
+
+    for rel_path in source_files:
+        src = source / rel_path
+        dest = destination / rel_path
+        if dest.is_file() and filecmp.cmp(src, dest, shallow=False):
+            continue
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(src, dest)
+
+    if delete and destination.exists():
+        for dest in sorted(destination.rglob("*"), reverse=True):
+            if dest.is_dir():
+                if not any(dest.iterdir()):
+                    dest.rmdir()
+            elif dest.relative_to(destination) not in source_files:
+                dest.unlink()
 
 def clean_and_move(source, destination):
     if destination.exists():
