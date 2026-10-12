@@ -9,4 +9,5 @@ source ./venv/bin/activate
 
 pip3 install -r requirements.txt
 
-mkdocs serve -a localhost:8000
+# Any arguments are passed on to mkdocs, e.g. `runMasWebsite --dirty`
+mkdocs serve -a localhost:8000 "$@"
