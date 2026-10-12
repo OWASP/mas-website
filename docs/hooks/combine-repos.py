@@ -12,9 +12,7 @@ def on_pre_build(config):
 
     docs_dir = Path("docs")
 
-    # Assemble everything in a staging folder first and only sync real changes into docs/.
-    # Rewriting unchanged files would bump their mtime, which defeats `mkdocs serve --dirty`
-    # and re-triggers the file watcher on docs/contributing (endless rebuild loop).
+    # Assemble everything in a cache first and only sync real changes into docs/ afterwards.
     staging_dir = Path(".cache") / "combine-repos"
     if staging_dir.exists():
         shutil.rmtree(staging_dir)
