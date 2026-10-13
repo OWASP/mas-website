@@ -15,7 +15,7 @@
 
   "remoteUser": "vscode",
   "postCreateCommand": "sudo chown -R vscode:vscode /workspace/* && /workspace/mas-website/.devcontainer/setupShellAlias.sh && /workspace/mas-website/.devcontainer/fetchMasProject.sh mastg maswe masvs",
-  "postStartCommand": ".devcontainer/runMasWebsite.sh",
+  "postStartCommand": ".devcontainer/runMasWebsite.sh --dirty",
 
   "customizations": {
     "vscode": {
