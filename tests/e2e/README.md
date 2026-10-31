@@ -24,6 +24,14 @@ Tests for knowledge article references in the tools "Used in" column:
 - Tests navigation to knowledge page from tool links
 - Verifies proper ordering of multiple reference types (techniques, knowledge, demos, tests)
 
+### MASWE Tags on MASTG Test Pages (`maswe-test-tags.spec.ts`)
+
+Tests for the `maswe: [...]` weakness tag rendering on individual MASTG test pages:
+
+- Verifies a test with a single MASWE weakness renders its tag with the correct icon/style (`md-tag--maswe`), not the generic fallback
+- Verifies a test with multiple MASWE weaknesses renders every tag correctly and distinctly styled
+- Guards against the placeholder substitution used internally (see `docs/hooks/add-tags.py`) leaking into the rendered page
+
 ### MASVS Category and Control Search (`masvs-category-control-search.spec.ts`)
 
 Tests for MASVS category and control search functionality:

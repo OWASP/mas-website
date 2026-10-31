@@ -12,7 +12,7 @@ As part of the MASVS refactoring, we've replaced the three traditional verificat
 
 <!-- more -->
 
-The [new MAS Testing Profiles](https://mas.owasp.org/MASTG/0x03b-Testing-Profiles/) include revamped versions of the traditional levels and one new addition:
+The [new MAS Testing Profiles](https://mas.owasp.org/Profiles/) include revamped versions of the traditional levels and one new addition:
 
 <center>
 <img style="width: 60%; border-radius: 5px" src="/assets/news/mas_profiles.png"/>
