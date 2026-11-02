@@ -285,10 +285,12 @@ def get_demos_attack_banner():
 
     This demo includes an attacker app. It's provided by the OWASP MAS project for educational and testing purposes only, to help developers and security testers understand how a weakness can be exploited and to verify that mitigations are effective.
 
-    - **Harmless by design:** the attacker app is a minimal proof of concept. It only uses public, documented platform APIs and the permissions or special access that the user explicitly grants. It doesn't exploit vulnerabilities in the operating system or in apps other than the demo's sample app, and it doesn't use hidden APIs or privilege escalation. It doesn't persist, hide itself, or send data off the device. Its results are only shown in the app or in its logs.
-    - **Scoped to the MASTestApp:** it's designed to target only the demo's sample app. Use dummy data only.
-    - **Test devices only:** install it only on devices and emulators that you own or are authorized to test. Never install it on devices used for personal or production purposes. Disable or uninstall it, and revoke any permissions or special access you granted, such as accessibility services or overlay permissions, when you've finished. Google Play Protect or other security software may flag or remove it.
-    - **Authorized use only:** using these techniques against apps, devices, or users without explicit authorization may be illegal. Check the laws that apply to you before using any MASTG material, and see our [Code of Conduct](https://github.com/OWASP/mastg/blob/master/.github/CODE_OF_CONDUCT.md).
+    The attacker app is harmless by design. It only uses public, documented platform APIs and the permissions or special access that the user explicitly grants. It doesn't exploit vulnerabilities in the operating system or in apps other than the demo's sample app, and it doesn't use hidden APIs or privilege escalation. It doesn't persist, hide itself, or send data off the device. Its results are only shown in the app or in its logs.
+
+    It is possible that Google Play Protect or other security software flags the app as a potentially harmful app; this is normal.
+    - **Only use test data:** When using the demo's sample app, make sure you only use dummy data. Do not add any sensitive data to any of the demo apps.
+    - **Only use test devices:** install the attacker app only on devices and emulators that you own or are authorized to test on. Never install it on devices used for personal or production purposes. When finished, disable or uninstall the app, and revoke any permissions or special access you granted, such as accessibility services or overlay permissions.
+    - **Only allowed for authorized use:** using these techniques against apps, devices, or users without explicit authorization may be illegal. Check the laws that apply to you before using any MASTG material, and see our [Code of Conduct](https://github.com/OWASP/mastg/blob/master/.github/CODE_OF_CONDUCT.md).
     - **No liability:** the material is provided "as is", without warranty of any kind. OWASP, the MAS project, and its contributors aren't responsible for any misuse of this material or for any damage resulting from its use.
 """
     return banner
