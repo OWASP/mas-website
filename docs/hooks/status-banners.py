@@ -1,8 +1,11 @@
+import json
 import logging
+import time
 import yaml
 import mkdocs.plugins
 import glob
 from io import BytesIO
+from pathlib import Path
 from collections import defaultdict
 from zipfile import BadZipFile, ZipFile
 import github_api
@@ -13,8 +16,31 @@ from create_dynamic_tables import PROFILE_PAGES
 log = logging.getLogger('mkdocs')
 
 CWE_CATALOG_URL = 'https://cwe.mitre.org/data/xml/cwec_latest.xml.zip'
+CWE_TITLES_CACHE = Path('.cache') / 'cwe-titles.json'
+CWE_TITLES_CACHE_MAX_AGE = 7 * 24 * 60 * 60
 
 def get_cwe_titles():
+    # The catalog rarely changes, so it is cached to avoid a download on every (re)build
+    cached_titles = read_cwe_titles_cache()
+    if cached_titles and time.time() - CWE_TITLES_CACHE.stat().st_mtime < CWE_TITLES_CACHE_MAX_AGE:
+        return cached_titles
+
+    titles = download_cwe_titles()
+    if not titles:
+        # An outdated cache is still better than no titles at all
+        return cached_titles
+
+    CWE_TITLES_CACHE.parent.mkdir(parents=True, exist_ok=True)
+    CWE_TITLES_CACHE.write_text(json.dumps(titles), encoding='utf-8')
+    return titles
+
+def read_cwe_titles_cache():
+    try:
+        return json.loads(CWE_TITLES_CACHE.read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        return {}
+
+def download_cwe_titles():
     try:
         response = requests.get(CWE_CATALOG_URL, timeout=30)
         response.raise_for_status()
