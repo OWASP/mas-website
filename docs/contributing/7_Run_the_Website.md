@@ -2,16 +2,105 @@
 
 This guide will help you set up and run the OWASP MAS website locally on your machine. Follow the steps below to get started.
 
-Steps overview:
+Overview:
 
-1. Prerequisite: [Clone the required repositories](#cloning-the-repositories).
-2. Build the website using one of the following methods:
-    - [Without Docker](#without-docker): You'll need to install Python dependencies manually. 
+1. [Running the Website](#running-the-website) using one of the following methods:
+    - [Using a Dev Container](#using-a-dev-container-recommended) (recommended): Repositories and Python dependencies are set up for you.
     - [Using Docker](#using-docker): Python dependencies come pre-installed.
+    - [Building the Website Manually](#building-the-website-manually): You'll need to install Python dependencies manually.
+2. [Debugging the Website](#debugging-the-website)
 
-## Cloning the Repositories
+## Running the Website
 
-Before you begin, you need to clone the following repositories from GitHub. Open your terminal and run the following commands:
+### Using a Dev Container (Recommended)
+
+Our recommendation is to use a [dev container](https://containers.dev/). It clones the other MAS repositories, installs the Python dependencies and starts the website for you.
+
+1. Make sure you have [Docker](https://docs.docker.com/get-started/get-docker/) installed.
+2. Open any MAS project in an editor that supports dev containers (e.g., Visual Studio Code or PyCharm), or use the reference implementation ([devcontainers/cli](https://github.com/devcontainers/cli)).
+3. Once the dev container has started, the complete MAS website is accessible at [http://localhost:8000](http://localhost:8000).
+
+In case the development server is not running, run `runMasWebsite` in a terminal inside the dev container.
+
+> Run `runMasWebsite --dirty` to only rebuild pages that have changed. This can shorten rebuilds, but pages that are not rebuilt may show outdated navigation and links.
+
+### Using Docker
+
+Prerequisite: [Clone the required repositories](#cloning-the-repositories).
+
+The following commands will build the Docker image and run the website, which will be accessible at [http://localhost:8000](http://localhost:8000).
+
+```bash
+cd mas-website
+docker build . -t mas-website
+docker run --rm -it \
+  -p 8000:8000 \
+  -u $(id -u):$(id -g) \
+  -e GITHUB_TOKEN \
+  -v "$PWD":/workspaces/mas-website \
+  -v "../mastg":/workspaces/mastg \
+  -v "../masvs":/workspaces/masvs \
+  -v "../maswe":/workspaces/maswe \
+  mas-website
+```
+
+### Building the Website Manually
+
+> **TLDR for advanced users:**
+>
+> - Set up a virtual environment
+> - Install dependencies from `mas-website/requirements.txt`
+> - Run the website using `./run_web.sh`
+
+#### Prerequisites
+
+[Clone the required repositories](#cloning-the-repositories) and ensure you have the following installed on your system:
+
+- Python 3.8 or higher
+- pip (Python package manager)
+- Git
+- Visual Studio Code (vscode)
+
+#### Step 1: Open the OWASP MAS Website Repository in vscode
+
+Run the following commands in your terminal:
+
+```bash
+cd mas-website
+code .
+```
+
+#### Step 2: Install Python Dependencies
+
+It is highly recommended to use a virtual environment (venv) to manage dependencies and avoid conflicts with other Python projects.
+
+Use vscode's [`Command Palette`](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) (Press `⌘+Shift+P` on macOS or `Ctrl+Shift+P` on Windows/Linux)
+
+1. Create a venv:
+    - Press `⌘+Shift+P` -> `Python: Create Environment`
+    - Select `"Quick Create"`
+2. Select the venv as the Python interpreter:
+    - Press `⌘+Shift+P` -> `Python: Select Interpreter`
+    - Choose the venv you just created.
+3. Install the dependencies
+   - Press `⌘+j` to open the terminal
+   - Run `pip install -r requirements.txt`
+
+#### Step 3: Run the Website
+
+Run the following command in the terminal:
+
+```bash
+./run_web.sh
+```
+
+The script runs `mkdocs serve` with some additional arguments. Open the script in a code editor for more information.
+
+Access the website at [http://localhost:8000](http://localhost:8000).
+
+### Cloning the Repositories
+
+This is only required when [using Docker](#using-docker) or [building the website manually](#building-the-website-manually). Open your terminal and run the following commands to clone the repositories from GitHub:
 
 ```bash
 git clone https://github.com/OWASP/mastg.git
@@ -28,61 +117,7 @@ git clone https://github.com/OWASP/mas-website.git
 export GITHUB_TOKEN=<TOKEN>
 ```
 
-## Without Docker
-
-> **TLDR for advanced users:**
->
-> - Set up a virtual environment
-> - Install dependencies from `mas-website/requirements.txt`
-> - Run the website using `./run_web.sh`
-
-### Prerequisites
-
-Before running the website, ensure you have the following installed on your system:
-
-- Python 3.8 or higher
-- pip (Python package manager)
-- Git
-- Visual Studio Code (vscode)
-
-### Step 1: Open the OWASP MAS Website Repository in vscode
-
-Run the following commands in your terminal:
-
-```bash
-cd mas-website
-code .
-```
-
-### Step 2: Install Python Dependencies
-
-It is highly recommended to use a virtual environment (venv) to manage dependencies and avoid conflicts with other Python projects.
-
-Use vscode's [`Command Palette`](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) (Press `⌘+Shift+P` on macOS or `Ctrl+Shift+P` on Windows/Linux)
-
-1. Create a venv:
-    - Press `⌘+Shift+P` -> `Python: Create Environment`
-    - Select `"Quick Create"`
-2. Select the venv as the Python interpreter:
-    - Press `⌘+Shift+P` -> `Python: Select Interpreter`
-    - Choose the venv you just created.
-3. Install the dependencies
-   - Press `⌘+j` to open the terminal
-   - Run `pip install -r src/scripts/requirements.txt`
-
-### Step 3: Run the Website
-
-Run the following command in the terminal:
-
-```bash
-./run_web.sh
-```
-
-The script runs `mkdocs serve` with some additional arguments. Open the script in a code editor for more information.
-
-Access the website at [http://localhost:8000](http://localhost:8000).
-
-### Step 4: Debugging the Website
+## Debugging the Website
 
 To debug the website:
 
@@ -90,21 +125,3 @@ To debug the website:
 - Select `Python: MkDocs Serve`
 - Click the green play button to start debugging
 - Set breakpoints in the code as needed
-
-## Using Docker
-
-The following commands will clone the necessary repositories, build the Docker image, and run the website, which will be accessible at [http://localhost:8000](http://localhost:8000).
-
-```bash
-cd mas-website
-docker build . -t mas-website
-docker run --rm -it \
-  -p 8000:8000 \
-  -u $(id -u):$(id -g) \
-  -e GITHUB_TOKEN \
-  -v "$PWD":/workspaces/mas-website \
-  -v "../mastg":/workspaces/mastg \
-  -v "../masvs":/workspaces/masvs \
-  -v "../maswe":/workspaces/maswe \
-  mas-website
-```
